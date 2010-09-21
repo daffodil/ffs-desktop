@@ -20,7 +20,11 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QHBoxLayout *hBox = new QHBoxLayout();
     mainLayout->addLayout(hBox);
     
+    //* Aircraft Tree
     treeWidget = new QTreeWidget();
     hBox->addWidget(treeWidget);
+
+    QHeaderView *treeHeader = treeWidget->header();
+    treeHeader->setStretchLastSection(true);
 
 }
