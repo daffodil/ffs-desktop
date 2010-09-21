@@ -23,10 +23,11 @@ MainWindow::MainWindow(QWidget *parent)
     tabWidget = new QTabWidget(this);
     mainVBox->addWidget(tabWidget,100);
 
-    mpMapWidget = new MpMapWidget(this);
-    tabWidget->addTab(mpMapWidget,QString("MP Map"));
+   // mpMapWidget = new MpMapWidget(this);
+    //tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
-
+    aircraftWidget = new AircraftWidget();
+    tabWidget->addTab(aircraftWidget, "Aircraft");
 
     resize(700, 600);
 }

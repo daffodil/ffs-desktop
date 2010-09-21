@@ -7,9 +7,9 @@ QT += network \
 TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp \
-    #mapwidget.cpp \
-    mpmapwidget.cpp
-HEADERS += mainwindow.h \
-    #mapwidget.h \
-    mpmapwidget.h
+    mainwindow.cpp \ # mapwidget.cpp \
+    mpmapwidget.cpp \
+    flightgear/aircraftwidget.cpp
+HEADERS += mainwindow.h \ # mapwidget.h \
+    mpmapwidget.h \
+    flightgear/aircraftwidget.h
