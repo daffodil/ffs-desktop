@@ -6,7 +6,9 @@
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QLabel>
-#include "mapwidget.h"
+
+#include <QtGui/QTabWidget>
+#include "mpmapwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -19,7 +21,9 @@ public:
     QVBoxLayout *mainVBox;
     QLabel *headerLabel;
 
-    MapWidget mapWidget;
+    QTabWidget *tabWidget;
+
+    MpMapWidget *mpMapWidget;
 
 };
 

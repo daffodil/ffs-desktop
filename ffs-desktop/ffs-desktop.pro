@@ -8,6 +8,8 @@ TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
-    mapwidget.cpp
+    mapwidget.cpp \
+    mpmapwidget.cpp
 HEADERS += mainwindow.h \
-    mapwidget.h
+    mapwidget.h \
+    mpmapwidget.h

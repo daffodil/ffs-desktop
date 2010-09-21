@@ -11,7 +11,7 @@ public:
     explicit MapWidget(QWidget *parent = 0);
 
 private:
-    QWebView browser;
+    QWebView *browser;
 signals:
 
 public slots:

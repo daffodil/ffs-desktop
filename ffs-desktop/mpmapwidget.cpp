@@ -1,8 +1,8 @@
-#include "mapwidget.h"
+#include "mpmapwidget.h"
 #include <QtGui/QVBoxLayout>
 
-MapWidget::MapWidget(QWidget *parent) :
-    QWidget(parent)
+MpMapWidget::MpMapWidget(QWidget *parent) :
+        QWidget(parent)
 {
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -14,3 +14,4 @@ MapWidget::MapWidget(QWidget *parent) :
 
 
 }
+
