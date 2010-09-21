@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
    setCentralWidget(mainWidget);
 
 
-    QVBoxLayout *mainVBox = new QVBoxLayout(this);
+    QVBoxLayout *mainVBox = new QVBoxLayout();
     mainVBox->setContentsMargins(0,0,0,0);
     mainVBox->setSpacing(0);
     mainWidget->setLayout(mainVBox);
@@ -24,11 +24,11 @@ MainWindow::MainWindow(QWidget *parent)
     mainVBox->addWidget(tabWidget,100);
 
     mpMapWidget = new MpMapWidget(this);
-    tabWidget->addTab(mpMapWidget,QString("FOO"));
+    tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
 
 
-    resize(400, 400);
+    resize(700, 600);
 }
 
 MainWindow::~MainWindow()
