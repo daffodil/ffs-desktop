@@ -8,11 +8,11 @@ TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \ # mapwidget.cpp \
-    mpmapwidget.cpp \
+    web/mpmapwidget.cpp \
     flightgear/aircraftwidget.cpp \
     mainobject.cpp
 HEADERS += mainwindow.h \ # mapwidget.h \
-    mpmapwidget.h \
+    web/mpmapwidget.h \
     flightgear/aircraftwidget.h \
     mainobject.h
 RESOURCES += icons/icons.qrc

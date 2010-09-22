@@ -22,8 +22,11 @@ public:
 signals:
 
 public slots:
-    void on_quit();
     void on_tray_icon(QSystemTrayIcon::ActivationReason reason);
+
+    void on_mpmap();
+    void on_launcher();
+    void on_quit();
 };
 
 #endif // MAINOBJECT_H

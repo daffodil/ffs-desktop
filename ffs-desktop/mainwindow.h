@@ -11,7 +11,7 @@
 #include <QtGui/QSystemTrayIcon>
 
 
-#include "mpmapwidget.h"
+//#include "mpmapwidget.h"
 #include "flightgear/aircraftwidget.h"
 
 class MainWindow : public QMainWindow
@@ -28,7 +28,7 @@ public:
 
     QTabWidget *tabWidget;
 
-    MpMapWidget *mpMapWidget;
+    //MpMapWidget *mpMapWidget;
     AircraftWidget *aircraftWidget;
 
 
