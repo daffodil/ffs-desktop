@@ -10,6 +10,8 @@
 #include <QtGui/QTabWidget>
 
 #include "launcher/aircraftwidget.h"
+#include "launcher/mpserverswidget.h"
+
 
 class LauncherWindow : public QMainWindow
 {
@@ -25,7 +27,7 @@ public:
 
     //MpMapWidget *mpMapWidget;
     AircraftWidget *aircraftWidget;
-
+    MpServersWidget *mpServersWidget;
 
 
 };

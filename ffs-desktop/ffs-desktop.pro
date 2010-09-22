@@ -11,10 +11,10 @@ SOURCES += main.cpp \
     mp/mpmapwidget.cpp \
     launcher/aircraftwidget.cpp \
     mainobject.cpp \
-    launcher/mpservers.cpp
+    launcher/mpserverswidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     launcher/aircraftwidget.h \
     mainobject.h \
-    launcher/mpservers.h
+    launcher/mpserverswidget.h
 RESOURCES += icons/icons.qrc
