@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LAUNCHERWINDOW_H
+#define LAUNCHERWINDOW_H
 
 #include <QtGui/QMainWindow>
 
@@ -12,7 +12,7 @@
 
 
 //#include "mpmapwidget.h"
-#include "flightgear/aircraftwidget.h"
+#include "launcher/aircraftwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -35,4 +35,4 @@ public:
 
 };
 
-#endif // MAINWINDOW_H
+#endif // LAUNCHERWINDOW_H

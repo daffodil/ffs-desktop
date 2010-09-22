@@ -7,12 +7,12 @@ QT += network \
 TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \
-    mainwindow.cpp \ # mapwidget.cpp \
+    launcher/launcherwindow.cpp \
     mp/mpmapwidget.cpp \
-    flightgear/aircraftwidget.cpp \
+    launcher/aircraftwidget.cpp \
     mainobject.cpp
-HEADERS += mainwindow.h \ # mapwidget.h \
+HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
-    flightgear/aircraftwidget.h \
+    launcher/aircraftwidget.h \
     mainobject.h
 RESOURCES += icons/icons.qrc

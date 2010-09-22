@@ -83,14 +83,11 @@ void MpMapWidget::on_combo_server(int index){
 
  }
 
+//** Overide the closeEvent
 void MpMapWidget::closeEvent(QCloseEvent *event)
  {
-     //if (maybeSave()) {
-     //    writeSettings();
-      //   event->accept();
-     //} else {
-         event->ignore();
-         destroy(false, false);
-     //}
+     event->ignore();
+     //destroy(false, false);
+     //** I want to close the QWidget without destorying the application
  }
 

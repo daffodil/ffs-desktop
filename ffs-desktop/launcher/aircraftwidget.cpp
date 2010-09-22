@@ -4,7 +4,7 @@
     does a background call to a process that executes FG
   */
 
-#include "aircraftwidget.h"
+#include "launcher/aircraftwidget.h"
 
 // layouts
 #include <QtGui/QVBoxLayout>
