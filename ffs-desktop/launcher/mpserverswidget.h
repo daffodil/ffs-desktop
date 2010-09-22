@@ -29,7 +29,7 @@ signals:
 public slots:
      void dns_lookup_all();
      void on_dns_lookup_host(const QHostInfo &hostInfo);
-     void on_telnet_data(QString);
+     void on_telnet_data(QString, QString);
 };
 
 #endif // MPSERVERS_H

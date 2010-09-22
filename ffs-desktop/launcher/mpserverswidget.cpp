@@ -120,12 +120,12 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
      if(has_address){
         MpTelnet *telnet = new MpTelnet(this );
         telnet->get_info(hostInfo.addresses().first().toString());
-        connect(telnet, SIGNAL(telnet_data(QString)),
-                this, SLOT(on_telnet_data(QString))
+        connect(telnet, SIGNAL(telnet_data(QString, QString)),
+                this, SLOT(on_telnet_data(QString, QString))
                );
      }
 }
 
-void MpServersWidget::on_telnet_data(QString ip_address){
-    qDebug() <<  "YESSS" << ip_address;
+void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
+    qDebug() <<  "YESSS" << telnet_reply;
 }
