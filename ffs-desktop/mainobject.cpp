@@ -33,6 +33,7 @@ MainObject::MainObject(QObject *parent) :
 
 
     trayIcon->show();
+    on_mpmap();
 }
 
 //** Launcher

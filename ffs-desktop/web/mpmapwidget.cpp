@@ -10,7 +10,13 @@ MpMapWidget::MpMapWidget(QWidget *parent) :
         QWidget(parent)
 {
 
+    setWindowTitle(tr("Multi Player Map"));
+    setWindowIcon(QIcon(":/icons/mpmap"));
+
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0,0,0,0);
+    mainLayout->setSpacing(0);
+
 
     //** Toolbar
     QToolBar *toolbar = new QToolBar();
@@ -21,14 +27,11 @@ MpMapWidget::MpMapWidget(QWidget *parent) :
     toolbar->addWidget(lblSelectServer);
     QComboBox *comboServer = new QComboBox();
     toolbar->addWidget(comboServer);
-    comboServer->addItem("http://mpmap01.flightgear.org");
-    comboServer->addItem("http://mpmap02.flightgear.org");
-    connect(comboServer, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_combo_server(QString)));
-           // void	activated ( const QString & text )
+    comboServer->addItem("MpMap-01", QVariant("http://mpmap01.flightgear.org"));
+    comboServer->addItem("MpMap-02", QVariant("http://mpmap02.flightgear.org"));
+    connect(comboServer, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_combo_server(int index)));
 
-    progressBar = new QProgressBar();
-    toolbar->addWidget(progressBar);
-    progressBar->setVisible(false);
+
 
     //** Browser
     browser = new QWebView(this);
@@ -38,6 +41,17 @@ MpMapWidget::MpMapWidget(QWidget *parent) :
     connect(browser, SIGNAL(loadFinished(bool)), this, SLOT(end_progress(bool)));
     //#browser->setUrl(QUrl("http://mpmap01.flightgear.org"));
 
+    //*** Status Bar
+    statusBar = new QStatusBar(this);
+    mainLayout->addWidget(statusBar);
+    statusBar->showMessage("Idling");
+
+    //** Progress Bar
+    progressBar = new QProgressBar();
+    progressBar->setVisible(false);
+    statusBar->addPermanentWidget(progressBar);
+
+    //*** Initialise
     comboServer->setCurrentIndex(0);
 }
 
@@ -53,6 +67,7 @@ void MpMapWidget::end_progress(bool Ok){
 }
 
 
-void MpMapWidget::on_combo_server(QString url_str){
-    browser->setUrl(QUrl(url_str));
+void MpMapWidget::on_combo_server(int index){
+    //QString url_str = comboServer->
+    //#browser->setUrl(QUrl(url_str));
 }

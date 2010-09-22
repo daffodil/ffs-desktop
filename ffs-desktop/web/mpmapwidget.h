@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QWebView>
 #include <QtGui/QProgressBar>
+#include <QtGui/QStatusBar>
 
 class MpMapWidget : public QWidget
 {
@@ -14,6 +15,8 @@ public:
 private:
     QWebView *browser;
     QProgressBar *progressBar;
+    QStatusBar *statusBar;
+
 signals:
 
 public slots:
@@ -21,7 +24,7 @@ public slots:
     void update_progress(int progress);
     void end_progress(bool Ok);
 
-    void on_combo_server(QString);
+    void on_combo_server(int index);
 };
 
 #endif // MPMAPWIDGET_H
