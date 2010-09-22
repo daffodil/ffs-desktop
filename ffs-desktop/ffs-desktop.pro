@@ -13,3 +13,4 @@ SOURCES += main.cpp \
 HEADERS += mainwindow.h \ # mapwidget.h \
     mpmapwidget.h \
     flightgear/aircraftwidget.h
+RESOURCES += icons/icons.qrc

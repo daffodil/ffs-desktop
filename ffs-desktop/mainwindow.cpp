@@ -4,6 +4,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 
+    setWindowTitle("FlightGear Launcher");
+    setWindowIcon(QIcon(":/icons/favicon"));
+
    //* MainWidget and MainLayout
    QWidget *mainWidget = new QWidget(this);
    setCentralWidget(mainWidget);

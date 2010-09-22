@@ -21,7 +21,7 @@ private:
 signals:
 
 public slots:
-    void on_load();
+    void load_aircraft();
     void set_aircraft();
 };
 

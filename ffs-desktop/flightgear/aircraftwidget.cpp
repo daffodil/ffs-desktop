@@ -27,11 +27,13 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //** Toolbar
     QToolBar *toolbar = new QToolBar();
     mainLayout->addWidget(toolbar);
+    toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     
     QAction *refreshButton = new QAction(this);
     toolbar->addAction(refreshButton);
     refreshButton->setText("Refresh");
-    connect(refreshButton, SIGNAL(triggered()), this, SLOT(on_load()) );
+    refreshButton->setIcon(QIcon(":/icons/refresh"));
+    connect(refreshButton, SIGNAL(triggered()), this, SLOT(load_aircraft()) );
 
     //** Middle HBox
     QHBoxLayout *hBox = new QHBoxLayout();
@@ -60,11 +62,11 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
              SLOT( set_aircraft() )
     );
 
-
+    load_aircraft();
 }
 
 //** Load
-void AircraftWidget::on_load(){
+void AircraftWidget::load_aircraft(){
 
     qDebug("AircraftWidget > on_load() --------------------------------");
 
@@ -86,14 +88,23 @@ void AircraftWidget::on_load(){
             //** The fgfs --show_mistake returns the "man" and not an error ;-(
             //* so only way to detect is to get "-available aircraft" as text
 
-            qDebug("OK");
+           // qDebug("OK");
             QStringList lines = QString(result).split("\n");
 
             for ( it = lines.begin() ; it != lines.end() ; it++ ){
 
                 line = it->simplified();
-                if(line == "Available aircraft:"){
-                    qDebug("FIRST");
+
+                //* Unless first item == Available aircraft: then its an error (messy)
+                if(it == lines.begin()){
+                    if(line  != "Available aircraft:"){
+                        qDebug("ERROR");
+                        //TODO emit("error")
+                        return;
+                    }else{
+                         qDebug("FIRSTLINE");
+
+                    }
                 }else{
                     //qDebug( s );
 
