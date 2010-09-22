@@ -1,4 +1,5 @@
 #include "launcher/mpserverswidget.h"
+#include "launcher/mptelnet.h"
 
 #include <QtCore/QString>
 #include <QtCore/QChar>
@@ -48,7 +49,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     treeWidget = new QTreeWidget();
     mainLayout->addWidget(treeWidget, 100);
 
-    treeWidget->header()->setStretchLastSection(true);
+    //treeWidget->setSortingEnabled(true);
     treeWidget->setAlternatingRowColors(true);
     treeWidget->setRootIsDecorated(false);
 
@@ -56,61 +57,39 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     headerItem->setText(MpServersWidget::C_SERVER_NO, tr("No"));
     headerItem->setText(MpServersWidget::C_DOMAIN_NAME, tr("Server"));
     headerItem->setText(MpServersWidget::C_ADDRESS, tr("IP"));
-    treeWidget->setColumnWidth(0, 200);
-    /*
-    def lookup_all(self):
-            """Looks up all servers in range 1 to MAX_NAME_SERVER"""
-            print "\tLookup All"
-
-            results = {}
-            for server_no in range(1, mp_config.MAX_NAME_SERVER + 1):
-                    self.lookup(server_no)
-
-
-    def lookup(self, server_no):
-            """Looks up a server"""
-            domain_name = "mpserver%02d.flightgear.org" % server_no
-            QtNetwork.QHostInfo.lookupHost(domain_name, self.on_lookup_host)
-
-
-    def on_lookup_host(self, hostInfo):
-            if hostInfo.error():
-                    #print hostInfo.errorString()
-                    self.emit(QtCore.SIGNAL("domain_not_found"), hostInfo.hostName())
-            else:
-                    #print hostInfo.hostName(), hostInfo.addresses()[0].toString()
-                    self.emit(QtCore.SIGNAL("domain_found"), hostInfo.hostName(), hostInfo.addresses()[0].toString())
-    */
+    treeWidget->header()->setStretchLastSection(true);
+    treeWidget->setColumnWidth(MpServersWidget::C_SERVER_NO, 40);
+    treeWidget->setColumnWidth(MpServersWidget::C_DOMAIN_NAME, 200);
 }
 
 //** Dns Lookup All
 void MpServersWidget::dns_lookup_all(){
-    qDebug("Lookup All");
-
-    //results = {}
-    for(int i=1; i < 50; i++){
-    //for server_no in range(1, mp_config.MAX_NAME_SERVER + 1):
-    //        self.lookup(server_no)
+    for(int i=1; i < 5; i++){
         dns_lookup(i);
     }
+    //treeWidget->sortByColumn(1);
 }
-//** Dns Lookup ^n
+
+//** Dns Lookup (server_no)
 void MpServersWidget::dns_lookup(int server_no){
 
     //* make domain name
     QString domain_name = QString("mpserver%1.flightgear.org").arg(server_no, 2, 10, QChar('0'));
-    //qDebug() << "Send >> " << domain_name;
 
     //* find domain_name in tree and add if not there
     QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, 0);
     if(items.count() == 0){
         QTreeWidgetItem *newItem = new QTreeWidgetItem();
+        newItem->setText(MpServersWidget::C_SERVER_NO, QString::number(server_no));
+
         newItem->setText(MpServersWidget::C_DOMAIN_NAME, domain_name);
         newItem->setData(MpServersWidget::C_DOMAIN_NAME, Qt::UserRole, QVariant(server_no));
+
         QBrush b = newItem->foreground(MpServersWidget::C_ADDRESS);
         b.setColor(QColor(100, 100, 100));
         newItem->setForeground(MpServersWidget::C_ADDRESS, b);
         newItem->setText(MpServersWidget::C_ADDRESS, tr("Looking up.."));
+
         treeWidget->addTopLevelItem(newItem);
     }
     //* execute lookup
@@ -126,7 +105,8 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
     QBrush brush = items[0]->foreground(MpServersWidget::C_ADDRESS);
     QString lbl;
     QColor color;
-    if( hostInfo.addresses().count() > 0 ){
+    bool has_address = hostInfo.addresses().count() > 0;
+    if( has_address ){
          lbl = hostInfo.addresses().first().toString();
          color = QColor(0, 150, 0);
      }else{
@@ -136,6 +116,16 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
      brush.setColor(color);
      items[0]->setForeground(MpServersWidget::C_ADDRESS, brush);
      items[0]->setText(MpServersWidget::C_ADDRESS, lbl);
+
+     if(has_address){
+        MpTelnet *telnet = new MpTelnet(this );
+        telnet->get_info(hostInfo.addresses().first().toString());
+        //connect(telnet, SIGNAL(telnet_data(QString ip_address)),
+        //        this, SLOT(on_telnet_data(QString ip_address))
+         //      );
+     }
 }
 
-
+void MpServersWidget::on_telnet_data(QString &ip_address){
+    qDebug() <<  "YESSS" << ip_address;
+}

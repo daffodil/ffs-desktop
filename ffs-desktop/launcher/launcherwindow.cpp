@@ -40,6 +40,7 @@ LauncherWindow::LauncherWindow(QWidget *parent)
     tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
     resize(700, 600);
+    move(50,50);
 }
 
 LauncherWindow::~LauncherWindow()
