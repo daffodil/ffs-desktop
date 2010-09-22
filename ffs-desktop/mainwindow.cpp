@@ -7,9 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("FlightGear Launcher");
     setWindowIcon(QIcon(":/icons/favicon"));
 
-   //* MainWidget and MainLayout
-   QWidget *mainWidget = new QWidget(this);
-   setCentralWidget(mainWidget);
+
+    trayIcon = new QSystemTrayIcon(QIcon(":/icons/favicon"), this);
+    trayIcon->setToolTip("FlightGear Launcher");
+    trayIcon->setVisible(true);
+
+    //* MainWidget and MainLayout
+    QWidget *mainWidget = new QWidget(this);
+    setCentralWidget(mainWidget);
 
 
     QVBoxLayout *mainVBox = new QVBoxLayout();
