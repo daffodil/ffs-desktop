@@ -1,9 +1,16 @@
 #ifndef MPMAPWIDGET_H
 #define MPMAPWIDGET_H
 
-#include <QWidget>
-#include <QWebView>
+#include <QtCore/QString>
+
+#include <QtGui/QWidget>
 #include <QtGui/QProgressBar>
+#include <QtGui/QStatusBar>
+#include <QtGui/QComboBox>
+
+#include <QtGui/QCloseEvent>
+
+#include <QWebView>
 
 class MpMapWidget : public QWidget
 {
@@ -14,6 +21,10 @@ public:
 private:
     QWebView *browser;
     QProgressBar *progressBar;
+    QStatusBar *statusBar;
+    QComboBox *comboServer;
+    //QString *server_url;
+
 signals:
 
 public slots:
@@ -21,7 +32,8 @@ public slots:
     void update_progress(int progress);
     void end_progress(bool Ok);
 
-    void on_combo_server(QString);
+    void on_combo_server(int index);
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MPMAPWIDGET_H

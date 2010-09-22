@@ -8,7 +8,10 @@
 #include <QtGui/QLabel>
 
 #include <QtGui/QTabWidget>
-#include "mpmapwidget.h"
+#include <QtGui/QSystemTrayIcon>
+
+
+//#include "mpmapwidget.h"
 #include "flightgear/aircraftwidget.h"
 
 class MainWindow : public QMainWindow
@@ -19,13 +22,16 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    QSystemTrayIcon *trayIcon;
     QVBoxLayout *mainVBox;
     QLabel *headerLabel;
 
     QTabWidget *tabWidget;
 
-    MpMapWidget *mpMapWidget;
+    //MpMapWidget *mpMapWidget;
     AircraftWidget *aircraftWidget;
+
+
 
 };
 
