@@ -17,7 +17,7 @@ private:
 signals:
 
 public slots:
-
+    void on_load();
 };
 
 #endif // AIRCRAFTWIDGET_H
