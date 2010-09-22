@@ -57,6 +57,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     treeView->setModel(proxyModel);
     treeView->setAlternatingRowColors(true);
     treeView->setRootIsDecorated(false);
+    treeView->setSortingEnabled(true);
     connect( treeView->selectionModel(),
              SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
              SLOT( set_aircraft() )
