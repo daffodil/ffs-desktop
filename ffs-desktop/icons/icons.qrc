@@ -2,5 +2,6 @@
     <qresource prefix="/icons" lang="en">
         <file alias="refresh">arrow_refresh.png</file>
         <file alias="favicon">shape_move_front.png</file>
+        <file alias="quit">book_previous.png</file>
     </qresource>
 </RCC>
