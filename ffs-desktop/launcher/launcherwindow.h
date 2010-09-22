@@ -4,26 +4,21 @@
 #include <QtGui/QMainWindow>
 
 
-#include <QtGui/QVBoxLayout>
+
 #include <QtGui/QLabel>
 
 #include <QtGui/QTabWidget>
-#include <QtGui/QSystemTrayIcon>
 
-
-//#include "mpmapwidget.h"
 #include "launcher/aircraftwidget.h"
 
-class MainWindow : public QMainWindow
+class LauncherWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    LauncherWindow(QWidget *parent = 0);
+    ~LauncherWindow();
 
-    QSystemTrayIcon *trayIcon;
-    QVBoxLayout *mainVBox;
     QLabel *headerLabel;
 
     QTabWidget *tabWidget;

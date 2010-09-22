@@ -1,6 +1,6 @@
 #include "mainobject.h"
 #include "mp/mpmapwidget.h"
-
+#include "launcher/launcherwindow.h"
 
 #include <QCoreApplication>
 #include <QtGui/QAction>
@@ -11,6 +11,8 @@ MainObject::MainObject(QObject *parent) :
     QObject(parent)
 {
 
+    //***********************************
+    //** Tray Icon
     trayIcon = new QSystemTrayIcon(QIcon(":/icons/favicon"), this);
     trayIcon->setToolTip("FlightGear Launcher");
     trayIcon->setVisible(true);
@@ -30,15 +32,16 @@ MainObject::MainObject(QObject *parent) :
     actionQuit = popupMenu->addAction(QIcon(":/icons/quit"), tr("Quit"));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(on_quit()));
 
-
-
+    //** Setup
     trayIcon->show();
-    on_mpmap();
+    //on_mpmap();
+    on_launcher();
 }
 
 //** Launcher
 void MainObject::on_launcher(){
-    //QCoreApplication::instance()->quit();
+    LauncherWindow *launcherWindow = new LauncherWindow();
+    launcherWindow->show();
 }
 
 //** MpMap

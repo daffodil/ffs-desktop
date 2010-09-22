@@ -1,16 +1,14 @@
 #include "launcher/launcherwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
+#include <QtGui/QVBoxLayout>
+
+LauncherWindow::LauncherWindow(QWidget *parent)
     : QMainWindow(parent)
 {
 
     setWindowTitle("FlightGear Launcher");
     setWindowIcon(QIcon(":/icons/favicon"));
 
-
-    trayIcon = new QSystemTrayIcon(QIcon(":/icons/favicon"), this);
-    trayIcon->setToolTip("FlightGear Launcher");
-    trayIcon->setVisible(true);
 
     //* MainWidget and MainLayout
     QWidget *mainWidget = new QWidget(this);
@@ -34,13 +32,15 @@ MainWindow::MainWindow(QWidget *parent)
    // mpMapWidget = new MpMapWidget(this);
     //tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
+    mpServersWidget = MpServersWidget();
+
     aircraftWidget = new AircraftWidget();
     tabWidget->addTab(aircraftWidget, "Aircraft");
 
     resize(700, 600);
 }
 
-MainWindow::~MainWindow()
+LauncherWindow::~LauncherWindow()
 {
 
 }
