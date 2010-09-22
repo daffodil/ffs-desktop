@@ -5,12 +5,15 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
 
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidgetItem>
+#include <QtGui/QStandardItemModel>
+#include <QtGui/QItemSelection>
+
 
 #include <QtCore/QProcess>
 #include <QtCore/QByteArray>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
+
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent)
@@ -18,6 +21,8 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
+    mainLayout->setSpacing(0);
+    mainLayout->setContentsMargins(0,0,0,0);
 
     //** Toolbar
     QToolBar *toolbar = new QToolBar();
@@ -31,24 +36,36 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //** Middle HBox
     QHBoxLayout *hBox = new QHBoxLayout();
     mainLayout->addLayout(hBox);
+    hBox->setSpacing(0);
+    hBox->setContentsMargins(0,0,0,0);
     
+    //** Models
+    model = new QStandardItemModel(this);
+    model->setColumnCount(2);
+    QStringList headerLabelsList;
+    headerLabelsList << "Model" << "Description";
+    model->setHorizontalHeaderLabels(headerLabelsList);
+
+    proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(model);
+
     //** Aircraft Tree
-    treeWidget = new QTreeWidget(this);
-    hBox->addWidget(treeWidget);
-
-    QHeaderView *treeHeader = treeWidget->header();
-    treeHeader->setStretchLastSection(true);
-
-    QTreeWidgetItem *headerItem = treeWidget->headerItem();
-    headerItem->setText(0, tr("Model"));
-    headerItem->setText(1, tr("Description"));
-
+    treeView = new QTreeView(this);
+    hBox->addWidget(treeView);
+    treeView->setModel(proxyModel);
+    treeView->setAlternatingRowColors(true);
+    treeView->setRootIsDecorated(false);
+    connect( treeView->selectionModel(),
+             SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
+             SLOT( set_aircraft() )
+    );
 
 
 }
 
 //** Load
 void AircraftWidget::on_load(){
+
     qDebug("AircraftWidget > on_load() --------------------------------");
 
     QString program = "fgfs";
@@ -56,8 +73,11 @@ void AircraftWidget::on_load(){
     arguments << "--show-aircraft";
 
     QProcess *process = new QProcess(this);
-
     process->start(program, arguments);
+
+    QStringList::Iterator it;
+    QString line;
+    int row_count=0;
 
     if(process->waitForStarted()){
             process->waitForFinished();
@@ -68,9 +88,26 @@ void AircraftWidget::on_load(){
 
             qDebug("OK");
             QStringList lines = QString(result).split("\n");
-            //qDebug(lines);
-            //#print type(result), result
 
+            for ( it = lines.begin() ; it != lines.end() ; it++ ){
+
+                line = it->simplified();
+                if(line == "Available aircraft:"){
+                    qDebug("FIRST");
+                }else{
+                    //qDebug( s );
+
+                    QStandardItem *modelItem = new QStandardItem();
+                    modelItem->setText( line.section( ' ', 0, 0 )); //* first chars to space
+                    model->setItem(row_count, 0, modelItem);
+                    QStandardItem *descriptionItem = new QStandardItem();
+                    descriptionItem->setText( line.section( ' ', 1 )); //* after first space
+                    model->setItem(row_count, 1, descriptionItem);
+
+                    qDebug( "line");
+                    row_count++;
+                }
+            }
             //#print type(error), error
             //qDebug(errorResult);
             //if(errorResult){
@@ -83,4 +120,10 @@ void AircraftWidget::on_load(){
                //     self.emit(QtCore.SIGNAL("compile_log"), "result", QtCore.QString(result))
             //    }
     }
+}
+
+
+//****************************
+void AircraftWidget::set_aircraft(){
+    qDebug("set_aircraft()");
 }
