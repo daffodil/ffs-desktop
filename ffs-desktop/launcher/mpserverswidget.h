@@ -19,7 +19,7 @@ public:
         C_SERVER_NO,
         C_DOMAIN_NAME,
         C_ADDRESS,
-        C_FLAG
+        C_PILOTS_COUNT
     };
 
     explicit MpServersWidget(QWidget *parent = 0);
