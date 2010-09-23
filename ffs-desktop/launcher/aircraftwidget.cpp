@@ -15,6 +15,7 @@
 // layouts
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
+#include <QtGui/QGroupBox>
 #include <QtGui/QSplitter>
 
 #include <QtGui/QToolBar>
@@ -161,17 +162,43 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //*************************************************************************************************
     //** Right
     //*************************************************************************************************
-    QWidget *rightWidget = new QWidget();
-    splitter->addWidget(rightWidget);
-    QVBoxLayout *rightLayout = new QVBoxLayout();
-    rightWidget->setLayout(rightLayout);
-    rightLayout->setContentsMargins(0,0,0,0);
-    rightLayout->setSpacing(0);
+//    QWidget *rightWidget = new QWidget();
+//    splitter->addWidget(rightWidget);
+    QGroupBox *grpAero = new QGroupBox();
+    splitter->addWidget(grpAero);
+    QString style = QString("QGroupBox{border:2px solid gray;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
+    grpAero->setStyleSheet(style);
+    grpAero->setDisabled(false);
+    grpAero->setTitle(tr("Aircraft Details"));
+
+
+    QVBoxLayout *aeroLayout = new QVBoxLayout();
+    grpAero->setLayout(aeroLayout);
+    int aM = 10;
+    aeroLayout->setContentsMargins(aM,aM,aM,aM);
+    aeroLayout->setSpacing(0);
 
     //**********************************************8
     //** Toolbar
+
+
+
+
+
+
+    lblAircraftModel = new QLabel("B747-400ER");
+    aeroLayout->addWidget(lblAircraftModel);
+    lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;  background-color: black; color: #eeeeee; font-fmaily: monospace; font-size: 20pt;");
+
+    lblAircraftDescription = new QLabel("Boeing 757 ER");
+    aeroLayout->addWidget(lblAircraftDescription);
+    lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  background-color: black; color: #eeeeee; font-fmaily: monospace; font-size: 10pt;");
+
+
+    aeroLayout->addStretch(10);
+
     QToolBar *aeroToolbar = new QToolBar();
-    rightLayout->addWidget(aeroToolbar);
+    aeroLayout->addWidget(aeroToolbar);
     aeroToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     QAction *actionReloadAero = new QAction(this);
@@ -179,9 +206,6 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     actionReloadAero->setText("Reload");
     actionReloadAero->setIcon(QIcon(":/icons/refresh"));
     //connect(actionReloadAero, SIGNAL(triggered()), this, SLOT(load_aircraft()) );
-
-    QLabel *lblAircraftModel = new QLabel("lblAircraftModel");
-    rightLayout->addWidget(lblAircraftModel);
 
     //***********************************
     //** Setup

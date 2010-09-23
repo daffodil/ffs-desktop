@@ -46,8 +46,9 @@ LauncherWindow::LauncherWindow(QWidget *parent)
     aircraftWidget = new AircraftWidget();
     tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
-    resize(600, 400);
-    move(50,50);
+    resize(800, 400);
+    move(10,10);
+      tabWidget->setCurrentIndex(2);
 }
 
 LauncherWindow::~LauncherWindow()

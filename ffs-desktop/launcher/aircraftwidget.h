@@ -7,6 +7,7 @@
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeView>
+#include <QtGui/QLabel>
 
 #include <QtGui/QStatusBar>
 
@@ -20,6 +21,9 @@ private:
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
     QTreeView *treeView;
+
+    QLabel *lblAircraftModel;
+    QLabel *lblAircraftDescription;
 
     QStatusBar *statusBarTree;
     QStatusBar *statusBarAero;
