@@ -19,10 +19,19 @@ MainObject::MainObject(QObject *parent) :
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(on_tray_icon(QSystemTrayIcon::ActivationReason)));
 
+
     //***********************************
     //** Menu and actions
     popupMenu = new QMenu();
     trayIcon->setContextMenu(popupMenu);
+
+    actionCallsign = new QWidgetAction(this);
+    lblCallsign = new QLabel();
+    lblCallsign->setText("CALLSIGN");
+    lblCallsign->setStyleSheet("font-family: monospace; background-color: black; color: white; padding: 5px; font-weight: bold;");
+    actionCallsign->setDefaultWidget(lblCallsign);
+
+    popupMenu->addAction(actionCallsign); //QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
 
     actionMpMap = popupMenu->addAction(QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
     connect(actionMpMap, SIGNAL(triggered()), this, SLOT(on_mpmap()));

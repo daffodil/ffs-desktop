@@ -5,6 +5,8 @@
 #include <QtGui/QSystemTrayIcon>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
+#include <QtGui/QLabel>
+#include <QtGui/QWidgetAction>
 
 class MainObject : public QObject
 {
@@ -14,6 +16,8 @@ public:
 
     QSystemTrayIcon *trayIcon;
     QMenu *popupMenu;
+    QWidgetAction *actionCallsign;
+    QLabel *lblCallsign;
 
     QAction *actionLauncher;
     QAction *actionMpMap;

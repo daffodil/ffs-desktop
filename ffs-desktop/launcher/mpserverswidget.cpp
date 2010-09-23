@@ -19,6 +19,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
+#include <QtGui/QProgressBar>
 
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QHeaderView>
@@ -161,14 +162,20 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
      brush.setColor(color);
      items[0]->setForeground(C_IP_ADDRESS, brush);
      items[0]->setText(C_IP_ADDRESS, lbl);
-
+     items[0]->setText(C_PILOTS_COUNT, tr("Wait"));
      if(has_address){
         //#if(m_Ip2Row.contains())
+        //QProgressBar *progress = new QProgressBar();
+        //progress->setRange(0,0);
+        //progress->setValue(0);
+        //treeWidget->setItemWidget(items[0], C_PILOTS_COUNT, progress);
+
         MpTelnet *telnet = new MpTelnet(this );
         telnet->get_info(hostInfo.addresses().first().toString());
         connect(telnet, SIGNAL(telnet_data(QString, QString)),
                 this, SLOT(on_telnet_data(QString, QString))
-               );
+        );
+        //TODO catch no return ? error ?
      }
 }
 /* Example Output >>
@@ -222,12 +229,16 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
                 //* its mpserver__ so find in tree if avaiable
                 // TODO insert unfound ip
                 QList<QTreeWidgetItem*> items = treeWidget->findItems(mp_server, Qt::MatchExactly, C_SERVER_NAME);
-
+                /*
                 if(items.count() == 0){
                     mp_server_ip = "NOT_FOUND";
+                    QTreeWidgetItem *newItem = new QTreeWidgetItem();
+                    newItem->setText(C_IP_ADDRESS,ip_address);
+                    newItem->setText(C_DOMAIN, "?");
+                    treeWidget->addTopLevelItem(newItem);
                 }else{
                     mp_server_ip = items[0]->text(C_IP_ADDRESS);
-                }
+                }*/
                 //qDebug() << "Found: " << mp_server << " = " << items.count();
             }else{
                 //* Otherwise we got returned an ip address
@@ -268,10 +279,17 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     QMapIterator<QString, int> i(mServerCount);
     while (i.hasNext()) {
         i.next();
-        qDebug() << i.key() << ": " << i.value() << endl;
+        QList<QTreeWidgetItem*> items = treeWidget->findItems(i.key(), Qt::MatchExactly, C_IP_ADDRESS);
+        if(items.count() == 1){
+            qDebug() << "FoundRow" << i.key() ;
+        }else{
+            qDebug() << "Row no found" << i.key();
+        }
+        //qDebug() << i.key() << ": " << i.value() << endl;
     }
     //** Update the Pilots Count
     QList<QTreeWidgetItem*> items = treeWidget->findItems(ip_address, Qt::MatchExactly, C_IP_ADDRESS);
+    //treeWidget->removeItemWidget(items[0], C_PILOTS_COUNT);
     items[0]->setText(C_PILOTS_COUNT, QString::number(pilots_count));
     //qDebug() >> "update=" << items.count();
 }
