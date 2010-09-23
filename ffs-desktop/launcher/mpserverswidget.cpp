@@ -69,7 +69,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     treeWidget->setColumnWidth(C_DOMAIN, 100);
 
     //##
-    dns_lookup_all();
+    //dns_lookup_all();
 }
 /* end constructor */
 

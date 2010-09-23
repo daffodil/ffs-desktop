@@ -11,5 +11,9 @@
         <file alias="pink">bullet_pink.png</file>
         <file alias="purple">bullet_purple.png</file>
         <file alias="red">bullet_red.png</file>
+        <file alias="add">add.png</file>
+        <file alias="down">arrow_down.png</file>
+        <file alias="up">arrow_up.png</file>
+        <file alias="delete_small">bullet_delete.png</file>
     </qresource>
 </RCC>
