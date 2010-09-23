@@ -6,31 +6,34 @@
 
 #include "launcher/aircraftwidget.h"
 
-// layouts
-#include <QtGui/QVBoxLayout>
-#include <QtGui/QHBoxLayout>
-
-#include <QtGui/QToolBar>
-#include <QtGui/QAction>
-
-#include <QtGui/QStandardItemModel>
-#include <QtGui/QItemSelection>
-#include <QtGui/QItemSelectionModel>
-#include <QtGui/QAbstractItemView>
-
-
 #include <QtCore/QProcess>
 #include <QtCore/QByteArray>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
 
+// layouts
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QSplitter>
+
 #include <QtGui/QToolBar>
+#include <QtGui/QToolButton>
+#include <QtGui/QAbstractButton>
+#include <QtGui/QButtonGroup>
+
+#include <QtGui/QAction>
+#include <QtGui/QLabel>
+
+#include <QtGui/QStandardItemModel>
+#include <QtGui/QItemSelection>
+#include <QtGui/QItemSelectionModel>
+#include <QtGui/QAbstractItemView>
 
 //* tree
-#include <QtGui/QHeaderView>
-#include <QtGui/QTreeWidgetItem>
-#include <QtGui/QAction>
+//#include <QtGui/QHeaderView>
+//#include <QtGui/QTreeWidgetItem>
+//#include <QtGui/QAction>
 /*
 
 
@@ -40,32 +43,74 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent)
 {
 
-    QSplitter *splitter = new QSplitter(this);
-
-
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
     mainLayout->setSpacing(0);
     mainLayout->setContentsMargins(0,0,0,0);
 
-    //** Toolbar
-    QToolBar *toolbar = new QToolBar();
-    mainLayout->addWidget(toolbar);
-    toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    
-    QAction *refreshButton = new QAction(this);
-    toolbar->addAction(refreshButton);
-    refreshButton->setText("Refresh");
-    refreshButton->setIcon(QIcon(":/icons/refresh"));
-    connect(refreshButton, SIGNAL(triggered()), this, SLOT(load_aircraft()) );
+    QSplitter *splitter = new QSplitter(this);
+    mainLayout->addWidget(splitter);
 
-    //** Middle HBox
-    QHBoxLayout *hBox = new QHBoxLayout();
-    mainLayout->addLayout(hBox);
-    hBox->setSpacing(0);
-    hBox->setContentsMargins(0,0,0,0);
+    //***************************************************
+    //** Left
+    QWidget *leftWidget = new QWidget();
+    splitter->addWidget(leftWidget);
+    QVBoxLayout *treeLayout = new QVBoxLayout();
+    leftWidget->setLayout(treeLayout);
+    treeLayout->setContentsMargins(0,0,0,0);
+    treeLayout->setSpacing(0);
+
+
+    //** Toolbar
+    QToolBar *treeToolbar = new QToolBar();
+    treeLayout->addWidget(treeToolbar);
+    treeToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     
+    QAction *actionRefreshTree = new QAction(this);
+    treeToolbar->addAction(actionRefreshTree);
+    actionRefreshTree->setText("Refresh");
+    actionRefreshTree->setIcon(QIcon(":/icons/refresh"));
+    connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_aircraft()) );
+
+    treeToolbar->addSeparator();
+
+    //******************************************************
+    //** Filter Buttons
+    QButtonGroup *buttViewGroup = new QButtonGroup(this);
+    buttViewGroup->setExclusive(true);
+    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
+            this, SLOT(on_view_button_clicked(QAbstractButton*))
+    );
+
+    QToolButton *buttAll = new QToolButton();
+    treeToolbar->addWidget(buttAll);
+    buttViewGroup->addButton(buttAll);
+    buttAll->setText("All");
+    buttAll->setCheckable(true);
+    buttAll->setIcon(QIcon(":/icons/pink"));
+    buttAll->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    QToolButton *buttInstalled = new QToolButton();
+    treeToolbar->addWidget(buttInstalled);
+    buttViewGroup->addButton(buttInstalled);
+    buttInstalled->setText("Installed");
+    buttInstalled->setCheckable(true);
+    buttInstalled->setIcon(QIcon(":/icons/purple"));
+    buttInstalled->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    QToolButton *buttAvailable = new QToolButton();
+    treeToolbar->addWidget(buttAvailable);
+    buttViewGroup->addButton(buttAvailable);
+    buttAvailable->setText("Available");
+    buttAvailable->setCheckable(true);
+    buttAvailable->setIcon(QIcon(":/icons/purple"));
+    buttAvailable->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    buttAll->setChecked(true);
+
+
+    //******************************************************
     //** Models
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
@@ -78,7 +123,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
     //** Aircraft Tree
     treeView = new QTreeView(this);
-    hBox->addWidget(treeView);
+    treeLayout->addWidget(treeView);
     treeView->setModel(proxyModel);
     treeView->setAlternatingRowColors(true);
     treeView->setRootIsDecorated(false);
@@ -95,7 +140,14 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
             SIGNAL(clicked(QModelIndex)),
             this, SLOT(on_tree_clicked(QModelIndex))
     );
+
+    statusBarTree = new QStatusBar();
+    treeLayout->addWidget(statusBarTree);
+    statusBarTree->showMessage("Idle");
+
     /*
+
+
     QItemSelectionModel *selModel = treeView->selectionModel();
     connect( selModel,
              SIGNAL(currentRowChanged ( QModelIndex current, QModelIndex previous )),
@@ -106,6 +158,32 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //QPixMap()
     //* /usr/share/games/FlightGear/
 
+    //*************************************************************************************************
+    //** Right
+    //*************************************************************************************************
+    QWidget *rightWidget = new QWidget();
+    splitter->addWidget(rightWidget);
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    rightWidget->setLayout(rightLayout);
+    rightLayout->setContentsMargins(0,0,0,0);
+    rightLayout->setSpacing(0);
+
+    //**********************************************8
+    //** Toolbar
+    QToolBar *aeroToolbar = new QToolBar();
+    rightLayout->addWidget(aeroToolbar);
+    aeroToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    QAction *actionReloadAero = new QAction(this);
+    aeroToolbar->addAction(actionReloadAero);
+    actionReloadAero->setText("Reload");
+    actionReloadAero->setIcon(QIcon(":/icons/refresh"));
+    //connect(actionReloadAero, SIGNAL(triggered()), this, SLOT(load_aircraft()) );
+
+    QLabel *lblAircraftModel = new QLabel("lblAircraftModel");
+    rightLayout->addWidget(lblAircraftModel);
+
+    //***********************************
     //** Setup
     load_aircraft();
 }
@@ -194,3 +272,11 @@ void AircraftWidget::show_aircraft_details(const QModelIndex &current, const QMo
     qDebug("set_aircraft()");
     //QString
 }
+void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
+    qDebug("on_view_button_clicked()");
+    //qDebug() << button->text();
+    // TODO
+    statusBarTree->showMessage(button->text());
+    //QString
+}
+

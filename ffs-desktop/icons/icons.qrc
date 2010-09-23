@@ -6,5 +6,10 @@
         <file alias="mpmap">map.png</file>
         <file alias="dns_lookup">server_go.png</file>
         <file alias="telnet">server_connect.png</file>
+        <file alias="green">bullet_green.png</file>
+        <file alias="orange">bullet_orange.png</file>
+        <file alias="pink">bullet_pink.png</file>
+        <file alias="purple">bullet_purple.png</file>
+        <file alias="red">bullet_red.png</file>
     </qresource>
 </RCC>
