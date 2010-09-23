@@ -39,6 +39,10 @@
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent)
 {
+
+    QSplitter *splitter = new QSplitter(this);
+
+
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
