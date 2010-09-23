@@ -22,20 +22,26 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 {
 
     //* Main Layout
+    QVBoxLayout *mainContainer = new QVBoxLayout();
+    setLayout(mainContainer);
+    mainContainer->setSpacing(0);
+    //int m = 0;
+    mainContainer->setContentsMargins(0,0,0,0);
+
+    //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    setLayout(mainLayout);
-    mainLayout->setSpacing(10);
+    mainContainer->addLayout(mainLayout);
+    mainLayout->setSpacing(20);
     int m = 20;
     mainLayout->setContentsMargins(m,m,m,m);
 
-    QString grp_style = QString("QGroupBox{border:2px solid gray;border-radius:5px;margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
 
     //*******************************************************************************
     //*** Executable Group
-    QGroupBox *grpExecutable = new QGroupBox(tr("Path to FlightGear executable"));
+    grpExecutable = new QGroupBox(tr("Path to FlightGear executable"));
     mainLayout->addWidget(grpExecutable);
     //grpExecutable->setFlat(false);
-    grpExecutable->setStyleSheet(grp_style);
+    grpExecutable->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutExe = new QHBoxLayout();
     grpExecutable->setLayout(layoutExe);
@@ -63,16 +69,16 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     //*******************************************************************************
     //*** FG_ROOT Group
-    QGroupBox *grpFgRoot = new QGroupBox(tr("FG_ROOT - Path to the data directory;"));
+    grpFgRoot = new QGroupBox(tr("FG_ROOT - Path to the data directory;"));
     mainLayout->addWidget(grpFgRoot);
     //grpExecutable->setFlat(false);
-    grpFgRoot->setStyleSheet(grp_style);
+    grpFgRoot->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutFgRoot = new QHBoxLayout();
     grpFgRoot->setLayout(layoutFgRoot);
 
-    txtExecutable = new QLineEdit("");
-    layoutFgRoot->addWidget(txtExecutable);
+    txtFgRoot = new QLineEdit("");
+    layoutFgRoot->addWidget(txtFgRoot);
 
     QToolButton *buttFgRoot = new QToolButton();
     layoutFgRoot->addWidget(buttFgRoot);
@@ -95,10 +101,10 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
 
     //*******************************************************************************
     //*** FG_Scenery
-    QGroupBox *grpFgScenery = new QGroupBox(tr("FG_Scenery - Paths to the scenery directories."));
+    grpFgScenery = new QGroupBox(tr("FG_Scenery - Paths to the scenery directories."));
     mainLayout->addWidget(grpFgScenery);
     //grpExecutable->setFlat(false);
-    grpFgScenery->setStyleSheet(grp_style);
+    grpFgScenery->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutFgScenery = new QHBoxLayout();
     grpFgScenery->setLayout(layoutFgScenery);
@@ -149,12 +155,27 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     disable_scenery_actions(true);
 
 
-    mainLayout->addStretch(20);
+    //*** Bottom Button Box
+    QHBoxLayout *buttonBox = new QHBoxLayout();
+    mainLayout->addLayout(buttonBox);
+    buttonBox->addStretch(10);
+
+    QPushButton *buttSave = new QPushButton();
+    buttonBox->addWidget(buttSave);
+    buttSave->setText("Save");
+    buttSave->setIcon(QIcon(":/icons/save"));
+
+
+
+    mainContainer->addStretch(20);
+
 
     statusBar = new QStatusBar();
-    mainLayout->addWidget(statusBar);
+    mainContainer->addWidget(statusBar);
     statusBar->showMessage("Idle");
 }
+
+
 
 //******************
 //* Disable Scenery Buttons
@@ -162,6 +183,13 @@ void SettingsWidget::disable_scenery_actions(bool state){
     buttSceneryDown->setDisabled(state);
     buttSceneryUp->setDisabled(state);
     buttSceneryRemove->setDisabled(state);
+}
+QString SettingsWidget::set_frame_style(QString color){
+    if(color == ""){
+        color = "gray";
+    }
+    return QString("QGroupBox{border:2px solid %1;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}").arg(color);
+
 }
 
 
@@ -203,9 +231,11 @@ void SettingsWidget::on_exe_autodetect(){
 
             if(exe.length() == 0){
                 statusBar->showMessage( tr("fgfs not found").append(" :-(") , 5000);
+                grpExecutable->setStyleSheet(set_frame_style("pink"));
             }else{
                 statusBar->showMessage( tr("OK fgfs found ").append(" :-)") , 5000);
                 txtExecutable->setText(exe);
+                grpExecutable->setStyleSheet(set_frame_style("#77FF77"));
             }
             QStringList lines = QString(result).split("\n");
         }else{

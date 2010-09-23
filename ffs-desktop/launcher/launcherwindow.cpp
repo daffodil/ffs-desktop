@@ -39,6 +39,10 @@ LauncherWindow::LauncherWindow(QWidget *parent)
     tabWidget->addTab(mpServersWidget, tr("MP Servers"));
 
 
+
+
+
+
     aircraftWidget = new AircraftWidget();
     tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 

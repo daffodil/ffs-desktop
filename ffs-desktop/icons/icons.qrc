@@ -15,5 +15,6 @@
         <file alias="down">arrow_down.png</file>
         <file alias="up">arrow_up.png</file>
         <file alias="delete_small">bullet_delete.png</file>
+        <file alias="save">accept.png</file>
     </qresource>
 </RCC>
