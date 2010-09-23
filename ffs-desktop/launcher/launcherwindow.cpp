@@ -36,9 +36,11 @@ LauncherWindow::LauncherWindow(QWidget *parent)
     tabWidget->addTab(settingsWidget, tr("Settings"));
 
     mpServersWidget = new MpServersWidget();
-    tabWidget->addTab(mpServersWidget, tr("MP Servers"));
+    tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 
 
+    mainOptionsWidget = new MainOptionsWidget();
+    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
 
 

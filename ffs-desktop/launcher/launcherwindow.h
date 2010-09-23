@@ -12,6 +12,8 @@
 #include "launcher/aircraftwidget.h"
 #include "launcher/mpserverswidget.h"
 #include "launcher/settingswidget.h"
+#include "launcher/mainoptionswidget.h"
+
 
 class LauncherWindow : public QMainWindow
 {
@@ -29,6 +31,7 @@ public:
     AircraftWidget *aircraftWidget;
     MpServersWidget *mpServersWidget;
     SettingsWidget *settingsWidget;
+    MainOptionsWidget *mainOptionsWidget;
 
 
 };

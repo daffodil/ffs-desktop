@@ -181,22 +181,30 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
     //**********************************************8
     //** Toolbar
+    QGroupBox *grpAeroPanel = new QGroupBox();
+    aeroLayout->addWidget(grpAeroPanel);
 
+    QString styleX = QString("QGroupBox{ background-color: black; border:2px solid gray;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
+    grpAeroPanel->setStyleSheet(styleX);
+    //QWidget *aeroPanelWidget = new QWidget();
+    //aeroLayout->addWidget(aeroPanelWidget);
+    //aeroPanelWidget->setStyleSheet("border: 1px solid red; background-color: black;");
 
-
+    QVBoxLayout *aeroPanelLayout = new QVBoxLayout();
+    grpAeroPanel->setLayout(aeroPanelLayout);
 
 
 
     lblAircraftModel = new QLabel("B747-400ER");
-    aeroLayout->addWidget(lblAircraftModel);
-    lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;  background-color: black; color: #eeeeee; font-fmaily: monospace; font-size: 20pt;");
+    aeroPanelLayout->addWidget(lblAircraftModel);
+    lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;   color: #eeeeee; font-fmaily: monospace; font-size: 20pt;");
 
     lblAircraftDescription = new QLabel("Boeing 757 ER");
-    aeroLayout->addWidget(lblAircraftDescription);
-    lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  background-color: black; color: #eeeeee; font-fmaily: monospace; font-size: 10pt;");
+    aeroPanelLayout->addWidget(lblAircraftDescription);
+    lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  color: #eeeeee; font-fmaily: monospace; font-size: 10pt;");
 
     QLabel *aeroImageLabel =  new QLabel(this);
-    aeroLayout->addWidget(aeroImageLabel);
+    aeroPanelLayout->addWidget(aeroImageLabel);
 
     QPixmap aeroImage("/home/ffs/ffs-desktop/ffs-desktop/icons/_test_.png");
     if(aeroImage.isNull()){
