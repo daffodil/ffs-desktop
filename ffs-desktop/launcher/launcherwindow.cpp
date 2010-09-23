@@ -32,14 +32,14 @@ LauncherWindow::LauncherWindow(QWidget *parent)
    // mpMapWidget = new MpMapWidget(this);
     //tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
-    mpServersWidget = new MpServersWidget();
-    tabWidget->addTab(mpServersWidget, tr("MP Servers"));
+    //mpServersWidget = new MpServersWidget();
+    //tabWidget->addTab(mpServersWidget, tr("MP Servers"));
 
 
     aircraftWidget = new AircraftWidget();
     tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
-    resize(700, 600);
+    resize(600, 400);
     move(50,50);
 }
 

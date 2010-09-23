@@ -143,11 +143,11 @@ void MpServersWidget::dns_lookup(int server_int){
 
 void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
 
+    //* Find row matching by domain
     QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, C_DOMAIN);
 
     //m_Domain2Ip.contains()
     //** Make the colors change if address found
-    QBrush brush = items[0]->foreground(C_IP_ADDRESS);
     QString lbl;
     QColor color;
     bool has_address = hostInfo.addresses().count() > 0;
@@ -159,17 +159,18 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
         lbl = tr("Not Found");
         color = QColor(150, 0, 0);
      }
+     QBrush brush = items[0]->foreground(C_IP_ADDRESS);
      brush.setColor(color);
      items[0]->setForeground(C_IP_ADDRESS, brush);
      items[0]->setText(C_IP_ADDRESS, lbl);
-     items[0]->setText(C_PILOTS_COUNT, tr("Wait"));
+
      if(has_address){
         //#if(m_Ip2Row.contains())
         //QProgressBar *progress = new QProgressBar();
         //progress->setRange(0,0);
         //progress->setValue(0);
         //treeWidget->setItemWidget(items[0], C_PILOTS_COUNT, progress);
-
+        items[0]->setText(C_PILOTS_COUNT, tr("Wait"));
         MpTelnet *telnet = new MpTelnet(this );
         telnet->get_info(hostInfo.addresses().first().toString());
         connect(telnet, SIGNAL(telnet_data(QString, QString)),

@@ -22,7 +22,8 @@ signals:
 
 public slots:
     void load_aircraft();
-    void set_aircraft();
+    void show_aircraft_details(const QModelIndex &current, const QModelIndex &previous);
+    void on_tree_clicked(QModelIndex);
 };
 
 #endif // AIRCRAFTWIDGET_H
