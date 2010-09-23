@@ -42,8 +42,8 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 
     QAction *refreshButton = new QAction(this);
     toolbar->addAction(refreshButton);
-    refreshButton->setText("Refresh");
-    refreshButton->setIcon(QIcon(":/icons/refresh"));
+    refreshButton->setText("DNS Lookup");
+    refreshButton->setIcon(QIcon(":/icons/dns_lookup"));
     connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
 
     treeWidget = new QTreeWidget();
@@ -54,12 +54,12 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     treeWidget->setRootIsDecorated(false);
 
     QTreeWidgetItem * headerItem = treeWidget->headerItem();
-    headerItem->setText(MpServersWidget::C_SERVER_NO, tr("No"));
-    headerItem->setText(MpServersWidget::C_DOMAIN_NAME, tr("Server"));
-    headerItem->setText(MpServersWidget::C_ADDRESS, tr("IP"));
+    headerItem->setText(C_SERVER_NO, tr("No"));
+    headerItem->setText(C_DOMAIN_NAME, tr("Server"));
+    headerItem->setText(C_ADDRESS, tr("IP Address"));
     treeWidget->header()->setStretchLastSection(true);
-    treeWidget->setColumnWidth(MpServersWidget::C_SERVER_NO, 40);
-    treeWidget->setColumnWidth(MpServersWidget::C_DOMAIN_NAME, 200);
+    treeWidget->setColumnWidth(C_SERVER_NO, 40);
+    treeWidget->setColumnWidth(C_DOMAIN_NAME, 200);
 }
 
 //** Dns Lookup All
@@ -80,15 +80,15 @@ void MpServersWidget::dns_lookup(int server_no){
     QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, 0);
     if(items.count() == 0){
         QTreeWidgetItem *newItem = new QTreeWidgetItem();
-        newItem->setText(MpServersWidget::C_SERVER_NO, QString::number(server_no));
+        newItem->setText(C_SERVER_NO, QString::number(server_no));
 
-        newItem->setText(MpServersWidget::C_DOMAIN_NAME, domain_name);
-        newItem->setData(MpServersWidget::C_DOMAIN_NAME, Qt::UserRole, QVariant(server_no));
+        newItem->setText(C_DOMAIN_NAME, domain_name);
+        newItem->setData(C_DOMAIN_NAME, Qt::UserRole, QVariant(server_no));
 
         QBrush b = newItem->foreground(MpServersWidget::C_ADDRESS);
         b.setColor(QColor(100, 100, 100));
-        newItem->setForeground(MpServersWidget::C_ADDRESS, b);
-        newItem->setText(MpServersWidget::C_ADDRESS, tr("Looking up.."));
+        newItem->setForeground(C_ADDRESS, b);
+        newItem->setText(C_ADDRESS, tr("Looking up"));
 
         treeWidget->addTopLevelItem(newItem);
     }
@@ -99,10 +99,10 @@ void MpServersWidget::dns_lookup(int server_no){
 
 void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
 
-    QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, MpServersWidget::C_DOMAIN_NAME);
+    QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, C_DOMAIN_NAME);
 
     //** Make the colors change if address found
-    QBrush brush = items[0]->foreground(MpServersWidget::C_ADDRESS);
+    QBrush brush = items[0]->foreground(C_ADDRESS);
     QString lbl;
     QColor color;
     bool has_address = hostInfo.addresses().count() > 0;
@@ -114,8 +114,8 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
         color = QColor(150, 0, 0);
      }
      brush.setColor(color);
-     items[0]->setForeground(MpServersWidget::C_ADDRESS, brush);
-     items[0]->setText(MpServersWidget::C_ADDRESS, lbl);
+     items[0]->setForeground(C_ADDRESS, brush);
+     items[0]->setText(C_ADDRESS, lbl);
 
      if(has_address){
         MpTelnet *telnet = new MpTelnet(this );
@@ -128,4 +128,5 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
 
 void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     qDebug() <<  "YESSS" << telnet_reply;
+    //QString *lines = telnet_reply.split("\n"):
 }

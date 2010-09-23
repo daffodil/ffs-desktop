@@ -6,19 +6,7 @@
 MpTelnet::MpTelnet(QObject *parent) :
     QObject(parent)
 {
-    /*
-    self.telnetSocket[host_address] = QtNetwork.QTcpSocket(self)
-    #print "create sock"
-    self.connect(self.telnetSocket[host_address], QtCore.SIGNAL("connected()"), lambda argg=host_address: self.on_telnet_connected(argg))
-    self.connect(self.telnetSocket[host_address], QtCore.SIGNAL("disconnected()"), lambda argg=host_address: self.on_telnet_disconnected(argg))
-    self.connect(self.telnetSocket[host_address], QtCore.SIGNAL("readyRead()"), lambda argg=host_address: self.on_telnet_ready_read(argg))
-    #self.connect(self.telnetSocket, QtCore.SIGNAL("finished()"), self.on_socket_finished)
-    if self.telnetSocket[host_address].state() == QtNetwork.QAbstractSocket.UnconnectedState:
-    #print "connect,", host_address, "=", self.telnetSocket[host_address].state()
-    self.telnetString[host_address] = ''
-    self.telnetTimer[host_address] = QtCore.QTime.currentTime()
-    self.telnetSocket[host_address].connectToHost(host_address, 5001, QtCore.QIODevice.ReadOnly)
-    */
+
     telnet_reply =  QString("");
     socket = new QTcpSocket(this);
     connect(socket, SIGNAL(connected()), this, SLOT(on_telnet_connected()));

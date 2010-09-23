@@ -4,5 +4,7 @@
         <file alias="favicon">shape_move_front.png</file>
         <file alias="quit">book_previous.png</file>
         <file alias="mpmap">map.png</file>
+        <file alias="dns_lookup">server_go.png</file>
+        <file alias="telnet">server_connect.png</file>
     </qresource>
 </RCC>
