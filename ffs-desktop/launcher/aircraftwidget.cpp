@@ -25,6 +25,8 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QLabel>
+#include <QtGui/QCheckBox>
+#include <QtGui/QTabWidget>
 
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QItemSelection>
@@ -165,6 +167,8 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     //*************************************************************************************************
 //    QWidget *rightWidget = new QWidget();
 //    splitter->addWidget(rightWidget);
+
+
     QGroupBox *grpAero = new QGroupBox();
     splitter->addWidget(grpAero);
     QString style = QString("QGroupBox{border:2px solid gray;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
@@ -213,9 +217,20 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     }
     aeroImageLabel->setPixmap(aeroImage);
 
-    ;
+    //******************************************************8
+        //** Tab Widgets
+    QTabWidget *aeroTabs = new QTabWidget();
+    aeroLayout->addWidget(aeroTabs, 20);
 
-    aeroLayout->addStretch(10);
+    QWidget *aeroControlWidget = new QWidget();
+    aeroTabs->addTab(aeroControlWidget, tr("Control"));
+    QVBoxLayout *aeroControlLayout = new QVBoxLayout();
+    aeroControlWidget->setLayout(aeroControlLayout);
+
+    QCheckBox *chkEnableAutoCoordination = new QCheckBox();
+    aeroControlLayout->addWidget(chkEnableAutoCoordination);
+    chkEnableAutoCoordination->setText(tr("Enable Auto-Cordination"));
+    //aeroLayout->addStretch(10);
 
     QToolBar *aeroToolbar = new QToolBar();
     aeroLayout->addWidget(aeroToolbar);
