@@ -30,6 +30,7 @@
 #include <QtGui/QItemSelection>
 #include <QtGui/QItemSelectionModel>
 #include <QtGui/QAbstractItemView>
+#include <QtGui/QPixmap>
 
 //* tree
 //#include <QtGui/QHeaderView>
@@ -194,6 +195,17 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     aeroLayout->addWidget(lblAircraftDescription);
     lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  background-color: black; color: #eeeeee; font-fmaily: monospace; font-size: 10pt;");
 
+    QLabel *aeroImageLabel =  new QLabel(this);
+    aeroLayout->addWidget(aeroImageLabel);
+
+    QPixmap aeroImage("/home/ffs/ffs-desktop/ffs-desktop/icons/_test_.png");
+    if(aeroImage.isNull()){
+        qDebug("NULL");
+
+    }
+    aeroImageLabel->setPixmap(aeroImage);
+
+    ;
 
     aeroLayout->addStretch(10);
 
