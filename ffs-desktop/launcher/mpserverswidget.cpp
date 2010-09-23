@@ -55,12 +55,14 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 
     QTreeWidgetItem * headerItem = treeWidget->headerItem();
     headerItem->setText(C_SERVER_NO, tr("No"));
-    headerItem->setText(C_DOMAIN_NAME, tr("Server"));
-    headerItem->setText(C_ADDRESS, tr("IP Address"));
-    headerItem->setText(C_PILOTS_COUNT, tr("Pilots"));
+    headerItem->setText(C_SERVER_NAME, tr("Name"));
+    headerItem->setText(C_DOMAIN, tr("Domain"));
+    headerItem->setText(C_IP_ADDRESS, tr("IP Address"));
+    //headerItem->setText(C_PILOTS_COUNT, tr("Pilots"));
     treeWidget->header()->setStretchLastSection(true);
     treeWidget->setColumnWidth(C_SERVER_NO, 40);
-    treeWidget->setColumnWidth(C_DOMAIN_NAME, 200);
+    treeWidget->setColumnWidth(C_SERVER_NAME, 110);
+    treeWidget->setColumnWidth(C_DOMAIN, 100);
 
     //##
     dns_lookup_all();
@@ -68,33 +70,55 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 /* end constructor */
 
 
+
 //** Dns Lookup All
 void MpServersWidget::dns_lookup_all(){
     for(int i=1; i < 5; i++){
         dns_lookup(i);
     }
-    //treeWidget->sortByColumn(1);
 }
 
-//** Dns Lookup (server_no)
-void MpServersWidget::dns_lookup(int server_no){
 
-    //* make domain name
-    QString domain_name = QString("mpserver%1.flightgear.org").arg(server_no, 2, 10, QChar('0'));
+
+//** Dns Lookup (server_no)
+void MpServersWidget::dns_lookup(int server_int){
+
+    //* make domain and server
+    QString domain_name = QString("mpserver%1.flightgear.org").arg(server_int, 2, 10, QChar('0'));
+    QString server_name = QString("mpserver%1").arg(server_int, 2, 10, QChar('0'));
+    QString server_no = QString("%1").arg(server_int, 2, 10, QChar('0'));
+
+    //** first check the header Columns and insert
+    QTreeWidgetItem *headerItem = treeWidget->headerItem();
+    qDebug("colsssssss--------------");
+    int found_idx = -1;
+    for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
+
+        if(headerItem->text(colidx) == server_no){
+            found_idx = colidx;
+            //break;
+        }
+        qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
+    }
+    if(found_idx == -1){
+        headerItem->setText(headerItem->columnCount(), server_no);
+        qDebug() << " >> added";
+    }else{
+       qDebug() << " >> skipped";
+    }
 
     //* find domain_name in tree and add if not there
-    QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, C_DOMAIN_NAME);
+    QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, C_DOMAIN);
     if(items.count() == 0){
         QTreeWidgetItem *newItem = new QTreeWidgetItem();
-        newItem->setText(C_SERVER_NO, QString::number(server_no));
+        newItem->setText(C_SERVER_NO, server_no);
+        newItem->setText(C_SERVER_NAME, server_name);
+        newItem->setText(C_DOMAIN, domain_name);
 
-        newItem->setText(C_DOMAIN_NAME, domain_name);
-        newItem->setData(C_DOMAIN_NAME, Qt::UserRole, QVariant(server_no));
-
-        QBrush b = newItem->foreground(MpServersWidget::C_ADDRESS);
+        newItem->setText(C_IP_ADDRESS, tr("Looking up"));
+        QBrush b = newItem->foreground(MpServersWidget::C_IP_ADDRESS);
         b.setColor(QColor(100, 100, 100));
-        newItem->setForeground(C_ADDRESS, b);
-        newItem->setText(C_ADDRESS, tr("Looking up"));
+        newItem->setForeground(C_IP_ADDRESS, b);
 
         treeWidget->addTopLevelItem(newItem);
     }
@@ -105,10 +129,10 @@ void MpServersWidget::dns_lookup(int server_no){
 
 void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
 
-    QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, C_DOMAIN_NAME);
+    QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, C_DOMAIN);
 
     //** Make the colors change if address found
-    QBrush brush = items[0]->foreground(C_ADDRESS);
+    QBrush brush = items[0]->foreground(C_IP_ADDRESS);
     QString lbl;
     QColor color;
     bool has_address = hostInfo.addresses().count() > 0;
@@ -120,8 +144,8 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
         color = QColor(150, 0, 0);
      }
      brush.setColor(color);
-     items[0]->setForeground(C_ADDRESS, brush);
-     items[0]->setText(C_ADDRESS, lbl);
+     items[0]->setForeground(C_IP_ADDRESS, brush);
+     items[0]->setText(C_IP_ADDRESS, lbl);
 
      if(has_address){
         MpTelnet *telnet = new MpTelnet(this );
@@ -168,13 +192,32 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
 
             mp_server = mp_server.replace(QString(":"),QString("")); //* get rid of trailing ":" at end eg a.b.c.192:
             if(mp_server == "LOCAL"){
-                mp_server = QString(ip_address).append("@@");
+                mp_server = QString(ip_address); //.append("@@");
 
             }else if(mp_server.startsWith("mpserver")){
+                QList<QTreeWidgetItem*> items = treeWidget->findItems(mp_server, Qt::MatchExactly, C_SERVER_NAME);
                 mp_server = mp_server.append("##");
             }
-            qDebug() << "P=" << i << line.section(':', 0, 0) << parts.at(0) << callsign << mp_server;
+            //qDebug() << "P=" << i << line.section(':', 0, 0) << parts.at(0) << callsign << mp_server;
+            /*
+            QTreeWidgetItem *headerItem = treeWidget->headerItem();
+            qDebug("colsssssss--------------");
+            int found_idx = -1;
+            for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
 
+                if(headerItem->text(colidx) == server_no){
+                    found_idx = colidx;
+                    //break;
+                }
+                qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
+            }
+            if(found_idx == -1){
+                headerItem->setText(headerItem->columnCount(), server_no);
+                qDebug() << " >> added";
+            }else{
+               qDebug() << " >> skipped";
+            }
+            */
             pilot_count++;
 
         }
@@ -183,3 +226,23 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     //QList<QTreeWidgetItem*> items = treeWidget->findItems(ip_address, Qt::MatchExactly, C_PILOTS_COUNT);
 
 }
+/*
+void MpServersWidget::find_server_col(QString ip_address,
+QTreeWidgetItem *headerItem = treeWidget->headerItem();
+qDebug("colsssssss--------------");
+int found_idx = -1;
+for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
+
+    if(headerItem->text(colidx) == server_no){
+        found_idx = colidx;
+        //break;
+    }
+    qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
+}
+if(found_idx == -1){
+    headerItem->setText(headerItem->columnCount(), server_no);
+    qDebug() << " >> added";
+}else{
+   qDebug() << " >> skipped";
+}
+*/

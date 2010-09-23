@@ -17,8 +17,9 @@ public:
     //static const int C_FLAG = 3;
     enum COLS{
         C_SERVER_NO,
-        C_DOMAIN_NAME,
-        C_ADDRESS,
+        C_SERVER_NAME,
+        C_DOMAIN,
+        C_IP_ADDRESS,
         C_PILOTS_COUNT
     };
 
