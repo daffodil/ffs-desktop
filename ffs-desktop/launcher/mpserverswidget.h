@@ -19,8 +19,8 @@ public:
         C_SERVER_NO,
         C_SERVER_NAME,
         C_DOMAIN,
-        C_IP_ADDRESS,
-        C_PILOTS_COUNT
+        C_PILOTS_COUNT,
+        C_IP_ADDRESS
     };
 
     explicit MpServersWidget(QWidget *parent = 0);
@@ -28,6 +28,7 @@ public:
     QTreeWidget *treeWidget;
 
     QMap<QString, int> m_Ip2col;
+    QMap<QString, int>m_Domain2Row;
 
     void dns_lookup(int server_no);
 
