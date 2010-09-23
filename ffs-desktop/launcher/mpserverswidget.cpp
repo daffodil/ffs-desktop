@@ -83,14 +83,14 @@ void MpServersWidget::dns_lookup_all(){
 //** Dns Lookup (server_no)
 void MpServersWidget::dns_lookup(int server_int){
 
-    //* make domain and server
+    //* make server info
     QString domain_name = QString("mpserver%1.flightgear.org").arg(server_int, 2, 10, QChar('0'));
     QString server_name = QString("mpserver%1").arg(server_int, 2, 10, QChar('0'));
     QString server_no = QString("%1").arg(server_int, 2, 10, QChar('0'));
 
-    //** first check the header Columns and insert
+    //** Check the header column and insert if absent
     QTreeWidgetItem *headerItem = treeWidget->headerItem();
-    qDebug("colsssssss--------------");
+    //qDebug("colsssssss--------------");
     int found_idx = -1;
     for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
 
@@ -98,14 +98,14 @@ void MpServersWidget::dns_lookup(int server_int){
             found_idx = colidx;
             //break;
         }
-        qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
+        //qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
     }
     if(found_idx == -1){
         headerItem->setText(headerItem->columnCount(), server_no);
-        qDebug() << " >> added";
-    }else{
-       qDebug() << " >> skipped";
-    }
+        //qDebug() << " >> added";
+    }//else{
+      // qDebug() << " >> skipped";
+    //}
 
     //* find domain_name in tree and add if not there
     QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, C_DOMAIN);
@@ -173,6 +173,7 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     QStringList lines = telnet_reply.split("\n");
     QString line;
     int pilot_count = 0;
+    //int pilots_local = 0;
     for(int i = 0; i < lines.size(); ++i){
 
         line = lines.at(i).trimmed();
@@ -189,15 +190,24 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
             QStringList parts = line.split(" ");
             QString callsign = parts.at(0).split("@").at(0);
             QString mp_server = parts.at(0).split("@").at(1);
-
+            QString mp_server_ip = QString("");
             mp_server = mp_server.replace(QString(":"),QString("")); //* get rid of trailing ":" at end eg a.b.c.192:
             if(mp_server == "LOCAL"){
-                mp_server = QString(ip_address); //.append("@@");
+                mp_server_ip = QString(ip_address); //.append("@@");
 
             }else if(mp_server.startsWith("mpserver")){
                 QList<QTreeWidgetItem*> items = treeWidget->findItems(mp_server, Qt::MatchExactly, C_SERVER_NAME);
-                mp_server = mp_server.append("##");
+                //mp_server = items[0]->text(C_IP_ADDRESS);
+                if(items.count() == 0){
+                    mp_server_ip = "NOT_FOUND";
+                }else{
+                    mp_server_ip = items[0]->text(C_IP_ADDRESS);
+                }
+                //qDebug() << "Found: " << mp_server << " = " << items.count();
+            }else{
+                mp_server_ip = mp_server;
             }
+            qDebug() << "Found: " << mp_server << " == " << mp_server_ip;
             //qDebug() << "P=" << i << line.section(':', 0, 0) << parts.at(0) << callsign << mp_server;
             /*
             QTreeWidgetItem *headerItem = treeWidget->headerItem();

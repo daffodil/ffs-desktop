@@ -27,6 +27,7 @@ public:
 
     QTreeWidget *treeWidget;
 
+    QMap<QString, int> m_Ip2col;
 
     void dns_lookup(int server_no);
 
