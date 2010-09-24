@@ -75,8 +75,8 @@ GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
     mainLayout->addWidget(statusBar);
 
     statusBar->addPermanentWidget(new QLabel("Zoom:"));
-    lblZoom = new QLabel("-");
-    statusBar->addPermanentWidget(lblZoom);
+    //lblZoom = new QLabel("-");
+   //statusBar->addPermanentWidget(lblZoom);
 
     buttZoom = new QToolButton();
     statusBar->addPermanentWidget(buttZoom);
@@ -89,7 +89,7 @@ GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
 
     groupZoom = new QActionGroup(this);
     groupZoom->setExclusive(true);
-    connect(groupZoom, SIGNAL(triggered(QAction *)",
+    connect(groupZoom, SIGNAL(triggered(QAction *)),
             this, SLOT(on_zoom_action(QAction *))
     );
     //QAction *act;
@@ -169,19 +169,32 @@ void GoogleMapWidget::marker_unselected(QVariant curr_idx, QVariant mLocationId)
     qDebug("marker_unselected()");
 }
 
+//** JS
 void GoogleMapWidget::map_right_click(QVariant lat, QVariant lng){
 
     qDebug("map_right_click()");
 }
 
+//** JS
 void GoogleMapWidget::map_zoom_changed(QVariant zoom){
-    lblZoom->setText(zoom.toString());
+    buttZoom->setText(zoom.toString());
+    int zoomInt = zoom.toInt();
+    QList<QAction *> actions = groupZoom->actions();
+    for (int i = 0; i < actions.size(); ++i) {
+        if (actions.at(i)->property("zoom").toInt() == zoomInt){
+             actions.at(i)->setChecked(true);
+             return;
+        }
+     }
 //    for a in self.groupZoom.actions():
 //            checked = a.property("zoom").toString() == new_zoom_level
 //            a.setChecked(checked)
       qDebug("map_zoom_changed()");
 }
 
+void GoogleMapWidget::on_zoom_action(QAction *act){
+    qDebug("on_zoom_action()");
+}
 
 /*
 The whole units of degrees will remain the same (i.e. in 121.135° longitude, start with 121°).
