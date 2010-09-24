@@ -62,9 +62,10 @@ AptDatParser::AptDatParser(QObject *parent) :
     QSqlQuery queryT;
     bool okT;
     okT = queryT.exec("show tables like 'airports';");
+    //okT = queryT.exec("SELECT name FROM sqlite_master WHERE name='table_name'");
       qDebug() << "okT= " << okT << " = " << queryT.size();
       if(queryT.size() == 0){
-            queryT.exec("CREATE TABLE airports(code varchar(10), airport varchar(50), elevation int)");
+            queryT.exec("CREATE TABLE airports(code varchar(10) NOT NULL PRIMARY KEY, airport varchar(50) NULL, elevation int, tower tinyint NULL) ");
       }
       /*
     while (queryT.next()) {
@@ -79,8 +80,8 @@ AptDatParser::AptDatParser(QObject *parent) :
     if(ok){
         while (query.next()) {
                  QString name = query.value(0).toString();
-                 int salary = query.value(1).toInt();
-                 qDebug() << name << salary;
+                // int salary = query.value(1).toInt();
+                 qDebug() << name ;
          }
     }else{
        qDebug() << query.lastError();
@@ -104,6 +105,11 @@ void AptDatParser::process_file(){
 
     QRegExp rxICAOAirport("[A-Z]{1,4}");
 
+    QSqlQuery queryApt;
+    queryApt.prepare("replace into airports(code, airport, elevation, tower)values(?, ?, ?, ?)");
+    bool ok;
+
+    //okT = queryT.exec("show tables like 'airports';");
     int c = 0;
     while( !file.atEnd() ){
         QByteArray lineBytes = file.readLine();
@@ -112,16 +118,34 @@ void AptDatParser::process_file(){
         QString row_code = line.section(' ',0, 0);
         //qDebug() << row_code;
         QStringList parts = line.split(" ", QString::SkipEmptyParts);
+
+        //*** Airport
         if(row_code == "1"){
-            QString aiport_code = parts[4];
-            bool is_icao = rxICAOAirport.exactMatch(aiport_code);
+            QString airport_code = parts[4];
+            bool is_icao = rxICAOAirport.exactMatch(airport_code);
+            int elevation = parts[1].toInt();
+            QString airport;
+            for(int p = 5; p < parts.size(); p++){
+                airport.append(parts[p]).append(" ");
+            }
+            QString tower =  parts[2] == "1" ? "1" : "";
+            if(is_icao){
+                queryApt.addBindValue( airport_code);
+                queryApt.addBindValue( airport.trimmed() );
+                queryApt.addBindValue( elevation);
+                queryApt.addBindValue( parts[2] == "1" ? "1" : NULL );
+                ok = queryApt.exec();
+                if(!ok){
+                    qDebug() << queryApt.lastError();
+                }
+            }
             //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
             //qDebug() << "Parts   =" << parts.join("#");
             //qDebug(""); // << "Airport" << line << " = ";
         }
 
         c++;
-        if(c == 2000){
+        if(c == 20000){
             return;
         }
         //process_line(line);
