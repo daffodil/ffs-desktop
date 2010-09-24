@@ -48,8 +48,8 @@ MainObject::MainObject(QObject *parent) :
     //** Setup
     trayIcon->show();
     //on_mpmap();
-    //on_launcher();
-    on_map();
+    on_launcher();
+    //on_map();
 }
 
 //** Launcher

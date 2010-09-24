@@ -136,7 +136,7 @@ GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
     move(10,10);
 
     //qDebug() << QResource(":/map/gmap.html");
-    QFile *file = new QFile("/home/mash/ffs-desktop/ffs-desktop/map/html/gmap.html");
+    QFile *file = new QFile("/home/ffs/ffs-desktop/ffs-desktop/map/html/gmap.html");
     //QFile *file = new QFile(":/gmap/gmap.html");
     if (!file->open(QIODevice::ReadOnly | QIODevice::Text)){
             qDebug("not open file");

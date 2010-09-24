@@ -32,25 +32,26 @@ LauncherWindow::LauncherWindow(QWidget *parent)
    // mpMapWidget = new MpMapWidget(this);
     //tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
-    settingsWidget = new SettingsWidget();
-    tabWidget->addTab(settingsWidget, tr("Settings"));
+    //settingsWidget = new SettingsWidget();
+   // tabWidget->addTab(settingsWidget, tr("Settings"));
 
-    mpServersWidget = new MpServersWidget();
-    tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
-
-
-    mainOptionsWidget = new MainOptionsWidget();
-    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+   // mpServersWidget = new MpServersWidget();
+   // tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 
 
+   // mainOptionsWidget = new MainOptionsWidget();
+    //tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
 
-    aircraftWidget = new AircraftWidget();
-    tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+     airportsWidget = new AirportsWidget();
+     tabWidget->addTab(airportsWidget, tr("Airports"));
+
+   // aircraftWidget = new AircraftWidget();
+   // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
     resize(800, 400);
     move(10,10);
-      tabWidget->setCurrentIndex(2);
+     // tabWidget->setCurrentIndex(2);
 }
 
 LauncherWindow::~LauncherWindow()

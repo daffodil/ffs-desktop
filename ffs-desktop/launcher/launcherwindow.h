@@ -10,6 +10,8 @@
 #include <QtGui/QTabWidget>
 
 #include "launcher/aircraftwidget.h"
+#include "launcher/airportswidget.h"
+
 #include "launcher/mpserverswidget.h"
 #include "launcher/settingswidget.h"
 #include "launcher/mainoptionswidget.h"
@@ -29,6 +31,7 @@ public:
 
     //MpMapWidget *mpMapWidget;
     AircraftWidget *aircraftWidget;
+    AirportsWidget *airportsWidget;
     MpServersWidget *mpServersWidget;
     SettingsWidget *settingsWidget;
     MainOptionsWidget *mainOptionsWidget;
