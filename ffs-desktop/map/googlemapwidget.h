@@ -2,10 +2,13 @@
 #define GOOGLEMAPWIDGET_H
 
 #include <QtCore/QVariant>
+#include <QtCore/QString>
 
-//#include <QtGui/QAction>
+#include <QtGui/QStatusBar>
 #include <QtGui/QLabel>
 #include <QtGui/QWidget>
+#include <QtGui/QActionGroup>
+#include <QtGui/QToolButton>
 
 #include <QtWebKit/QWebView>
 
@@ -15,14 +18,31 @@ Q_OBJECT
 public:
     explicit GoogleMapWidget(QWidget *parent = 0);
 
-      QWebView *browser;
+    QWebView *webView;
+    QStatusBar *statusBar;
+    QLabel *lblLat;
+    QLabel *lblLng;
+    QLabel *lblZoom;
+    QActionGroup *groupZoom;
+    QToolButton *buttZoom;
 
-      QLabel *actLat;
-      QLabel *actLng;
+    QString to_lat(QVariant);
+
 signals:
 
 public slots:
+
+     void on_zoom_action(QAction *);
+
+      //** Map Events
       void map_mouse_move(QVariant lat, QVariant lng);
+      void map_right_click(QVariant lat, QVariant lng);
+      void map_zoom_changed(QVariant zoom);
+      void map_error(QVariant err);
+
+      void marker_clicked(QVariant marker, QVariant mId);
+      void marker_unselected(QVariant curr_idx, QVariant mLocationId);
+
 };
 
 #endif // GOOGLEMAPWIDGET_H
