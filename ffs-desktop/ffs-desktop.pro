@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     launcher/mainoptionswidget.cpp \
     map/googlemapwidget.cpp \
     parse/aptdatparser.cpp \
-    launcher/airportswidget.cpp
+    launcher/airportswidget.cpp \
+    db/airportsdb.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     launcher/aircraftwidget.h \
@@ -28,6 +29,7 @@ HEADERS += launcher/launcherwindow.h \
     launcher/mainoptionswidget.h \
     map/googlemapwidget.h \
     parse/aptdatparser.h \
-    launcher/airportswidget.h
+    launcher/airportswidget.h \
+    db/airportsdb.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

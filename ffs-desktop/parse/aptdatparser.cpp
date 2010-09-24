@@ -3,9 +3,21 @@
 #include "aptdatparser.h"
 
 #include <QtCore/QDebug>
-#include <QtCore/QByteArray>
+
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
+
+#include <QtCore/QRegExp>
+#include <QtCore/QStringList>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+#include <QtCore/QByteArray>
+
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+
+
 
 /* From the guide >>
 
@@ -33,14 +45,64 @@ AptDatParser::AptDatParser(QObject *parent) :
     QObject(parent)
 {
 
+    //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setUserName("root");
+    db.setPassword("mash");
+    db.setDatabaseName("ffs-desktop");
+    //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
+
+    bool dbOk = db.open();
+    if(!dbOk){
+        qDebug() << "Open error" << db.lastError();
+        return;
+    }
+    //** Check Tables
+    QSqlQuery queryT;
+    bool okT;
+    okT = queryT.exec("show tables like 'airports';");
+      qDebug() << "okT= " << okT << " = " << queryT.size();
+      if(queryT.size() == 0){
+            queryT.exec("CREATE TABLE airports(code varchar(10), airport varchar(50), elevation int)");
+      }
+      /*
+    while (queryT.next()) {
+             QString name = queryT.value(0).toString();
+             //int salary = query.value(1).toInt();
+             qDebug() << name ;//<< salary;
+     }*/
+    //return;
+   // qDebug() << "db.open= " << dbOk;
+    QSqlQuery query;
+    bool ok = query.exec("SELECT * FROM airports");
+    if(ok){
+        while (query.next()) {
+                 QString name = query.value(0).toString();
+                 int salary = query.value(1).toInt();
+                 qDebug() << name << salary;
+         }
+    }else{
+       qDebug() << query.lastError();
+    }
+    //while (query.next())
+   // {
+    //  qDebug("NO");
+    //}
+
 }
 void AptDatParser::process_file(){
+
+
+
     qDebug("AptDatParser::process_file()");
     QFile file("/home/ffs/ffs-desktop/peel/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
      }
+
+    QRegExp rxICAOAirport("[A-Z]{1,4}");
 
     int c = 0;
     while( !file.atEnd() ){
@@ -49,13 +111,17 @@ void AptDatParser::process_file(){
         //qDebug() << line;
         QString row_code = line.section(' ',0, 0);
         //qDebug() << row_code;
-
+        QStringList parts = line.split(" ", QString::SkipEmptyParts);
         if(row_code == "1"){
-            qDebug() << "Airport" << line;
+            QString aiport_code = parts[4];
+            bool is_icao = rxICAOAirport.exactMatch(aiport_code);
+            //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
+            //qDebug() << "Parts   =" << parts.join("#");
+            //qDebug(""); // << "Airport" << line << " = ";
         }
 
         c++;
-        if(c == 1000){
+        if(c == 2000){
             return;
         }
         //process_line(line);

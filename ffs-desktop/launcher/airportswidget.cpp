@@ -72,9 +72,9 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
     //** Filter Buttons
     QButtonGroup *buttViewGroup = new QButtonGroup(this);
     buttViewGroup->setExclusive(true);
-    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-            this, SLOT(on_view_button_clicked(QAbstractButton*))
-    );
+//    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
+//            this, SLOT(on_view_button_clicked(QAbstractButton*))
+//    );
 
     QToolButton *buttAll = new QToolButton();
     treeToolbar->addWidget(buttAll);
@@ -129,10 +129,10 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
              SLOT( set_aircraft(const QItemSelection&, const QItemSelection&) )
     );
     */
-    connect(treeView,
-            SIGNAL(clicked(QModelIndex)),
-            this, SLOT(on_tree_clicked(QModelIndex))
-    );
+//    connect(treeView,
+//            SIGNAL(clicked(QModelIndex)),
+//            this, SLOT(on_tree_clicked(QModelIndex))
+//    );
 
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
