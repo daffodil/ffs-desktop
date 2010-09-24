@@ -28,8 +28,10 @@ signals:
 public slots:
     void on_tray_icon(QSystemTrayIcon::ActivationReason reason);
 
-    void on_mpmap();
+
     void on_launcher();
+    void on_mpmap();
+    void on_map();
     void on_quit();
 };
 

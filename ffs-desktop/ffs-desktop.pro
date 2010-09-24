@@ -14,7 +14,8 @@ SOURCES += main.cpp \
     launcher/mpserverswidget.cpp \
     launcher/mptelnet.cpp \
     launcher/settingswidget.cpp \
-    launcher/mainoptionswidget.cpp
+    launcher/mainoptionswidget.cpp \
+    map/googlemapwidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     launcher/aircraftwidget.h \
@@ -22,5 +23,7 @@ HEADERS += launcher/launcherwindow.h \
     launcher/mpserverswidget.h \
     launcher/mptelnet.h \
     launcher/settingswidget.h \
-    launcher/mainoptionswidget.h
-RESOURCES += icons/icons.qrc
+    launcher/mainoptionswidget.h \
+    map/googlemapwidget.h
+RESOURCES += icons/icons.qrc \
+    map/map.qrc

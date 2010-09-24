@@ -1,6 +1,10 @@
+
 #include "mainobject.h"
-#include "mp/mpmapwidget.h"
 #include "launcher/launcherwindow.h"
+
+#include "mp/mpmapwidget.h"
+#include "map/googlemapwidget.h"
+
 
 #include <QCoreApplication>
 #include <QtGui/QAction>
@@ -44,13 +48,20 @@ MainObject::MainObject(QObject *parent) :
     //** Setup
     trayIcon->show();
     //on_mpmap();
-    on_launcher();
+    //on_launcher();
+    on_map();
 }
 
 //** Launcher
 void MainObject::on_launcher(){
     LauncherWindow *launcherWindow = new LauncherWindow();
     launcherWindow->show();
+}
+
+//** Map
+void MainObject::on_map(){
+    GoogleMapWidget *gmapWidget = new GoogleMapWidget();
+    gmapWidget->show();
 }
 
 //** MpMap
