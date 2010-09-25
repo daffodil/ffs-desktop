@@ -16,6 +16,14 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     connect(socket, SIGNAL(readyRead()), this, SLOT(on_telnet_ready_read()));
 }
 
+
+void TelnetSlave::fg_connect(){
+    qDebug("fg_connect()");
+        //self.add_log("ls %s" % path)
+    //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
+    //return QString("foo"); //self.socket.recv(120000);
+ }
+
 //*********************************************************************************************
  //** Set/Get Node
 //*********************************************************************************************

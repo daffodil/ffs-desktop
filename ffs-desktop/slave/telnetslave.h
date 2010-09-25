@@ -15,6 +15,8 @@ public:
 
     QString getNode(QString path);
     void setNode(QString path, QString value);
+
+    void fg_connect();
 private:
     QTcpSocket *socket;
 
