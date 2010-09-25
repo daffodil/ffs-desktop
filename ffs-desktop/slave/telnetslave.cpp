@@ -5,7 +5,7 @@
 #include <QtCore/QByteArray>
 
 #include <QtNetwork/QTcpSocket>
-
+#include <QtNetwork/QHostAddress>
 
 TelnetSlave::TelnetSlave(QObject *parent) :
     QObject(parent)
@@ -19,6 +19,9 @@ TelnetSlave::TelnetSlave(QObject *parent) :
 
 void TelnetSlave::fg_connect(){
     qDebug("fg_connect()");
+    QHostAddress address("localhost");
+
+    socket->connectToHost(address, 5555);
         //self.add_log("ls %s" % path)
     //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
     //return QString("foo"); //self.socket.recv(120000);
@@ -47,7 +50,7 @@ void TelnetSlave::setNode(QString path, QString value){
 //*********************************************************************************************
 
 void TelnetSlave::on_telnet_connected(){
-   // qDebug("connected");
+    qDebug("on_telnet_connected");
 
 
 }
@@ -61,7 +64,7 @@ void TelnetSlave::on_telnet_ready_read(){
 
 void TelnetSlave::on_telnet_disconnected(){
     //qDebug() << "\n--------------------------------\non_telnet_disconnectedan-------------\n" ; //<< telnet_reply;
-    //qDebug() << "DONE" << telnet_reply;
+    qDebug("on_telnet_disconnected"); // << "DONE" << telnet_reply;
 
     //QString
 
