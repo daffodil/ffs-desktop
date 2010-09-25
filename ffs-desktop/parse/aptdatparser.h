@@ -13,6 +13,8 @@ public:
     };
     explicit AptDatParser(QObject *parent = 0);
 
+
+
     QSqlDatabase db;
     void process_file();
 signals:

@@ -1,6 +1,11 @@
 
 #include "airportsdb.h"
 
+#include <QtCore/QDebug>
+
+#include <QtCore/QVariant>
+#include <QtCore/QString>
+
 
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -38,15 +43,41 @@ bool AirportsDb::create_tables(){
     return true;
 }
 
-bool AirportsDb::airports(){
+void AirportsDb::airports(){
     QSqlQuery query;
     bool success;
-    success = query.exec("SELECT * from airports");
+    success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
     if(!success){
         qDebug() << "SELECT" << query.lastError();
         return;
     }
+    while (query.next()) {
+        //QString name = query.value(0).toString();
+        // int salary = query.value(1).toInt();
+        //qDebug() << name ;
+        emit airport(query.value(0).toString(),
+                     query.value(1).toString(),
+                     query.value(2).toString(),
+                     query.value(3).toString()
+                    );
+    }
+}
 
+void AirportsDb::runways(QString airport){
+    QSqlQuery query;
+    // success;
+    query.prepare("SELECT runway from runways where airport=? order by runway");
+    bool success = query.exec();
+    if(!success){
+        qDebug() << "SELECT" << query.lastError();
+        return;
+    }
+    while (query.next()) {
+        //QString name = query.value(0).toString();
+        // int salary = query.value(1).toInt();
+        //qDebug() << name ;
+    }
+    return;
 }
 
 

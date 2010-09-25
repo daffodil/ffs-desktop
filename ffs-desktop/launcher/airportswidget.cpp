@@ -36,6 +36,8 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
     QWidget(parent)
 {
 
+    airportsDb = new AirportsDb(this);
+
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
@@ -67,6 +69,7 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
     connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_airports()) );
 
     treeToolbar->addSeparator();
+
 
     //******************************************************
     //** Filter Buttons
@@ -101,6 +104,16 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
     buttAvailable->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     buttAll->setChecked(true);
+
+
+
+    QAction *actionReloadAiportsDb = new QAction(this);
+    treeToolbar->addAction(actionReloadAiportsDb);
+    actionReloadAiportsDb->setText("Reload Db");
+    actionReloadAiportsDb->setIcon(QIcon(":/icons/refresh"));
+    connect(actionReloadAiportsDb, SIGNAL(triggered()), this, SLOT(load_airports_db()) );
+
+    treeToolbar->addSeparator();
 
 
     //******************************************************
@@ -142,8 +155,16 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
 
 
 void AirportsWidget::load_airports(){
-    AptDatParser *aptDatParser = new AptDatParser(this);
+
     qDebug("load_airports()");
+    //aptDatParser->process_file();
+}
+
+
+
+void AirportsWidget::load_airports_db(){
+    AptDatParser *aptDatParser = new AptDatParser(this);
+    qDebug("load_airports_DB()");
     aptDatParser->process_file();
 
 }

@@ -15,8 +15,11 @@ public:
 
     bool tables_ok();
     bool create_tables();
-signals:
+    void airports();
+    void runways(QString airport);
 
+signals:
+    void airport(QString, QString, QString, QString);
 public slots:
 
 };

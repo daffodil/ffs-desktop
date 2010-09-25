@@ -1,6 +1,8 @@
 #ifndef AIRPORTSWIDGET_H
 #define AIRPORTSWIDGET_H
 
+#include "db/airportsdb.h"
+
 #include <QtGui/QWidget>
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QSortFilterProxyModel>
@@ -14,6 +16,8 @@ public:
 
     explicit AirportsWidget(QWidget *parent = 0);
 
+    AirportsDb *airportsDb;
+
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
     QTreeView *treeView;
@@ -23,6 +27,7 @@ signals:
 
 public slots:
     void load_airports();
+    void load_airports_db();
 };
 
 #endif // AIRPORTSWIDGET_H
