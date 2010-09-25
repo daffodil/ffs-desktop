@@ -15,7 +15,8 @@
 #include "launcher/mpserverswidget.h"
 #include "launcher/settingswidget.h"
 #include "launcher/mainoptionswidget.h"
-
+#include "launcher/propstreewidget.h"
+#include "launcher/controlbarwidget.h"
 
 class LauncherWindow : public QMainWindow
 {
@@ -36,7 +37,8 @@ public:
     SettingsWidget *settingsWidget;
     MainOptionsWidget *mainOptionsWidget;
 
-
+    PropsTreeWidget *propsTreeWidget;
+    ControlBarWidget *controlBarWidget;
 };
 
 #endif // LAUNCHERWINDOW_H

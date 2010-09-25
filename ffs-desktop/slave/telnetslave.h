@@ -12,6 +12,9 @@ Q_OBJECT
 public:
     explicit TelnetSlave(QObject *parent = 0);
 
+
+    QString getNode(QString path);
+    void setNode(QString path, QString value);
 private:
     QTcpSocket *socket;
 

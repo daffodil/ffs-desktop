@@ -16,5 +16,15 @@
         <file alias="up">arrow_up.png</file>
         <file alias="delete_small">bullet_delete.png</file>
         <file alias="save">accept.png</file>
+        <file alias="eject_dis">control_eject.png</file>
+        <file alias="eject_ena">control_eject_blue.png</file>
+        <file alias="start_dis">control_play.png</file>
+        <file alias="start_ena">control_play_blue.png</file>
+        <file alias="stop_dis">control_stop.png</file>
+        <file alias="stop_ena">control_stop_blue.png</file>
+        <file alias="pause_dis">control_pause.png</file>
+        <file alias="pause_ena">control_pause_blue.png</file>
+        <file alias="disconnect">disconnect.png</file>
+        <file alias="connect">connect.png</file>
     </qresource>
 </RCC>

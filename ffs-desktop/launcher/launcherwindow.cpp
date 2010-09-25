@@ -42,12 +42,18 @@ LauncherWindow::LauncherWindow(QWidget *parent)
    // mainOptionsWidget = new MainOptionsWidget();
     //tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
+        propsTreeWidget = new PropsTreeWidget();
+        tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
-     airportsWidget = new AirportsWidget();
-     tabWidget->addTab(airportsWidget, tr("Airports"));
+     //airportsWidget = new AirportsWidget();
+     //tabWidget->addTab(airportsWidget, tr("Airports"));
 
    // aircraftWidget = new AircraftWidget();
    // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+
+
+    controlBarWidget = new ControlBarWidget();
+    mainVBox->addWidget(controlBarWidget, 1);
 
     resize(800, 400);
     move(10,10);
