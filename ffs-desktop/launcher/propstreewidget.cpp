@@ -43,7 +43,7 @@ PropsTreeWidget::PropsTreeWidget(QWidget *parent) :
     treeToolbar->addAction(actionRefreshTree);
     actionRefreshTree->setText("Refresh");
     actionRefreshTree->setIcon(QIcon(":/icons/refresh"));
-    connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_airports()) );
+    //connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_airports()) );
 
     treeToolbar->addSeparator();
 

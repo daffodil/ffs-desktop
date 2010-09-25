@@ -5,6 +5,11 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QPushButton>
+#include <QtGui/QStatusBar>
+
+#include <QtNetwork/QAbstractSocket>
+
+
 class ControlBarWidget : public QWidget
 {
 Q_OBJECT
@@ -13,6 +18,7 @@ public:
 
     TelnetSlave *telnet;
 
+
     QPushButton *buttStart;
     QPushButton *buttPause;
     QPushButton *buttStop;
@@ -20,11 +26,16 @@ public:
     QPushButton *buttTelnetConnect;
     QPushButton *buttTelnetDisconnect;
 
+    QStatusBar *statusBarTelnet;
+
 signals:
 
 public slots:
-    void on_telnet_connect();
-    void on_telnet_disconnect();
+    void do_telnet_connect();
+    void do_telnet_disconnect();
+
+    void on_telnet_error(QAbstractSocket::SocketError, QString);
+    void on_telnet_connected(bool state);
 };
 
 #endif // CONTROLBARWIDGET_H
