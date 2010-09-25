@@ -39,6 +39,13 @@ bool AirportsDb::create_tables(){
 }
 
 bool AirportsDb::airports(){
+    QSqlQuery query;
+    bool success;
+    success = query.exec("SELECT * from airports");
+    if(!success){
+        qDebug() << "SELECT" << query.lastError();
+        return;
+    }
 
 }
 
