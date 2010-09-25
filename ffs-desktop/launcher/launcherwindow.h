@@ -9,6 +9,8 @@
 
 #include <QtGui/QTabWidget>
 
+#include "mainobject.h"
+
 #include "launcher/aircraftwidget.h"
 #include "launcher/airportswidget.h"
 
@@ -23,8 +25,10 @@ class LauncherWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    LauncherWindow(QWidget *parent = 0);
+    LauncherWindow(MainObject *mainOb, QWidget *parent = 0);
     ~LauncherWindow();
+
+    MainObject *mainObject;
 
     QLabel *headerLabel;
 

@@ -15,6 +15,10 @@ MainObject::MainObject(QObject *parent) :
     QObject(parent)
 {
 
+    telnet = new TelnetSlave(this);
+    connect(telnet, SIGNAL(telnet_connected(bool)), this, SLOT(on_telnet_connected(bool)));
+        //void telnet_connected(bool);
+
     //***********************************
     //** Tray Icon
     trayIcon = new QSystemTrayIcon(QIcon(":/icons/favicon"), this);
@@ -54,7 +58,7 @@ MainObject::MainObject(QObject *parent) :
 
 //** Launcher
 void MainObject::on_launcher(){
-    LauncherWindow *launcherWindow = new LauncherWindow();
+    LauncherWindow *launcherWindow = new LauncherWindow(this);
     launcherWindow->show();
 }
 
@@ -85,3 +89,16 @@ void MainObject::on_tray_icon(QSystemTrayIcon::ActivationReason reason){
     }
 }
 
+
+
+
+//** Telnet Events
+void MainObject::on_telnet_connected(bool state){
+    //telnet->fg_connect();
+    qDebug("on_telnet_connected##");
+    qDebug() << state;
+    //statusBarTelnet->showMessage(state ? tr("Connected") : tr("Disconnected"), 4000);
+    //buttTelnetConnect->setDisabled(state);
+    //buttTelnetDisconnect->setDisabled(!state);
+    trayIcon->setIcon(QIcon(state ? ":/icons/connect" : ":/icons/disconnect"));
+}

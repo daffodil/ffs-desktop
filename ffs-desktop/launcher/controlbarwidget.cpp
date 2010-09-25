@@ -7,14 +7,15 @@
 #include <QtGui/QLabel>
 
 
-ControlBarWidget::ControlBarWidget(QWidget *parent) :
+ControlBarWidget::ControlBarWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
 
-    telnet = new TelnetSlave(this);
-    connect(telnet, SIGNAL(telnet_error(QAbstractSocket::SocketError,QString)),
+    mainObject = mOb;
+    //telnet = new TelnetSlave(this);
+    connect(mainObject->telnet, SIGNAL(telnet_error(QAbstractSocket::SocketError,QString)),
             this, SLOT(on_telnet_error(QAbstractSocket::SocketError, QString)));
-    connect(telnet, SIGNAL(telnet_connected(bool)),
+    connect(mainObject->telnet, SIGNAL(telnet_connected(bool)),
             this, SLOT(on_telnet_connected(bool)));
 
     QHBoxLayout *mainLayout = new QHBoxLayout();
@@ -105,13 +106,15 @@ void ControlBarWidget::on_telnet_error(QAbstractSocket::SocketError sockError, Q
 
 //** Connect Clicked
 void ControlBarWidget::do_telnet_connect(){
-    telnet->fg_connect();
+    mainObject->telnet->fg_connect();
     qDebug("do_telnet_connect");
+    //emit telnet_cmd(QString("connect"));
 }
 //** DisConnect Clicked
 void ControlBarWidget::do_telnet_disconnect(){
     qDebug("do_telnet_disconnect");
-    telnet->fg_disconnect();
+    mainObject->telnet->fg_disconnect();
+    //emit telnet_cmd(QString("disconnect"));
 }
 
 void ControlBarWidget::on_telnet_connected(bool state){

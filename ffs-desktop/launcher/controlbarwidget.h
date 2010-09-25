@@ -2,6 +2,7 @@
 #define CONTROLBARWIDGET_H
 
 #include "slave/telnetslave.h"
+#include "mainobject.h"
 
 #include <QtGui/QWidget>
 #include <QtGui/QPushButton>
@@ -14,10 +15,10 @@ class ControlBarWidget : public QWidget
 {
 Q_OBJECT
 public:
-    explicit ControlBarWidget(QWidget *parent = 0);
+    explicit ControlBarWidget(MainObject *mObject, QWidget *parent = 0);
 
-    TelnetSlave *telnet;
-
+//    TelnetSlave *telnet;
+    MainObject *mainObject;
 
     QPushButton *buttStart;
     QPushButton *buttPause;
@@ -29,6 +30,7 @@ public:
     QStatusBar *statusBarTelnet;
 
 signals:
+    void telnet_cmd(QString cmd);
 
 public slots:
     void do_telnet_connect();

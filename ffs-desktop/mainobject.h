@@ -1,6 +1,8 @@
 #ifndef MAINOBJECT_H
 #define MAINOBJECT_H
 
+#include "slave/telnetslave.h"
+
 #include <QObject>
 #include <QtGui/QSystemTrayIcon>
 #include <QtGui/QAction>
@@ -14,6 +16,10 @@ Q_OBJECT
 public:
     explicit MainObject(QObject *parent = 0);
 
+    //** Objects
+    TelnetSlave *telnet;
+
+    //* Widgets
     QSystemTrayIcon *trayIcon;
     QMenu *popupMenu;
     QWidgetAction *actionCallsign;
@@ -28,6 +34,7 @@ signals:
 public slots:
     void on_tray_icon(QSystemTrayIcon::ActivationReason reason);
 
+    void on_telnet_connected(bool);
 
     void on_launcher();
     void on_mpmap();

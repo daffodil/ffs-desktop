@@ -2,13 +2,15 @@
 
 #include <QtGui/QVBoxLayout>
 
-LauncherWindow::LauncherWindow(QWidget *parent)
+LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     : QMainWindow(parent)
 {
 
+    mainObject = mainOb;
+
     setWindowTitle("FlightGear Launcher");
     setWindowIcon(QIcon(":/icons/favicon"));
-
+    setWindowFlags(  Qt::WindowStaysOnTopHint);
 
     //* MainWidget and MainLayout
     QWidget *mainWidget = new QWidget(this);
@@ -52,7 +54,7 @@ LauncherWindow::LauncherWindow(QWidget *parent)
    // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
 
-    controlBarWidget = new ControlBarWidget();
+    controlBarWidget = new ControlBarWidget(mainObject);
     mainVBox->addWidget(controlBarWidget, 1);
 
     resize(800, 400);
