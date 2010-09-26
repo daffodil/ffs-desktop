@@ -47,7 +47,7 @@ AptDatParser::AptDatParser(QObject *parent) :
 
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("192.168.5.10");
+    db.setHostName("localhost");
     db.setUserName("root");
     db.setPassword("mash");
     db.setDatabaseName("ffs-desktop");
@@ -98,7 +98,7 @@ void AptDatParser::process_file(){
 
 
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/ffs/ffs-desktop/peel/apt.dat");
+    QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;

@@ -28,6 +28,8 @@ signals:
 public slots:
     void load_airports();
     void load_airports_db();
+
+    void on_airport(QString,QString,QString,QString);
 };
 
 #endif // AIRPORTSWIDGET_H

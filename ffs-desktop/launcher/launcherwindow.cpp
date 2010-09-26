@@ -10,7 +10,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 
     setWindowTitle("FlightGear Launcher");
     setWindowIcon(QIcon(":/icons/favicon"));
-    setWindowFlags(  Qt::WindowStaysOnTopHint);
+    //setWindowFlags(  Qt::WindowStaysOnTopHint);
 
     //* MainWidget and MainLayout
     QWidget *mainWidget = new QWidget(this);
@@ -44,18 +44,21 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
    // mainOptionsWidget = new MainOptionsWidget();
     //tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
-        propsTreeWidget = new PropsTreeWidget();
-        tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
+     //propsTreeWidget = new PropsTreeWidget();
+     //tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
-     //airportsWidget = new AirportsWidget();
-     //tabWidget->addTab(airportsWidget, tr("Airports"));
+     airportsWidget = new AirportsWidget();
+     tabWidget->addTab(airportsWidget, tr("Airports"));
 
    // aircraftWidget = new AircraftWidget();
    // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
-
+    //*********************************************************
+    //** Control Bar
+    //*********************************************************
     controlBarWidget = new ControlBarWidget(mainObject);
     mainVBox->addWidget(controlBarWidget, 1);
+    controlBarWidget->hide();
 
     resize(800, 400);
     move(10,10);

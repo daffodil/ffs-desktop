@@ -4,7 +4,7 @@
 #include "parse/aptdatparser.h"
 
 
-//#include <QtCore/QProcess>
+#include <QtCore/QDebug>
 //#include <QtCore/QByteArray>
 #include <QtCore/QString>
 //#include <QtCore/QStringList>
@@ -37,6 +37,9 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
 {
 
     airportsDb = new AirportsDb(this);
+    connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
+            this, SLOT(on_airport(QString,QString,QString,QString))
+            );
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -127,6 +130,7 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
 
+    //******************************************************
     //** Aircraft Tree
     treeView = new QTreeView(this);
     treeLayout->addWidget(treeView);
@@ -153,18 +157,25 @@ AirportsWidget::AirportsWidget(QWidget *parent) :
 
 }
 
-
+//** Load_Airports() from database
 void AirportsWidget::load_airports(){
 
     qDebug("load_airports()");
     //aptDatParser->process_file();
+    airportsDb->airports();
+
 }
 
 
 
 void AirportsWidget::load_airports_db(){
+    //* TODO message you are about to do this and take a few moment etc (or background)
     AptDatParser *aptDatParser = new AptDatParser(this);
     qDebug("load_airports_DB()");
     aptDatParser->process_file();
 
+}
+
+void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
+    qDebug() <<  airport << name << tower <<  elevation;
 }
