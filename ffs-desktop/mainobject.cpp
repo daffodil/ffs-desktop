@@ -11,13 +11,58 @@
 #include <QtGui/QMenu>
 #include <QtGui/QCursor>
 
+/*
+  The Idea - me not a c++ coder but here are some thoughts.. and my problems
+
+  This application needs to exist in the taskbar as a "shortcuut"
+
+  The reasoning or this is the the application serves a few purporses such as
+  1) only creating a telnet object is required
+  2) only connecting to a database if requried
+  3) creating "status windows" on demand eg chat or Vor fequencies.
+
+  The design brief is to make the application as small as possible.
+  But use the qt toolkit as the api to make it workable xpaltform.. a hunch..
+  Ideally we want to be in a position where a widget and its code eg a FlightTracker
+  can me avaialble as a widget and all its associated "data calls", whether online..
+
+  As a dual screen user, or indeed slaving a laptop to a "full on instance"..
+  and with a view to creating a motion platform and "buttons and knobs hardware" for around < £1k as a kit..
+
+  Slaving is a wicked concept and I like that idea very much, and as such the idea of this app
+  is to have it installed in a few machines, and used for various purposes..
+
+  For example..
+  Removing autopilot from Flightgear and replacing with an FMC here
+  Chat by creating a dedicated intelligent chat wiget with Fg in the backround.
+  ATC autocpmpletion
+  Autopilot control with a virtual popup
+  Instead of using mpMap, instead slave Google or any other mapping to fg as an app
+
+  */
+
+
+
 MainObject::MainObject(QObject *parent) :
     QObject(parent)
 {
 
+    //TODO ? problem
+    // I dont want to "create thsi object yet, as a socket might not be required
+    // Hoewever I need a trick to create this object as required
     telnet = new TelnetSlave(this);
     connect(telnet, SIGNAL(telnet_connected(bool)), this, SLOT(on_telnet_connected(bool)));
         //void telnet_connected(bool);
+
+    //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db = QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("192.168.5.10");
+    db.setUserName("root");
+    db.setPassword("mash");
+    db.setDatabaseName("ffs-desktop");
+    //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
+
+
 
     //***********************************
     //** Tray Icon

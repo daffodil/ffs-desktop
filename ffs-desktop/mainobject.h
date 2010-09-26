@@ -3,7 +3,11 @@
 
 #include "props/telnetslave.h"
 
-#include <QObject>
+#include <QtCore/QObject>
+
+#include <QtSql/QSqlDatabase>
+
+
 #include <QtGui/QSystemTrayIcon>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
@@ -18,6 +22,7 @@ public:
 
     //** Objects
     TelnetSlave *telnet;
+    QSqlDatabase db;
 
     //* Widgets
     QSystemTrayIcon *trayIcon;

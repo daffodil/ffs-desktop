@@ -1,7 +1,8 @@
 #ifndef AIRPORTSWIDGET_H
 #define AIRPORTSWIDGET_H
 
-#include "db/airportsdb.h"
+#include "airports/airportsdb.h"
+#include "mainobject.h"
 
 #include <QtGui/QWidget>
 #include <QtGui/QStandardItemModel>
@@ -14,8 +15,9 @@ class AirportsWidget : public QWidget
 Q_OBJECT
 public:
 
-    explicit AirportsWidget(QWidget *parent = 0);
+    explicit AirportsWidget(MainObject *mOb, QWidget *parent = 0);
 
+    MainObject *mainObject;
     AirportsDb *airportsDb;
 
     QStandardItemModel *model;

@@ -16,12 +16,14 @@ SOURCES += main.cpp \
     settings/settingswidget.cpp \
     launcher/mainoptionswidget.cpp \
     map/googlemapwidget.cpp \
-    parse/aptdatparser.cpp \
+    airports/aptdatparser.cpp \
     airports/airportswidget.cpp \
-    db/airportsdb.cpp \
+    airports/airportsdb.cpp \
+    airports/importairportswidget.cpp \
     props/telnetslave.cpp \
     props/propstreewidget.cpp \
-    launcher/controlbarwidget.cpp
+    launcher/controlbarwidget.cpp \
+    db/dbsettingswidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -31,11 +33,13 @@ HEADERS += launcher/launcherwindow.h \
     settings/settingswidget.h \
     launcher/mainoptionswidget.h \
     map/googlemapwidget.h \
-    parse/aptdatparser.h \
+    airports/aptdatparser.h \
     airports/airportswidget.h \
-    db/airportsdb.h \
+    airports/airportsdb.h \
     props/telnetslave.h \
     props/propstreewidget.h \
-    launcher/controlbarwidget.h
+    launcher/controlbarwidget.h \
+    db/dbsettingswidget.h \
+    airports/importairportswidget.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

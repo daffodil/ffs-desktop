@@ -1,4 +1,19 @@
 
+/*
+  Peels of the robin layer and gets out teh airports and runways
+
+  TODO incomplete list
+
+  step 1
+
+  lonly load the ICAO aiports, ignore heliports and seway etc.. lite wiegt and wise..
+
+  assumed is ils etc..
+  Other aiports whousl be available on demand as a parse etc..
+  eg integration with FG
+
+  */
+
 
 #include "aptdatparser.h"
 
@@ -46,18 +61,18 @@ AptDatParser::AptDatParser(QObject *parent) :
 {
 
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setUserName("root");
-    db.setPassword("mash");
-    db.setDatabaseName("ffs-desktop");
+//    db = QSqlDatabase::addDatabase("QMYSQL");
+//    db.setHostName("localhost");
+//    db.setUserName("root");
+//    db.setPassword("mash");
+//    db.setDatabaseName("ffs-desktop");
     //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
 
-    bool dbOk = db.open();
-    if(!dbOk){
-        qDebug() << "Open error" << db.lastError();
-        return;
-    }
+    //bool dbOk = db.open();
+    //if(!dbOk){
+   //     qDebug() << "Open error" << db.lastError();
+    //    return;
+    //}
     //** Check Tables
     QSqlQuery queryT;
     bool okT;

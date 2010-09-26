@@ -1,7 +1,8 @@
 
 
 #include "airportswidget.h"
-#include "parse/aptdatparser.h"
+#include "airports/aptdatparser.h"
+#include "airports/importairportswidget.h"
 
 
 #include <QtCore/QDebug>
@@ -23,7 +24,7 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QLabel>
-//#include <QtGui/QCheckBox>
+#include <QtGui/QProgressDialog>
 //#include <QtGui/QTabWidget>
 
 #include <QtGui/QStandardItemModel>
@@ -32,14 +33,16 @@
 #include <QtGui/QAbstractItemView>
 //#include <QtGui/QPixmap>
 
-AirportsWidget::AirportsWidget(QWidget *parent) :
+AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
 
-    airportsDb = new AirportsDb(this);
-    connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
-            this, SLOT(on_airport(QString,QString,QString,QString))
-            );
+    mainObject = mOb;
+
+    //airportsDb = new AirportsDb(this);
+    //connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
+    //        this, SLOT(on_airport(QString,QString,QString,QString))
+     //       );
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -170,8 +173,14 @@ void AirportsWidget::load_airports(){
 
 void AirportsWidget::load_airports_db(){
     //* TODO message you are about to do this and take a few moment etc (or background)
+     qDebug("AirportsWidget::load_airports_DB()");
+    //QProgressDialog progress("Importing airports", "Abort Copy", 0, 2000, this);
+    //progress.show();
+     ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
+     imp->show();
+    return;
     AptDatParser *aptDatParser = new AptDatParser(this);
-    qDebug("load_airports_DB()");
+
     aptDatParser->process_file();
 
 }

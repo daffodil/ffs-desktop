@@ -17,11 +17,11 @@ AirportsDb::AirportsDb(QObject *parent) :
 {
 
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("192.168.5.10");
-    db.setUserName("root");
-    db.setPassword("mash");
-    db.setDatabaseName("ffs-desktop");
+    //db = QSqlDatabase::addDatabase("QMYSQL");
+    //db.setHostName("192.168.5.10");
+   // db.setUserName("root");
+   // db.setPassword("mash");
+   // db.setDatabaseName("ffs-desktop");
     //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
 }
 
