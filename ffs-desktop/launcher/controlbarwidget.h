@@ -1,7 +1,7 @@
 #ifndef CONTROLBARWIDGET_H
 #define CONTROLBARWIDGET_H
 
-#include "slave/telnetslave.h"
+#include "props/telnetslave.h"
 #include "mainobject.h"
 
 #include <QtGui/QWidget>

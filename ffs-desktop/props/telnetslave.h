@@ -1,8 +1,8 @@
 #ifndef TELNETSLAVE_H
 #define TELNETSLAVE_H
 
-#include <QObject>
-
+#include <QtCore/QObject>
+#include <QtCore/QString>
 #include <QtNetwork/QTcpSocket>
 /*
 void	connected ()
@@ -20,14 +20,13 @@ public:
     explicit TelnetSlave(QObject *parent = 0);
 
 
-    QString getNode(QString path);
-    void setNode(QString path, QString value);
-
     QString hostAddress;
     int port;
 
     void fg_connect();
     void fg_disconnect();
+    QString get_node(QString path);
+    void set_node(QString path, QString value);
 private:
     QTcpSocket *socket;
 

@@ -1,7 +1,7 @@
 #ifndef MAINOBJECT_H
 #define MAINOBJECT_H
 
-#include "slave/telnetslave.h"
+#include "props/telnetslave.h"
 
 #include <QObject>
 #include <QtGui/QSystemTrayIcon>

@@ -19,7 +19,7 @@ SOURCES += main.cpp \
     parse/aptdatparser.cpp \
     airports/airportswidget.cpp \
     db/airportsdb.cpp \
-    slave/telnetslave.cpp \
+    props/telnetslave.cpp \
     props/propstreewidget.cpp \
     launcher/controlbarwidget.cpp
 HEADERS += launcher/launcherwindow.h \
@@ -34,7 +34,7 @@ HEADERS += launcher/launcherwindow.h \
     parse/aptdatparser.h \
     airports/airportswidget.h \
     db/airportsdb.h \
-    slave/telnetslave.h \
+    props/telnetslave.h \
     props/propstreewidget.h \
     launcher/controlbarwidget.h
 RESOURCES += icons/icons.qrc \
