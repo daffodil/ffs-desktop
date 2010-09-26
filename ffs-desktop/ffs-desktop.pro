@@ -9,33 +9,33 @@ TEMPLATE = app
 SOURCES += main.cpp \
     launcher/launcherwindow.cpp \
     mp/mpmapwidget.cpp \
-    launcher/aircraftwidget.cpp \
+    aircraft/aircraftwidget.cpp \
     mainobject.cpp \
-    launcher/mpserverswidget.cpp \
-    launcher/mptelnet.cpp \
-    launcher/settingswidget.cpp \
+    mp/mpserverswidget.cpp \
+    mp/mptelnet.cpp \
+    settings/settingswidget.cpp \
     launcher/mainoptionswidget.cpp \
     map/googlemapwidget.cpp \
     parse/aptdatparser.cpp \
-    launcher/airportswidget.cpp \
+    airports/airportswidget.cpp \
     db/airportsdb.cpp \
     slave/telnetslave.cpp \
-    launcher/propstreewidget.cpp \
+    props/propstreewidget.cpp \
     launcher/controlbarwidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
-    launcher/aircraftwidget.h \
+    aircraft/aircraftwidget.h \
     mainobject.h \
-    launcher/mpserverswidget.h \
-    launcher/mptelnet.h \
-    launcher/settingswidget.h \
+    mp/mpserverswidget.h \
+    mp/mptelnet.h \
+    settings/settingswidget.h \
     launcher/mainoptionswidget.h \
     map/googlemapwidget.h \
     parse/aptdatparser.h \
-    launcher/airportswidget.h \
+    airports/airportswidget.h \
     db/airportsdb.h \
     slave/telnetslave.h \
-    launcher/propstreewidget.h \
+    props/propstreewidget.h \
     launcher/controlbarwidget.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

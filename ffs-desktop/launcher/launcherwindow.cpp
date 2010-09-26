@@ -44,11 +44,11 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
    // mainOptionsWidget = new MainOptionsWidget();
     //tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
-     //propsTreeWidget = new PropsTreeWidget();
-     //tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
+     propsTreeWidget = new PropsTreeWidget(mainObject);
+     tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
-     airportsWidget = new AirportsWidget();
-     tabWidget->addTab(airportsWidget, tr("Airports"));
+     //airportsWidget = new AirportsWidget();
+     //tabWidget->addTab(airportsWidget, tr("Airports"));
 
    // aircraftWidget = new AircraftWidget();
    // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
@@ -58,7 +58,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     //*********************************************************
     controlBarWidget = new ControlBarWidget(mainObject);
     mainVBox->addWidget(controlBarWidget, 1);
-    controlBarWidget->hide();
+    //controlBarWidget->hide();
 
     resize(800, 400);
     move(10,10);

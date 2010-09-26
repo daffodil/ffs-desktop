@@ -11,13 +11,13 @@
 
 #include "mainobject.h"
 
-#include "launcher/aircraftwidget.h"
-#include "launcher/airportswidget.h"
+#include "aircraft/aircraftwidget.h"
+#include "airports/airportswidget.h"
 
-#include "launcher/mpserverswidget.h"
-#include "launcher/settingswidget.h"
+#include "mp/mpserverswidget.h"
+#include "settings/settingswidget.h"
 #include "launcher/mainoptionswidget.h"
-#include "launcher/propstreewidget.h"
+#include "props/propstreewidget.h"
 #include "launcher/controlbarwidget.h"
 
 class LauncherWindow : public QMainWindow

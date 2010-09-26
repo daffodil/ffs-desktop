@@ -90,12 +90,13 @@ ControlBarWidget::ControlBarWidget(MainObject *mOb, QWidget *parent) :
     mainLayout->addWidget(buttPause);
     buttPause->setText(tr("Pause"));
     buttPause->setIcon(QIcon(":/icons/pause_dis"));
+    buttPause->setDisabled(true);
 
     buttStop = new QPushButton();
     mainLayout->addWidget(buttStop);
     buttStop->setText(tr("Stop"));
     buttStop->setIcon(QIcon(":/icons/stop_dis"));
-
+    buttStop->setDisabled(true);
 
 }
 void ControlBarWidget::on_telnet_error(QAbstractSocket::SocketError sockError, QString errorStr){

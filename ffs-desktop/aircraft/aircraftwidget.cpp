@@ -4,7 +4,7 @@
     does a background call to a process that executes FG
   */
 
-#include "launcher/aircraftwidget.h"
+#include "aircraft/aircraftwidget.h"
 
 #include <QtCore/QProcess>
 #include <QtCore/QByteArray>
