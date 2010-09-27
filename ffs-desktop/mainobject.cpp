@@ -6,6 +6,12 @@
 #include "map/googlemapwidget.h"
 
 
+//?? HELP
+// need if test eg in pythonI got
+// if fileExists LOCAL.txt then DEV=true
+//if LOCAL
+//#include <QtGui/
+
 #include <QCoreApplication>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
@@ -14,17 +20,20 @@
 /*
   The Idea - me not a c++ coder but here are some thoughts.. and my problems
 
-  This application needs to exist in the taskbar as a "shortcuut"
+  This application needs to exist in the taskbar as a "shortcut" whilst flying an aircraft
 
   The reasoning or this is the the application serves a few purporses such as
   1) only creating a telnet object is required
   2) only connecting to a database if requried
   3) creating "status windows" on demand eg chat or Vor fequencies.
+  4) showing maps and all sorts of other capers
+  5) INTENTIONALLY the design pattern idea is that it sits in the taskbar and resource on demand.
 
   The design brief is to make the application as small as possible.
-  But use the qt toolkit as the api to make it workable xpaltform.. a hunch..
+  But use the qt toolkit as the api to make it workable xpaltform.. a hunch..(and some cries from corners)
   Ideally we want to be in a position where a widget and its code eg a FlightTracker
-  can me avaialble as a widget and all its associated "data calls", whether online..
+  can be avaialble as a widget and all its associated "data calls", whether online, as a slave etc
+
 
   As a dual screen user, or indeed slaving a laptop to a "full on instance"..
   and with a view to creating a motion platform and "buttons and knobs hardware" for around < £1k as a kit..
@@ -43,18 +52,38 @@
   */
 
 
+/***
+  The idea of the main object is that this is the main "Object passed around"
+  ** telnet connection
+  ** signaller between widgets
+  ** settings
+  ** database connection
+  ** Exists in takbar
+  */
 
 MainObject::MainObject(QObject *parent) :
     QObject(parent)
 {
 
+    //**********************************************************************
+    //** Settings connection
+    //settings = new QSettings();
+
+    //********************************************************************
+    //** Telnet connection
     //TODO ? problem
-    // I dont want to "create thsi object yet, as a socket might not be required
+    // I dont want to "create this object yet, as a socket might not be required
     // Hoewever I need a trick to create this object as required
+    //telnet = NULL;
     telnet = new TelnetSlave(this);
+    // Somehow move this somewhere else and the first call is gonna be available based on a flag
+
     connect(telnet, SIGNAL(telnet_connected(bool)), this, SLOT(on_telnet_connected(bool)));
         //void telnet_connected(bool);
 
+    //********************************************************************
+    //** SQL database problem
+    // I dont want to connect et until required
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db = QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("192.168.5.10");
