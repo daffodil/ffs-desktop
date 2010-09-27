@@ -3,20 +3,20 @@
 
 #include <QObject>
 
-#include <QtSql/QSqlDatabase>
+//#include <QtSql/QSqlDatabase>
 class AptDatParser : public QObject
 {
 Q_OBJECT
 public:
-    enum ROW_CODES{
-        C_AIRPORT = 1
-    };
+   // enum ROW_CODES{
+     //   C_AIRPORT = 1
+    //};
     explicit AptDatParser(QObject *parent = 0);
 
 
 
-    QSqlDatabase db;
-    void process_file();
+    //QSqlDatabase db;
+    void import_aptdat();
 signals:
 
 public slots:

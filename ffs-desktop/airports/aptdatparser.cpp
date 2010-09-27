@@ -108,7 +108,7 @@ AptDatParser::AptDatParser(QObject *parent) :
     //}
 
 }
-void AptDatParser::process_file(){
+void AptDatParser::import_aptdat(){
 
 
 

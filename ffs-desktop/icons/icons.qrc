@@ -26,5 +26,8 @@
         <file alias="pause_ena">control_pause_blue.png</file>
         <file alias="disconnect">disconnect.png</file>
         <file alias="connect">connect.png</file>
+        <file alias="cancel">cancel.png</file>
+        <file alias="black">bullet_black.png</file>
+        <file alias="import">page_go.png</file>
     </qresource>
 </RCC>

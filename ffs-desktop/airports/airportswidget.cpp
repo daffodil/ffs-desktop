@@ -177,11 +177,9 @@ void AirportsWidget::load_airports_db(){
     //QProgressDialog progress("Importing airports", "Abort Copy", 0, 2000, this);
     //progress.show();
      ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
-     imp->show();
+     imp->exec();
     return;
-    AptDatParser *aptDatParser = new AptDatParser(this);
 
-    aptDatParser->process_file();
 
 }
 
