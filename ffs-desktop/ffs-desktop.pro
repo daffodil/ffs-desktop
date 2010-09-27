@@ -22,8 +22,7 @@ SOURCES += main.cpp \
     airports/importairportswidget.cpp \
     props/telnetslave.cpp \
     props/propstreewidget.cpp \
-    launcher/controlbarwidget.cpp \
-    db/dbsettingswidget.cpp
+    launcher/controlbarwidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -39,7 +38,6 @@ HEADERS += launcher/launcherwindow.h \
     props/telnetslave.h \
     props/propstreewidget.h \
     launcher/controlbarwidget.h \
-    db/dbsettingswidget.h \
     airports/importairportswidget.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

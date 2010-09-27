@@ -7,7 +7,6 @@
 
 #include <QtSql/QSqlDatabase>
 
-
 #include <QtGui/QSystemTrayIcon>
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
@@ -23,6 +22,9 @@ public:
     //** Objects
     TelnetSlave *telnet;
     QSqlDatabase db;
+
+    QAction *actionTelnetConnect;
+    QAction *actionTelnetDisconnect;
 
     //* Widgets
     QSystemTrayIcon *trayIcon;

@@ -35,10 +35,11 @@
   For example..
   Removing autopilot from Flightgear and replacing with an FMC here
   Chat by creating a dedicated intelligent chat wiget with Fg in the backround.
-  ATC autocpmpletion
+  ATC autocompletion
   Autopilot control with a virtual popup
   Instead of using mpMap, instead slave Google or any other mapping to fg as an app
 
+  Just ideas ....
   */
 
 
@@ -89,6 +90,26 @@ MainObject::MainObject(QObject *parent) :
     actionMpMap = popupMenu->addAction(QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
     connect(actionMpMap, SIGNAL(triggered()), this, SLOT(on_mpmap()));
 
+    QMenu *actionTelnetMenu = new QMenu();    
+    popupMenu->addMenu(actionTelnetMenu);
+    actionTelnetMenu->setTitle("Telnet");
+
+    actionTelnetConnect = new QAction(actionTelnetMenu);
+    actionTelnetMenu->addAction(actionTelnetConnect);
+    actionTelnetConnect->setText(tr("Connect"));
+    actionTelnetConnect->setIcon(QIcon(":/icons/connect"));
+    connect(actionTelnetConnect, SIGNAL(triggered()),
+            this, SLOT(on_telnet_connect_action())
+    );
+
+    actionTelnetDisconnect = new QAction(actionTelnetMenu);
+    actionTelnetMenu->addAction(actionTelnetDisconnect);
+    actionTelnetDisconnect->setText(tr("Disconnect"));
+    actionTelnetDisconnect->setIcon(QIcon(":/icons/disconnect"));
+    actionTelnetDisconnect->setDisabled(true);
+    connect(actionTelnetConnect, SIGNAL(triggered()),
+            this, SLOT(on_telnet_disconnect_action())
+    );
     popupMenu->addSeparator();
 
     actionQuit = popupMenu->addAction(QIcon(":/icons/quit"), tr("Quit"));
@@ -133,9 +154,14 @@ void MainObject::on_tray_icon(QSystemTrayIcon::ActivationReason reason){
         trayIcon->contextMenu()->popup(p);
     }
 }
+//************************************************************
+//** Telnet Actions
+void MainObject::on_telnet_connect_action(){
+    telnet->fg_connect();
+}
+void MainObject::on_telnet_disconnect_action(){
 
-
-
+}
 
 //** Telnet Events
 void MainObject::on_telnet_connected(bool state){
@@ -147,3 +173,5 @@ void MainObject::on_telnet_connected(bool state){
     //buttTelnetDisconnect->setDisabled(!state);
     trayIcon->setIcon(QIcon(state ? ":/icons/connect" : ":/icons/disconnect"));
 }
+
+

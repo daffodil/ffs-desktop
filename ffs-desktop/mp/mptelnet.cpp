@@ -27,8 +27,6 @@ void MpTelnet::get_info(QString ip_address){
 
 void MpTelnet::on_telnet_connected(){
    // qDebug("connected");
-
-
 }
 
 void MpTelnet::on_telnet_ready_read(){
