@@ -136,9 +136,10 @@ MainObject::MainObject(QObject *parent) :
     actionTelnetDisconnect->setText(tr("Disconnect"));
     actionTelnetDisconnect->setIcon(QIcon(":/icons/disconnect"));
     actionTelnetDisconnect->setDisabled(true);
-    connect(actionTelnetConnect, SIGNAL(triggered()),
+    connect(actionTelnetDisconnect, SIGNAL(triggered()),
             this, SLOT(on_telnet_disconnect_action())
     );
+
     popupMenu->addSeparator();
 
     actionQuit = popupMenu->addAction(QIcon(":/icons/quit"), tr("Quit"));
@@ -149,8 +150,11 @@ MainObject::MainObject(QObject *parent) :
     //on_mpmap();
     on_launcher();
     //on_map();
-}
 
+} /* constructor */
+
+
+//*****************************************************************************
 //** Launcher
 void MainObject::on_launcher(){
     LauncherWindow *launcherWindow = new LauncherWindow(this);
@@ -183,24 +187,31 @@ void MainObject::on_tray_icon(QSystemTrayIcon::ActivationReason reason){
         trayIcon->contextMenu()->popup(p);
     }
 }
-//************************************************************
-//** Telnet Actions
+
+//*******************************************************************************************
+//*********************************
+//** Telnet Action  click events
 void MainObject::on_telnet_connect_action(){
+     qDebug() << "on_telnet_connect_action(@)";
     telnet->fg_connect();
 }
 void MainObject::on_telnet_disconnect_action(){
-
+    qDebug() << "on_telnet_disconnect_action(@)";
+    telnet->fg_disconnect();
 }
 
+//*************************************************
 //** Telnet Events
 void MainObject::on_telnet_connected(bool state){
     //telnet->fg_connect();
-    qDebug("on_telnet_connected##");
-    qDebug() << state;
+    qDebug() << "on_telnet_connected SIGNAL" << state;
+    //qDebug() << state;
     //statusBarTelnet->showMessage(state ? tr("Connected") : tr("Disconnected"), 4000);
     //buttTelnetConnect->setDisabled(state);
     //buttTelnetDisconnect->setDisabled(!state);
     trayIcon->setIcon(QIcon(state ? ":/icons/connect" : ":/icons/disconnect"));
+    actionTelnetConnect->setDisabled(state);
+    actionTelnetDisconnect->setDisabled(!state);
 }
 
 

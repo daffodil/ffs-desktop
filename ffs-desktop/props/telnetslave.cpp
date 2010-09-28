@@ -52,8 +52,12 @@ void TelnetSlave::fg_disconnect(){
 
 QString TelnetSlave::get_node(QString path){
         //self.add_log("ls %s" % path)
-    //socket->writeData(QString("ls %1\r\n").arg(path) );
-    //return socket->recv(120000);
+    //QString *s = QString("ls %1\r\n").arg(path);
+    QByteArray ba = QByteArray("ls ").append(path).append("\r\n");
+    //ba << "ls " << path << "\r\n";
+    qDebug() << ba;
+    socket->write( ba  );
+    //return socket->
     return QString("foo");
  }
 void TelnetSlave::set_node(QString path, QString value){
