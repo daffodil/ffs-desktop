@@ -60,20 +60,7 @@ AptDatParser::AptDatParser(QObject *parent) :
     QObject(parent)
 {
 
-    //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-//    db = QSqlDatabase::addDatabase("QMYSQL");
-//    db.setHostName("localhost");
-//    db.setUserName("root");
-//    db.setPassword("mash");
-//    db.setDatabaseName("ffs-desktop");
-    //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
-
-    //bool dbOk = db.open();
-    //if(!dbOk){
-   //     qDebug() << "Open error" << db.lastError();
-    //    return;
-    //}
-    //** Check Tables
+    //** Check Tables ?? Sanity Checkch
     QSqlQuery queryT;
     bool okT;
     okT = queryT.exec("show tables like 'airports';");

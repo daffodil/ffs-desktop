@@ -25,7 +25,7 @@ public:
 
     void fg_connect();
     void fg_disconnect();
-    QString get_node(QString path);
+    void get_node(QString path);
     void set_node(QString path, QString value);
 private:
     QTcpSocket *socket;
@@ -34,6 +34,9 @@ private:
 signals:
     void telnet_error(QAbstractSocket::SocketError, QString);
     void telnet_connected(bool);
+
+    void props_path(QString);
+    //void telnet_data(Q);
 public slots:
     void on_connected();
     void on_ready_read();

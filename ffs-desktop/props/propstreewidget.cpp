@@ -10,14 +10,22 @@
 //#include <QtGui/
 //#include <QtGui/
 
+/*
+
+
+
+  --TODO--
+  Move tree columns numbers to constants
+
+  */
 
 PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
 
      mainObject = mOb;
-     connect(mainObject->telnet, SIGNAL(on_node_data),
-             this, SLOT(on_node_data)
+     connect(mainObject->telnet, SIGNAL(props_path(QString)),
+             this, SLOT(on_props_path(QString))
              );
 
     //* Main Layout
@@ -64,16 +72,17 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     QTreeWidgetItem *headerItem = treeWidget->headerItem();
-    headerItem->setText(0,tr("Property"));
-    headerItem->setText(1,tr("Value"));
+    headerItem->setText(0, tr("Property"));
+    headerItem->setText(1, tr("Value"));
+    headerItem->setText(2, tr("Type"));
 
-    QTreeWidgetItem *it = new QTreeWidgetItem();
-    it->setText(0, "/");
-    treeWidget->addTopLevelItem(it);
-    treeWidget->setItemExpanded(it, true);
-    QTreeWidgetItem *it2 = new QTreeWidgetItem(it);
-    it2->setText(0, "foo");
-    it2->setText(0, "bar");
+    //propsRootItem = new QTreeWidgetItem();
+    ///propsRootItem->setText(0, "/");
+    //treeWidget->addTopLevelItem(it);
+    //treeWidget->setItemExpanded(propsRootItem, true);
+    //QTreeWidgetItem *it2 = new QTreeWidgetItem(it);
+   //it2->setText(0, "foo");
+   // it2->setText(0, "bar");
     //treeWidget->addTopLevelItem(it);
 
     statusBarTree = new QStatusBar();
@@ -82,6 +91,11 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 }
 
 void PropsTreeWidget::load_nodes(){
-    QString reply = mainObject->telnet->get_node("/");
-    qDebug() << reply;
+    //mainObject->telnet->fg_connect();
+    mainObject->telnet->get_node("/");
+    //qDebug() << reply;
+}
+
+void PropsTreeWidget::on_props_path(QString path){
+    qDebug() << "TREE " << path;
 }

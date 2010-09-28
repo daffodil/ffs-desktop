@@ -3,6 +3,7 @@
 #include "telnetslave.h"
 
 #include <QtCore/QByteArray>
+#include <QtCore/QStringList>
 
 #include <QtNetwork/QTcpSocket>
 #include <QtNetwork/QHostAddress>
@@ -11,7 +12,8 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     QObject(parent)
 {
 
-    hostAddress = QString("127.0.0.1");
+    //hostAddress = QString("127.0.0.1");
+    hostAddress = QString("192.168.5.16");
     port = 5555;
 
     socket = new QTcpSocket(this);
@@ -26,47 +28,64 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     connect(socket, SIGNAL(readyRead()), this, SLOT(on_ready_read()));
 }
 
-
+//*********************************************************************************************
+ //** Connect / Disconnect
+//********************************************************************************************
 void TelnetSlave::fg_connect(){
+
     qDebug("fg_connect()");
-
-
     socket->connectToHost(hostAddress, port);
-        //self.add_log("ls %s" % path)
-    //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
-    //return QString("foo"); //self.socket.recv(120000);
- }
+}
 
 void TelnetSlave::fg_disconnect(){
+
     qDebug("fg_disconnect()");
-
-
     socket->close();
-        //self.add_log("ls %s" % path)
-    //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
-    //return QString("foo"); //self.socket.recv(120000);
- }
+}
+
 //*********************************************************************************************
  //** Set/Get Node
-//*********************************************************************************************
-
-QString TelnetSlave::get_node(QString path){
-        //self.add_log("ls %s" % path)
-    //QString *s = QString("ls %1\r\n").arg(path);
-    QByteArray ba = QByteArray("ls ").append(path).append("\r\n");
+//********************************************************************************************
+void TelnetSlave::get_node(QString path){
+    if(!socket->isOpen()){
+        fg_connect();
+    }
+    QByteArray command = QByteArray("ls ").append(path).append("\r\n");
     //ba << "ls " << path << "\r\n";
-    qDebug() << ba;
-    socket->write( ba  );
+    qDebug() << command;
+    socket->write( command );
     //return socket->
-    return QString("foo");
+    //return QString("foo");
  }
 void TelnetSlave::set_node(QString path, QString value){
-        //self.add_log("ls %s" % path)
+    //self.add_log("ls %s" % path)
     //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
     //return QString("foo"); //self.socket.recv(120000);
  }
+//************************************************************
+//***READ READY
+void TelnetSlave::on_ready_read(){
+    //qDebug() << "READ < " << telnet_address;
+
+    QString reply(socket->readAll());
+    //qDebug() << reply;
+    //qDebug() << "-----------------------------------------------------";
+    //qDebug() << reply.split("\n");
+    QStringList lines = reply.split("\n");
+    //qDebug() << lines;
+    for(int i = 0; i < lines.size(); ++i){
+
+        QString line = lines.at(i).trimmed();
+        //qDebug() << i << "=" << line;
+        if( line.endsWith("/") ){
+            emit props_path(line);
+        }
 
 
+    }
+
+   // telnet_reply.append( QString(socket->readAll()) );
+}
 
 //*********************************************************************************************
  //** Socket Events
@@ -89,11 +108,7 @@ void TelnetSlave::on_disconnected(){
 }
 
 
-void TelnetSlave::on_ready_read(){
-    //qDebug() << "READ < " << telnet_address;
-   // qDebug() << socket->readAll();
-   // telnet_reply.append( QString(socket->readAll()) );
-}
+
 
 void TelnetSlave::on_error(QAbstractSocket::SocketError socketError){
     qDebug("on_error");
