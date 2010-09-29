@@ -10,7 +10,7 @@
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QIcon>
 #include <QtGui/QFont>
-//#include <QtGui/
+
 
 /*
 
@@ -32,6 +32,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     connect(mainObject->telnet, SIGNAL(props_node(QString, QString, QString, QString)),
             this, SLOT(on_props_node(QString, QString, QString, QString))
     );
+
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
@@ -50,7 +51,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->setContentsMargins(0,0,0,0);
     treeLayout->setSpacing(0);
 
-
+    //*****************************
     //** Toolbar
     QToolBar *treeToolbar = new QToolBar();
     treeLayout->addWidget(treeToolbar);
@@ -64,8 +65,28 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 
     treeToolbar->addSeparator();
 
+    //*****************************************
+    //** Autorefresh
+    chkAutoRefresh = new QCheckBox();
+    treeToolbar->addWidget(chkAutoRefresh);
+    chkAutoRefresh->setText("Autorefresh Enabled");
+    chkAutoRefresh->setCheckState(Qt::Unchecked);
+    connect(chkAutoRefresh, SIGNAL(toggled(bool)),
+            this, SLOT(on_auto_refresh_enabled())
+    );
+
+    comboAutoRefreshRate = new QComboBox();
+    treeToolbar->addWidget(comboAutoRefreshRate);
+    comboAutoRefreshRate->addItem("1");
+    comboAutoRefreshRate->addItem("2");
+    comboAutoRefreshRate->addItem("3");
+    comboAutoRefreshRate->addItem("4");
+    comboAutoRefreshRate->addItem("5");
+
+    timer = new QTimer(this);
 
     //******************************************************
+    //** Tree Widgets
     treeWidget = new QTreeWidget(this);
     treeLayout->addWidget(treeWidget);
     treeWidget->setItemsExpandable(true);
@@ -226,4 +247,8 @@ void PropsTreeWidget::on_item_clicked(QTreeWidgetItem *item, int col){
         qDebug("REFRESH");
         mainObject->telnet->get_node(item->text(3));
     }
+}
+
+void PropsTreeWidget::on_auto_refresh_enabled(){
+
 }

@@ -23,6 +23,7 @@ public:
 
     QString hostAddress;
     int port;
+    QQueue<QString> q;
 
     QString current_node_path;
     bool in_request;
