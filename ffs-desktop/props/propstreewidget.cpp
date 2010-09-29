@@ -1,13 +1,15 @@
 #include "propstreewidget.h"
 
+#include <QtCore/QList>
+
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QSplitter>
 #include <QtGui/QToolBar>
 #include <QtGui/QAction>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QTreeWidgetItem>
-//#include <QtGui/
-//#include <QtGui/
+#include <QtGui/QIcon>
+//#include <QtGui/QHeaderView>
 //#include <QtGui/
 
 /*
@@ -64,7 +66,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     //******************************************************
     treeWidget = new QTreeWidget(this);
     treeLayout->addWidget(treeWidget);
-    //treeWidget->setModel(proxyModel);
+    treeWidget->setItemsExpandable(true);
     treeWidget->setAlternatingRowColors(true);
     treeWidget->setRootIsDecorated(true);
     treeWidget->setSortingEnabled(true);
@@ -75,6 +77,10 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     headerItem->setText(0, tr("Property"));
     headerItem->setText(1, tr("Value"));
     headerItem->setText(2, tr("Type"));
+    treeWidget->setColumnWidth(0, 200);
+
+    connect(treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
+             this, SLOT(on_item_expanded(QTreeWidgetItem*)) );
 
     //propsRootItem = new QTreeWidgetItem();
     ///propsRootItem->setText(0, "/");
@@ -97,5 +103,19 @@ void PropsTreeWidget::load_nodes(){
 }
 
 void PropsTreeWidget::on_props_path(QString path){
-    qDebug() << "TREE " << path;
+    //** add top level tree item
+    QList<QTreeWidgetItem *> items = treeWidget->findItems(path,Qt::MatchExactly, 0);
+    //qDebug() << "TREE " << path << "=" << items.size();
+    QTreeWidgetItem *newItem = new QTreeWidgetItem();
+    newItem->setText(0, path);
+    newItem->setFirstColumnSpanned(true);
+    newItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+    newItem->setIcon(0, QIcon(":/icons/folder_closed"));
+    treeWidget->addTopLevelItem(newItem);
+
+
+}
+
+void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
+    qDebug("ON Expand");
 }

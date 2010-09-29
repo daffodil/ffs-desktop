@@ -59,9 +59,9 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     //*********************************************************
     controlBarWidget = new ControlBarWidget(mainObject);
     mainVBox->addWidget(controlBarWidget, 1);
-    //controlBarWidget->hide();
+    controlBarWidget->hide();
 
-    resize(800, 400);
+    resize(800, 600);
     move(10,10);
      // tabWidget->setCurrentIndex(2);
 }

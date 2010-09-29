@@ -32,14 +32,12 @@ TelnetSlave::TelnetSlave(QObject *parent) :
  //** Connect / Disconnect
 //********************************************************************************************
 void TelnetSlave::fg_connect(){
-
-    qDebug("fg_connect()");
+    //qDebug("fg_connect()");
     socket->connectToHost(hostAddress, port);
 }
 
 void TelnetSlave::fg_disconnect(){
-
-    qDebug("fg_disconnect()");
+    //qDebug("fg_disconnect()");
     socket->close();
 }
 
@@ -51,40 +49,26 @@ void TelnetSlave::get_node(QString path){
         fg_connect();
     }
     QByteArray command = QByteArray("ls ").append(path).append("\r\n");
-    //ba << "ls " << path << "\r\n";
-    qDebug() << command;
+    //qDebug() << command;
     socket->write( command );
-    //return socket->
-    //return QString("foo");
  }
+
 void TelnetSlave::set_node(QString path, QString value){
-    //self.add_log("ls %s" % path)
-    //socket->writeData( QByteArray(QString("ls %1\r\n").arg(path)) );
-    //return QString("foo"); //self.socket.recv(120000);
+    //TODO
  }
+
 //************************************************************
-//***READ READY
+//*** READ READY
+
 void TelnetSlave::on_ready_read(){
-    //qDebug() << "READ < " << telnet_address;
-
     QString reply(socket->readAll());
-    //qDebug() << reply;
-    //qDebug() << "-----------------------------------------------------";
-    //qDebug() << reply.split("\n");
     QStringList lines = reply.split("\n");
-    //qDebug() << lines;
     for(int i = 0; i < lines.size(); ++i){
-
         QString line = lines.at(i).trimmed();
-        //qDebug() << i << "=" << line;
         if( line.endsWith("/") ){
             emit props_path(line);
         }
-
-
     }
-
-   // telnet_reply.append( QString(socket->readAll()) );
 }
 
 //*********************************************************************************************
@@ -92,23 +76,17 @@ void TelnetSlave::on_ready_read(){
 //*********************************************************************************************
 
 void TelnetSlave::on_host_found(){
-    qDebug("on_host_found");
-
 }
 
 void TelnetSlave::on_connected(){
-    qDebug("on_telnet_connected");
+    //qDebug("on_telnet_connected");
     emit telnet_connected(true);
 }
+
 void TelnetSlave::on_disconnected(){
-    //qDebug() << "\n--------------------------------\non_telnet_disconnectedan-------------\n" ; //<< telnet_reply;
-    qDebug("on_telnet_disconnected"); // << "DONE" << telnet_reply;
-    //emit telnet_data(telnet_address, telnet_reply); //, telnet_reply);
+    //qDebug("on_telnet_disconnected"); // << "DONE" << telnet_reply;
     emit telnet_connected(false);
 }
-
-
-
 
 void TelnetSlave::on_error(QAbstractSocket::SocketError socketError){
     qDebug("on_error");

@@ -24,6 +24,7 @@ signals:
 public slots:
     void load_nodes();
     void on_props_path(QString);
+    void on_item_expanded(QTreeWidgetItem *item);
 };
 
 #endif // PROPSTREEWIDGET_H

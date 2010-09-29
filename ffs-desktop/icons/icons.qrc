@@ -29,5 +29,7 @@
         <file alias="cancel">cancel.png</file>
         <file alias="black">bullet_black.png</file>
         <file alias="import">page_go.png</file>
+        <file alias="folder_closed">folder.png</file>
+        <file alias="folder_expanded">folder_database.png</file>
     </qresource>
 </RCC>
