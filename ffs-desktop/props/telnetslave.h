@@ -37,7 +37,7 @@ signals:
     void telnet_error(QAbstractSocket::SocketError, QString);
     void telnet_connected(bool);
 
-    void props_path(QString);
+    void props_path(QString, QString);
     //void telnet_data(Q);
 public slots:
     void on_connected();

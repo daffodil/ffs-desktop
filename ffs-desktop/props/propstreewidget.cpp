@@ -26,8 +26,8 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 {
 
      mainObject = mOb;
-     connect(mainObject->telnet, SIGNAL(props_path(QString)),
-             this, SLOT(on_props_path(QString))
+     connect(mainObject->telnet, SIGNAL(props_path(QString, QString)),
+             this, SLOT(on_props_path(QString, QString))
              );
 
     //* Main Layout
@@ -77,6 +77,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     headerItem->setText(0, tr("Property"));
     headerItem->setText(1, tr("Value"));
     headerItem->setText(2, tr("Type"));
+    headerItem->setText(3, tr("Full Path"));
     treeWidget->setColumnWidth(0, 200);
 
     connect(treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
@@ -102,24 +103,48 @@ void PropsTreeWidget::load_nodes(){
     //qDebug() << reply;
 }
 
-void PropsTreeWidget::on_props_path(QString path){
+void PropsTreeWidget::on_props_path(QString parent_path, QString path){
+    qDebug() << "on_props_path >=" << parent_path << "=" << path;
 
-    //** Check if node is already there
-    QList<QTreeWidgetItem *> items = treeWidget->findItems(path,Qt::MatchExactly, 0);
-    if( items.size() > 0){
+    //** Find if actual path end node is already there
+    QString end_path = QString(parent_path).append(path);
+    QList<QTreeWidgetItem *> end_items = treeWidget->findItems(end_path,
+                                                           Qt::MatchExactly | Qt::MatchRecursive,
+                                                            3);
+    if( end_items.size() > 0){
        return; //* node exists so no need to add
     }
-    QTreeWidgetItem *newItem = new QTreeWidgetItem();
-    newItem->setText(0, path);
-    newItem->setFirstColumnSpanned(true);
-    newItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-    newItem->setIcon(0, QIcon(":/icons/folder_closed"));
-    treeWidget->addTopLevelItem(newItem);
+   //QTreeWidgetItem *parent_item;
+    //** Otherwise find the parent and add child
+    if(parent_path == "/"){
+        QTreeWidgetItem *newTopItem = new QTreeWidgetItem();
+        newTopItem->setText(3, end_path );
+        newTopItem->setText(0, path.left(path.length() - 1));
+        newTopItem->setFirstColumnSpanned(true);
+        newTopItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        newTopItem->setIcon(0, QIcon(":/icons/folder_closed"));
+        treeWidget->addTopLevelItem(newTopItem);
+    }else{
+        QList<QTreeWidgetItem *> items = treeWidget->findItems(parent_path,
+                                                           Qt::MatchExactly | Qt::MatchRecursive,
+                                                            3);
+        QTreeWidgetItem *newNodeItem = new QTreeWidgetItem(items[0]);
+        newNodeItem->setText(3, end_path );
+        newNodeItem->setText(0, path.left(path.length() - 1));
+        newNodeItem->setFirstColumnSpanned(true);
+        newNodeItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+        newNodeItem->setIcon(0, QIcon(":/icons/folder_closed"));
+        //treeWidget->addTopLevelItem(newTopItem);
+        qDebug( ) << "parent_path=" << "found" << "=" << items.size();
+    }
+    //qDebug( ) << "parent_path=" << parent_path; // << "=" << items.size();
+     qDebug() << "on_props_path <=" << parent_path << "=" << path;
+     qDebug("---");
 }
 
 void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
     qDebug("ON Expand");
-    qDebug() << item->text(0);
+    qDebug() << item->text(3);
     item->setIcon(0, QIcon(":/icons/folder_expanded"));
-    mainObject->telnet->get_node(item->text(0));
+    mainObject->telnet->get_node(item->text(3));
 }
