@@ -25,10 +25,11 @@ TelnetSlave::TelnetSlave(QObject *parent) :
 
     socket = new QTcpSocket(this);
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(on_error( QAbstractSocket::SocketError)));
+            this, SLOT(on_error( QAbstractSocket::SocketError))
+    );
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-            this, SLOT(on_state_changed(QAbstractSocket::SocketState)));
-
+            this, SLOT(on_state_changed(QAbstractSocket::SocketState))
+    );
     connect(socket, SIGNAL(hostFound()), this, SLOT(on_host_found()));
     connect(socket, SIGNAL(connected()), this, SLOT(on_connected()));
     connect(socket, SIGNAL(disconnected()), this, SLOT(on_disconnected()));
