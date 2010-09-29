@@ -1,4 +1,8 @@
 
+/*
+
+  ?
+ */
 
 #include "telnetslave.h"
 
@@ -66,12 +70,44 @@ void TelnetSlave::set_node(QString path, QString value){
 //*** READ READY
 
 void TelnetSlave::on_ready_read(){
+
+    //* read reply and split into lines
     QString reply(socket->readAll());
     QStringList lines = reply.split("\n");
+
     for(int i = 0; i < lines.size(); ++i){
         QString line = lines.at(i).trimmed();
-        if( line.endsWith("/") ){
+
+        //* end line is /> so skip
+        if(line == "/>"){
+            qDebug("END");
+        }else if( line.endsWith("/") ){
             emit props_path(current_path, line);
+        }else{
+            // check the = sign is there.
+            if( line.count("=") > 0 ){
+                //* eg right-aileron-pos-norm =	'0.02699490675'	(double)
+                //QString val_part = line.section("=", 0, 0).trimmed();
+                //* Split the values on a tab
+                QStringList val_parts = line.split("\t");
+               // qDebug() << val_parts;
+
+                //TODO - maybe some regex
+                //** the node_name ends with " =" so remove eg "my-node ="
+                QString node_name = val_parts[0].left( val_parts[0].length() - 2 );
+
+                //** node value in enclosed in ' so remove eg "'true'"
+                QString node_value = val_parts[1].mid(1, val_parts[1].length() - 2);
+
+                //** the node_type is encodes in () eg "(double)"
+                QString node_type = val_parts[2].mid(1, val_parts[2].length() - 2);
+               // QString node_name = val_parts[0].trimmed();
+                //qDebug() << "VAL=" << node_name << " = " << node_value << "=" << node_type;
+                //qDebug();
+                emit props_node(current_path, node_name, node_value, node_type);
+            }else{
+                qDebug() << "UMM=" << line << "=" << line.count("=") ;
+            }
         }
     }
 }

@@ -38,7 +38,9 @@ signals:
     void telnet_connected(bool);
 
     void props_path(QString, QString);
+    void props_node(QString, QString, QString, QString);
     //void telnet_data(Q);
+
 public slots:
     void on_connected();
     void on_ready_read();
