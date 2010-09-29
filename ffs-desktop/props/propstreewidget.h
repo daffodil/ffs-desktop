@@ -4,6 +4,7 @@
 #include "mainobject.h"
 
 #include <QtCore/QTimer>
+#include <QtCore/QStringList>
 
 #include <QtGui/QWidget>
 #include <QtGui/QTreeWidget>
@@ -22,6 +23,8 @@ public:
     MainObject *mainObject;
 
     QTimer *timer;
+    QStringList refreshList;
+
     QTreeWidget *treeWidget;
 
     QCheckBox *chkAutoRefresh;
