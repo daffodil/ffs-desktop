@@ -23,6 +23,8 @@ public:
     QString hostAddress;
     int port;
 
+    QString current_path;
+
     void fg_connect();
     void fg_disconnect();
     void get_node(QString path);

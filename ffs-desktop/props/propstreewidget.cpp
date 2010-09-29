@@ -103,19 +103,23 @@ void PropsTreeWidget::load_nodes(){
 }
 
 void PropsTreeWidget::on_props_path(QString path){
-    //** add top level tree item
+
+    //** Check if node is already there
     QList<QTreeWidgetItem *> items = treeWidget->findItems(path,Qt::MatchExactly, 0);
-    //qDebug() << "TREE " << path << "=" << items.size();
+    if( items.size() > 0){
+       return; //* node exists so no need to add
+    }
     QTreeWidgetItem *newItem = new QTreeWidgetItem();
     newItem->setText(0, path);
     newItem->setFirstColumnSpanned(true);
     newItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
     newItem->setIcon(0, QIcon(":/icons/folder_closed"));
     treeWidget->addTopLevelItem(newItem);
-
-
 }
 
 void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
     qDebug("ON Expand");
+    qDebug() << item->text(0);
+    item->setIcon(0, QIcon(":/icons/folder_expanded"));
+    mainObject->telnet->get_node(item->text(0));
 }

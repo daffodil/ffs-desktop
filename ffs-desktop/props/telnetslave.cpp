@@ -12,6 +12,8 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     QObject(parent)
 {
 
+    current_path = "";
+
     //hostAddress = QString("127.0.0.1");
     hostAddress = QString("192.168.5.16");
     port = 5555;
@@ -32,12 +34,10 @@ TelnetSlave::TelnetSlave(QObject *parent) :
  //** Connect / Disconnect
 //********************************************************************************************
 void TelnetSlave::fg_connect(){
-    //qDebug("fg_connect()");
     socket->connectToHost(hostAddress, port);
 }
 
 void TelnetSlave::fg_disconnect(){
-    //qDebug("fg_disconnect()");
     socket->close();
 }
 
@@ -48,9 +48,14 @@ void TelnetSlave::get_node(QString path){
     if(!socket->isOpen()){
         fg_connect();
     }
+    current_path = path;
     QByteArray command = QByteArray("ls ").append(path).append("\r\n");
     //qDebug() << command;
     socket->write( command );
+    //while(socket->waitForReadyRead()){
+     //   qDebug() << "idel";
+    //}
+    //qDebug() << "YES";
  }
 
 void TelnetSlave::set_node(QString path, QString value){
@@ -66,7 +71,7 @@ void TelnetSlave::on_ready_read(){
     for(int i = 0; i < lines.size(); ++i){
         QString line = lines.at(i).trimmed();
         if( line.endsWith("/") ){
-            emit props_path(line);
+            emit props_path(current_path, line);
         }
     }
 }
@@ -97,6 +102,6 @@ void TelnetSlave::on_error(QAbstractSocket::SocketError socketError){
 
 
 void TelnetSlave::on_state_changed(QAbstractSocket::SocketState socketState ){
-      qDebug("on_state_changed");
-      qDebug() << "state=" << socketState;
+      //qDebug("on_state_changed");
+     // qDebug() << "state=" << socketState;
 }
