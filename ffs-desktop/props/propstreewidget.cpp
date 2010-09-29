@@ -74,6 +74,8 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeWidget->setSortingEnabled(true);
     treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     treeWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    treeWidget->setSortingEnabled(true);
+    treeWidget->sortByColumn(0, Qt::AscendingOrder);
 
     QTreeWidgetItem *headerItem = treeWidget->headerItem();
     headerItem->setText(0, tr("Property"));
@@ -83,8 +85,11 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeWidget->setColumnWidth(0, 200);
 
     connect(treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
-             this, SLOT(on_item_expanded(QTreeWidgetItem*)) );
-
+             this, SLOT(on_item_expanded(QTreeWidgetItem*))
+    );
+    connect(treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+            this, SLOT(on_item_clicked(QTreeWidgetItem*,int))
+    );
     //propsRootItem = new QTreeWidgetItem();
     ///propsRootItem->setText(0, "/");
     //treeWidget->addTopLevelItem(it);
@@ -114,10 +119,12 @@ void PropsTreeWidget::on_props_node(QString parent_path, QString node_name,
 
     //** Find if actual path end node is already there
     QString end_path = QString(parent_path).append(node_name);
-    QList<QTreeWidgetItem *> end_items = treeWidget->findItems(end_path,
+    QList<QTreeWidgetItem *> existing_items = treeWidget->findItems(end_path,
                                                            Qt::MatchExactly | Qt::MatchRecursive,
                                                             3);
-    if( end_items.size() > 0){
+    if( existing_items.size() > 0){
+        //qDebug() << "NODE EXISTS";
+        existing_items[0]->setText(1, node_value); //* UPdate existing node
        return; //* node exists so no need to add
     }
    //QTreeWidgetItem *parent_item;
@@ -130,7 +137,7 @@ void PropsTreeWidget::on_props_node(QString parent_path, QString node_name,
         newTopItem->setText(2, node_type);
        // newTopItem->setFirstColumnSpanned(true);
         //newTopItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-        //newTopItem->setIcon(0, QIcon(":/icons/folder_closed"));
+        newTopItem->setIcon(0, QIcon(":/icons/node_val"));
        treeWidget->addTopLevelItem(newTopItem);
     }else{
         QList<QTreeWidgetItem *> items = treeWidget->findItems(parent_path,
@@ -169,9 +176,9 @@ void PropsTreeWidget::on_props_path(QString parent_path, QString path){
         newTopItem->setText(3, end_path );
         newTopItem->setText(0, path.left(path.length() - 1));
         //newTopItem->setText(1, tr("Refresh"));
-        QFont font = newTopItem->font(1);
-        font.setPointSize(7);
-        newTopItem->setFont(1,font);
+       // QFont font = newTopItem->font(1);
+        //font.setPointSize(7);
+        //newTopItem->setFont(1,font);
         //newTopItem->setFirstColumnSpanned(true);
         newTopItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
         newTopItem->setIcon(0, QIcon(":/icons/folder_closed"));
@@ -183,7 +190,7 @@ void PropsTreeWidget::on_props_path(QString parent_path, QString path){
         QTreeWidgetItem *newNodeItem = new QTreeWidgetItem(items[0]);
         newNodeItem->setText(3, end_path );
         newNodeItem->setText(0, path.left(path.length() - 1));
-        newNodeItem->setFirstColumnSpanned(true);
+        //newNodeItem->setFirstColumnSpanned(true);
         newNodeItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
         newNodeItem->setIcon(0, QIcon(":/icons/folder_closed"));
         //treeWidget->addTopLevelItem(newTopItem);
@@ -195,9 +202,28 @@ void PropsTreeWidget::on_props_path(QString parent_path, QString path){
 }
 
 void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
-   // qDebug("ON Expand");
+    qDebug() << "ON Expand=" << item->text(3);
    // qDebug() << item->text(3);
     item->setIcon(0, QIcon(":/icons/folder_expanded"));
     item->setText(1, tr("Refresh"));
+    QFont font = item->font(1);
+    font.setPointSize(7);
+    item->setFont(1, font);
+    QColor color(0, 0, 170);
+    item->setForeground(1, color);
+    item->setCheckState(1, Qt::Unchecked);
+
     mainObject->telnet->get_node(item->text(3));
+}
+
+void PropsTreeWidget::on_item_clicked(QTreeWidgetItem *item, int col){
+     qDebug("ON on_item_clicked");
+    // qDebug() << item->text(3);
+     //item->setIcon(0, QIcon(":/icons/folder_expanded"));
+    // item->setText(1, tr("Refresh"));
+     //mainObject->telnet->get_node(item->text(3));)
+    if(item->text(1) == "Refresh"){
+        qDebug("REFRESH");
+        mainObject->telnet->get_node(item->text(3));
+    }
 }

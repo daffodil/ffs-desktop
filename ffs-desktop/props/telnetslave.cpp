@@ -16,7 +16,8 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     QObject(parent)
 {
 
-    current_path = "";
+    current_node_path = "";
+    in_request = false;
 
     //hostAddress = QString("127.0.0.1");
     hostAddress = QString("192.168.5.16");
@@ -45,71 +46,86 @@ void TelnetSlave::fg_disconnect(){
     socket->close();
 }
 
-//*********************************************************************************************
- //** Set/Get Node
-//********************************************************************************************
-void TelnetSlave::get_node(QString path){
-    if(!socket->isOpen()){
-        fg_connect();
-    }
-    current_path = path;
-    QByteArray command = QByteArray("ls ").append(path).append("\r\n");
-    //qDebug() << command;
-    socket->write( command );
-    //while(socket->waitForReadyRead()){
-     //   qDebug() << "idel";
-    //}
-    //qDebug() << "YES";
- }
-
 void TelnetSlave::set_node(QString path, QString value){
     //TODO
  }
+
+
+//*********************************************************************************************
+ //** Get Node
+//********************************************************************************************
+void TelnetSlave::get_node(QString node_path){
+    if( !socket->isOpen() ){
+        qDebug() << "not open";
+        return;
+    }
+    current_node_path = node_path; // << store the "node_path" in the current_node_path vars
+    QByteArray command = QByteArray("ls ").append(node_path).append("\r\n");
+    //** Send request to telnet socket
+    if(in_request){
+        qDebug() << "IN_REQUEST";
+        qDebug() << socket->bytesToWrite();
+        return;
+    }
+    in_request = true;
+    socket->write( command );
+ }
+
 
 //************************************************************
 //*** READ READY
 
 void TelnetSlave::on_ready_read(){
 
-    //* read reply and split into lines
     QString reply(socket->readAll());
-    QStringList lines = reply.split("\n");
+    QStringList lines = reply.split("\r\n");
 
+   // qDebug() << reply;
     for(int i = 0; i < lines.size(); ++i){
         QString line = lines.at(i).trimmed();
-
+       // qDebug() << "line=" << line;
         //* end line is /> so skip
         if(line == "/>"){
             qDebug("END");
         }else if( line.endsWith("/") ){
-            emit props_path(current_path, line);
+            emit props_path(current_node_path, line);
         }else{
+            if(line.count("chat") > 0){
+                 qDebug() << "CHAT=" << line << "=" << line.count("chat") ;
+            }
             // check the = sign is there.
             if( line.count("=") > 0 ){
-                //* eg right-aileron-pos-norm =	'0.02699490675'	(double)
+                //* eg right-aileron-pos-norm =\t'0.02699490675'\t(double)
                 //QString val_part = line.section("=", 0, 0).trimmed();
                 //* Split the values on a tab
                 QStringList val_parts = line.split("\t");
-               // qDebug() << val_parts;
+                //ssqDebug() << val_parts;
 
                 //TODO - maybe some regex
                 //** the node_name ends with " =" so remove eg "my-node ="
                 QString node_name = val_parts[0].left( val_parts[0].length() - 2 );
 
                 //** node value in enclosed in ' so remove eg "'true'"
-                QString node_value = val_parts[1].mid(1, val_parts[1].length() - 2);
+                QString node_value = val_parts.size() == 1 ?
+                                     "" :
+                                     val_parts[1].replace("'","");
 
                 //** the node_type is encodes in () eg "(double)"
-                QString node_type = val_parts[2].mid(1, val_parts[2].length() - 2);
+                QString node_type = val_parts.size() == 2 ?
+                                    "" :
+                                    val_parts[2].mid(1, val_parts[2].length() - 2);
+
                // QString node_name = val_parts[0].trimmed();
                 //qDebug() << "VAL=" << node_name << " = " << node_value << "=" << node_type;
                 //qDebug();
-                emit props_node(current_path, node_name, node_value, node_type);
+                emit props_node(current_node_path, node_name, node_value, node_type);
             }else{
                 qDebug() << "UMM=" << line << "=" << line.count("=") ;
+                 //qDebug() << reply;
             }
         }
-    }
+    } /* for */
+    in_request = false;
 }
 
 //*********************************************************************************************

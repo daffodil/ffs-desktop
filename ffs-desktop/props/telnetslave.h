@@ -3,7 +3,9 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtCore/QQueue>
 #include <QtNetwork/QTcpSocket>
+
 /*
 void	connected ()
 void	disconnected ()
@@ -19,19 +21,19 @@ Q_OBJECT
 public:
     explicit TelnetSlave(QObject *parent = 0);
 
-
     QString hostAddress;
     int port;
 
-    QString current_path;
+    QString current_node_path;
+    bool in_request;
 
     void fg_connect();
     void fg_disconnect();
     void get_node(QString path);
     void set_node(QString path, QString value);
+
 private:
     QTcpSocket *socket;
-
 
 signals:
     void telnet_error(QAbstractSocket::SocketError, QString);
