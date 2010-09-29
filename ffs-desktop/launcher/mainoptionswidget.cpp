@@ -14,9 +14,10 @@
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
 
-MainOptionsWidget::MainOptionsWidget(QWidget *parent) :
+MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
+    mainObject = mOb;
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -62,6 +63,9 @@ MainOptionsWidget::MainOptionsWidget(QWidget *parent) :
     layoutTod->setSpacing(0);
     layoutTod->setContentsMargins(0,0,0,0);
 
+    buttGroupTod = new QButtonGroup(this);
+    buttGroupTod->setExclusive(true);
+
     QRadioButton *buttonTodMidnight = new QRadioButton("Midnight");
     layoutTod->addWidget(buttonTodMidnight);
 
@@ -74,6 +78,13 @@ MainOptionsWidget::MainOptionsWidget(QWidget *parent) :
 
     QRadioButton *buttonTodDusk = new QRadioButton("Dusk");
     layoutTod->addWidget(buttonTodDusk);
+
+    QPushButton *buttSendTodTelnet = new QPushButton();
+    layoutTod->addWidget(buttSendTodTelnet);
+    buttSendTodTelnet->setText(tr("Send"));
+    buttSendTodTelnet->setIcon(QIcon(":/icons/send"));
+    connect(buttSendTodTelnet, SIGNAL(clicked()),
+            this, SLOT(on_send_tod_telnet()));
 
     //layoutTod->addStretch(20);
    // layoutTod->addWidget(make_radio("Dawn"));
@@ -188,4 +199,10 @@ MainOptionsWidget::MainOptionsWidget(QWidget *parent) :
 QRadioButton MainOptionsWidget::make_radio(QString label){
     //return new QRadioButton(label);
    // return button;
+}
+
+void MainOptionsWidget::on_send_tod_telnet(){
+    QAbstractButton *curr = buttGroupTod->checkedButton();
+    //mainObject->telnet->set_node();
+
 }

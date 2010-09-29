@@ -41,11 +41,11 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
    // tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 
 
-   // mainOptionsWidget = new MainOptionsWidget();
-    //tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+    mainOptionsWidget = new MainOptionsWidget(mainObject);
+    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
 
-        propsTreeWidget = new PropsTreeWidget(mainObject);
+     propsTreeWidget = new PropsTreeWidget(mainObject);
      tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
      //airportsWidget = new AirportsWidget(mainObject);
@@ -59,11 +59,11 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     //*********************************************************
     controlBarWidget = new ControlBarWidget(mainObject);
     mainVBox->addWidget(controlBarWidget, 1);
-    controlBarWidget->hide();
+    //controlBarWidget->hide();
 
     resize(800, 600);
     move(10,10);
-     // tabWidget->setCurrentIndex(2);
+    tabWidget->setCurrentIndex(2);
 }
 
 LauncherWindow::~LauncherWindow()
