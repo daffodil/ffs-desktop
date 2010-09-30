@@ -32,6 +32,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+#include <QtGui/QProgressDialog>
 
 
 /* From the guide >>
@@ -72,12 +73,11 @@ void AptDatParser::import_aptdat(){
 
 
 
-    return;
 
 
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    //QFile file("/home/ffs/ffs-desktop/apt.dat");
+    //Q//File file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -102,19 +102,19 @@ void AptDatParser::import_aptdat(){
     //queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
-    bool ok;
-    //int c = 0;
-
+    bool success;
     QString airport;
     bool is_icao;
 
-
+    QProgressDialog progress("Importing Airports", "Cancel", 0, estimated_lines);
+    //QProgressDialog()
+    progress.setWindowModality(Qt::WindowModal);
 
     while( !file.atEnd() ){
-        if(cancel_import_flag == true){
-            qDebug("Cancelled");
-            return;
-        }
+//        if(cancel_import_flag == true){
+//            qDebug("Cancelled");
+//            return;
+//        }
 
         QByteArray lineBytes = file.readLine();
         QString line = QString(lineBytes).trimmed();
@@ -134,13 +134,13 @@ void AptDatParser::import_aptdat(){
             }
             QString tower =  parts[2] == "1" ? "1" : "";
             if(is_icao){
-                qDebug() << airport;
+                //qDebug() << airport;
                 queryAirportInsert.addBindValue( airport);
                 queryAirportInsert.addBindValue( airport_name.trimmed() );
                 queryAirportInsert.addBindValue( elevation);
                 queryAirportInsert.addBindValue( parts[2] == "1" ? "1" : NULL );
-                ok = queryAirportInsert.exec();
-                if(!ok){
+                success = queryAirportInsert.exec();
+                if(!success){
                     qDebug() << queryAirportInsert.lastError();
                     qDebug() << "DIE queryApt";
                     return;
@@ -203,10 +203,14 @@ void AptDatParser::import_aptdat(){
             //qDebug(""); // << "Airport" << line << " = ";
         }
 
-        line_counter++;
-        if(line_counter % 1000 == 0){
-            emit line_count(line_counter);
+        if (progress.wasCanceled()){
+            return;
         }
+        line_counter++;
+        progress.setValue(line_counter);
+       //if(line_counter % 1000 == 0){
+        //    emit line_count(line_counter);
+       // }
         //qDebug() << line_counter;
         //if(line_counter == 200){
             //return;
