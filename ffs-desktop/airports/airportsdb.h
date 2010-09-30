@@ -20,13 +20,13 @@ public:
     bool create_tables();
     void airports();
     void runways(QString airport);
-    void insert_airport(QString, QString, QString, QString);
+
 
 signals:
     void airport(QString, QString, QString, QString);
 
 public slots:
-
+    void insert_airport(QString, QString, QString, QString);
 };
 
 #endif // AIRPORTSDB_H

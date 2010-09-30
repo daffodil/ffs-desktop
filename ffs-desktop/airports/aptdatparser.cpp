@@ -61,8 +61,12 @@ AptDatParser::AptDatParser(QObject *parent) :
 {
     estimated_lines = 1510000;
     line_counter = -1;
+    cancel_import_flag = false;
 }
 
+void AptDatParser::cancel_import(){
+    cancel_import_flag = true;
+}
 
 void AptDatParser::import_aptdat(){
 
@@ -74,6 +78,7 @@ void AptDatParser::import_aptdat(){
         return;
      }
     line_counter = 0;
+    cancel_import_flag = false;
     QRegExp rxICAOAirport("[A-Z]{1,4}");
 
     //QSqlQuery queryApt;
@@ -92,6 +97,11 @@ void AptDatParser::import_aptdat(){
     bool is_icao;
 
     while( !file.atEnd() ){
+        if(cancel_import_flag == true){
+            qDebug("Cancelled");
+            return;
+        }
+
         QByteArray lineBytes = file.readLine();
         QString line = QString(lineBytes).trimmed();
         //qDebug() << line;
@@ -110,7 +120,7 @@ void AptDatParser::import_aptdat(){
             }
             QString tower =  parts[2] == "1" ? "1" : "";
             if(is_icao){
-                qDebug() << airport;
+               // qDebug() << airport;
                 //queryApt.addBindValue( airport);
                 //queryApt.addBindValue( airport_name.trimmed() );
                 //queryApt.addBindValue( elevation);

@@ -107,7 +107,10 @@ void ImportAirportsWidget::on_import_button_clicked(){
     AptDatParser *aptDatParser = new AptDatParser(this);
 
     progress = new QProgressDialog("Importing Airports...", "Cancel", 0, aptDatParser->estimated_lines, this);
-    progress.setWindowModality(Qt::WindowModal);
+    progress->setWindowModality(Qt::WindowModal);
+    connect(progress, SIGNAL(canceled()),
+            aptDatParser, SLOT(cancel_import())
+    );
 
     AirportsDb *airportsDb = new AirportsDb();
     connect(aptDatParser,   SIGNAL(airport_data(QString, QString, QString, QString)),

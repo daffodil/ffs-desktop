@@ -14,7 +14,7 @@ public:
 
     int estimated_lines;
     int line_counter;
-
+    bool cancel_import_flag;
     void import_aptdat();
 
 signals:
@@ -23,7 +23,7 @@ signals:
     void line_count(int);
 
 public slots:
-
+    void cancel_import();
 };
 
 #endif // APTDATPARSER_H
