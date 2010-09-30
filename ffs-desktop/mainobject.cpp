@@ -86,12 +86,12 @@ MainObject::MainObject(QObject *parent) :
     // I dont want to connect et until required
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("192.168.5.10");
+    db.setHostName("localhost");
     db.setUserName("root");
     db.setPassword("mash");
     db.setDatabaseName("ffs-desktop");
     //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
-
+    db.open();
 
 
     //***********************************

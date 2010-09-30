@@ -41,6 +41,7 @@ public slots:
     void on_item_clicked(QTreeWidgetItem *, int );
 
     void on_auto_refresh_enabled();
+    void on_set_timer_rate();
 };
 
 #endif // PROPSTREEWIDGET_H

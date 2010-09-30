@@ -6,15 +6,15 @@
 #include <QtCore/QVariant>
 #include <QtCore/QString>
 
-
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
 
-AirportsDb::AirportsDb(QObject *parent) :
+AirportsDb::AirportsDb( QObject *parent) :
     QObject(parent)
 {
+    //mainObject = mOb;
 
     //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //db = QSqlDatabase::addDatabase("QMYSQL");
@@ -27,7 +27,7 @@ AirportsDb::AirportsDb(QObject *parent) :
 
 
 //** Check Tables
-bool AirportsDb::tables_ok(){
+bool AirportsDb::check_tables(){
     QSqlQuery query;
     bool okT;
     okT = query.exec("show tables like 'airports';");
@@ -63,6 +63,8 @@ void AirportsDb::airports(){
     }
 }
 
+//*****************************************************************
+//** Runways
 void AirportsDb::runways(QString airport){
     QSqlQuery query;
     // success;
@@ -79,5 +81,52 @@ void AirportsDb::runways(QString airport){
     }
     return;
 }
+
+//*****************************************************************
+//** Insert Airport
+void AirportsDb::insert_airport(QString airport, QString airport_name, QString elevation, QString tower){
+    qDebug() << "insert_airport() = " << airport;
+   // QRegExp rxICAOAirport("[A-Z]{1,4}");
+
+    QSqlQuery queryAptInsert;
+    queryAptInsert.prepare("insert into airports( airport, name, elevation, tower)values(?, ?, ?, ?)");
+
+    QSqlQuery queryRwySel;
+    queryRwySel.prepare("select * from runways where airport=? and runway=?");
+    QSqlQuery queryRwyIns;
+    queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
+
+
+    bool ok;
+    int c = 0;
+
+    //QString airport;
+    //bool is_icao;
+
+
+    queryAptInsert.addBindValue( airport );
+    queryAptInsert.addBindValue( airport_name );
+    queryAptInsert.addBindValue( elevation );
+    queryAptInsert.addBindValue( tower );
+            ok = queryAptInsert.exec();
+
+       // }
+
+}
+//
+//
+//                qDebug() << airport << " = " << runway;
+//                //queryRwyIns.addBindValue( ki);
+//                queryRwyIns.addBindValue( airport);
+//                queryRwyIns.addBindValue( runway );
+//
+//
+//                ok = queryRwyIns.exec();
+//                if(!ok){
+//                    qDebug() << queryRwyIns.lastError();
+//                    qDebug() << "DIE queryRwyIns";
+//                    return;
+//                }
+//            }
 
 

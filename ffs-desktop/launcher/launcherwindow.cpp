@@ -41,15 +41,15 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
    // tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 
 
-    mainOptionsWidget = new MainOptionsWidget(mainObject);
-    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+//    mainOptionsWidget = new MainOptionsWidget(mainObject);
+//    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+//
+//
+//    propsTreeWidget = new PropsTreeWidget(mainObject);
+//    tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
-
-     propsTreeWidget = new PropsTreeWidget(mainObject);
-     tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
-
-     //airportsWidget = new AirportsWidget(mainObject);
-    // tabWidget->addTab(airportsWidget, tr("Airports"));
+    airportsWidget = new AirportsWidget(mainObject);
+    tabWidget->addTab(airportsWidget, tr("Airports"));
 
    // aircraftWidget = new AircraftWidget();
    // tabWidget->addTab(aircraftWidget, tr("Aircraft"));

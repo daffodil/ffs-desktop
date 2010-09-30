@@ -1,9 +1,10 @@
 
 
 #include "airportswidget.h"
-#include "airports/aptdatparser.h"
-#include "airports/importairportswidget.h"
 
+#include "airports/importairportswidget.h"
+#include "airports/aptdatparser.h"
+#include "airports/airportsdb.h"
 
 #include <QtCore/QDebug>
 //#include <QtCore/QByteArray>
@@ -115,9 +116,9 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     QAction *actionReloadAiportsDb = new QAction(this);
     treeToolbar->addAction(actionReloadAiportsDb);
-    actionReloadAiportsDb->setText("Reload Db");
-    actionReloadAiportsDb->setIcon(QIcon(":/icons/refresh"));
-    connect(actionReloadAiportsDb, SIGNAL(triggered()), this, SLOT(load_airports_db()) );
+    actionReloadAiportsDb->setText("Import Aiports");
+    actionReloadAiportsDb->setIcon(QIcon(":/icons/import"));
+    connect(actionReloadAiportsDb, SIGNAL(triggered()), this, SLOT(import_airports_dialog()) );
 
     treeToolbar->addSeparator();
 
@@ -158,6 +159,9 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");
 
+    // TODO
+    //import_airports_dialog();
+
 }
 
 //** Load_Airports() from database
@@ -171,7 +175,7 @@ void AirportsWidget::load_airports(){
 
 
 
-void AirportsWidget::load_airports_db(){
+void AirportsWidget::import_airports_dialog(){
     //* TODO message you are about to do this and take a few moment etc (or background)
      qDebug("AirportsWidget::load_airports_DB()");
     //QProgressDialog progress("Importing airports", "Abort Copy", 0, 2000, this);

@@ -59,42 +59,34 @@ Comms Freq
 AptDatParser::AptDatParser(QObject *parent) :
     QObject(parent)
 {
-
-    //** Check Tables ?? Sanity Checkch
-    QSqlQuery queryT;
-    bool okT;
-    okT = queryT.exec("show tables like 'airports';");
-    //okT = queryT.exec("SELECT name FROM sqlite_master WHERE name='table_name'");
-      qDebug() << "okT= " << okT << " = " << queryT.size();
-      if(queryT.size() == 0){
-            queryT.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL, INDEX (name)) ");
-            queryT.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3), INDEX (airport, runway))");
-      }
+    estimated_lines = 1510000;
+    line_counter = -1;
 }
+
+
 void AptDatParser::import_aptdat(){
-
-
 
     qDebug("AptDatParser::process_file()");
     QFile file("/home/ffs/ffs-desktop/apt.dat");
+    //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
      }
-
+    line_counter = 0;
     QRegExp rxICAOAirport("[A-Z]{1,4}");
 
-    QSqlQuery queryApt;
-    queryApt.prepare("replace into airports( airport, name, elevation, tower)values(?, ?, ?, ?)");
+    //QSqlQuery queryApt;
+    //queryApt.prepare("replace into airports( airport, name, elevation, tower)values(?, ?, ?, ?)");
 
-    QSqlQuery queryRwySel;
-    queryRwySel.prepare("select * from runways where airport=? and runway=?");
-    QSqlQuery queryRwyIns;
-    queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
+    //QSqlQuery queryRwySel;
+    //queryRwySel.prepare("select * from runways where airport=? and runway=?");
+    //QSqlQuery queryRwyIns;
+    //queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
     bool ok;
-    int c = 0;
+    //int c = 0;
 
     QString airport;
     bool is_icao;
@@ -118,16 +110,18 @@ void AptDatParser::import_aptdat(){
             }
             QString tower =  parts[2] == "1" ? "1" : "";
             if(is_icao){
-                queryApt.addBindValue( airport);
-                queryApt.addBindValue( airport_name.trimmed() );
-                queryApt.addBindValue( elevation);
-                queryApt.addBindValue( parts[2] == "1" ? "1" : NULL );
-                ok = queryApt.exec();
-                if(!ok){
-                    qDebug() << queryApt.lastError();
-                    qDebug() << "DIE queryApt";
-                    return;
-                }
+                qDebug() << airport;
+                //queryApt.addBindValue( airport);
+                //queryApt.addBindValue( airport_name.trimmed() );
+                //queryApt.addBindValue( elevation);
+                //queryApt.addBindValue( parts[2] == "1" ? "1" : NULL );
+               // ok = queryApt.exec();
+//                if(!ok){
+//                    qDebug() << queryApt.lastError();
+//                    qDebug() << "DIE queryApt";
+//                    return;
+//                }
+                emit airport_data(airport, airport_name.trimmed(), parts[1], parts[2] == "1" ? "1" : "");
             }
             //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
             //qDebug() << "Parts   =" << parts.join("#");
@@ -139,29 +133,29 @@ void AptDatParser::import_aptdat(){
             if(is_icao){
                 QString runway = parts[8];
             //QString ki = QString("%1/%2").arg(airport).arg(runway);
-                queryRwySel.addBindValue(airport);
-                queryRwySel.addBindValue(runway);
-                ok = queryRwySel.exec();
-                if(!ok){
-                    qDebug() << queryRwySel.lastError();
-                    qDebug() << "DIE queryRwySel";
-                    return;
-                }
-                if(queryRwySel.size() == 0){
-
-                    qDebug() << airport << " = " << runway;
-                    //queryRwyIns.addBindValue( ki);
-                    queryRwyIns.addBindValue( airport);
-                    queryRwyIns.addBindValue( runway );
-
-
-                    ok = queryRwyIns.exec();
-                    if(!ok){
-                        qDebug() << queryRwyIns.lastError();
-                        qDebug() << "DIE queryRwyIns";
-                        return;
-                    }
-                }
+//                queryRwySel.addBindValue(airport);
+//                queryRwySel.addBindValue(runway);
+//                ok = queryRwySel.exec();
+//                if(!ok){
+//                    qDebug() << queryRwySel.lastError();
+//                    qDebug() << "DIE queryRwySel";
+//                    return;
+//                }
+//                if(queryRwySel.size() == 0){
+//
+//                    qDebug() << airport << " = " << runway;
+//                    //queryRwyIns.addBindValue( ki);
+//                    queryRwyIns.addBindValue( airport);
+//                    queryRwyIns.addBindValue( runway );
+//
+//
+//                    ok = queryRwyIns.exec();
+//                    if(!ok){
+//                        qDebug() << queryRwyIns.lastError();
+//                        qDebug() << "DIE queryRwyIns";
+//                        return;
+//                    }
+//                }
         }
 //            bool is_icao = rxICAOAirport.exactMatch(airport_code);
 //            int elevation = parts[1].toInt();
@@ -185,8 +179,9 @@ void AptDatParser::import_aptdat(){
             //qDebug(""); // << "Airport" << line << " = ";
         }
 
-        c++;
-        if(c == 200){
+        line_counter++;
+        emit line_count(line_counter);
+        if(line_counter == 200){
             //return;
         }
         //process_line(line);

@@ -29,7 +29,7 @@ signals:
 
 public slots:
     void load_airports();
-    void load_airports_db();
+    void import_airports_dialog();
 
     void on_airport(QString,QString,QString,QString);
 };

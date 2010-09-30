@@ -5,6 +5,7 @@
 #include <QtGui/QRadioButton>
 #include <QtGui/QCheckBox>
 #include <QtGui/QPushButton>
+#include <QtGui/QProgressDialog>
 
 #include "mainobject.h"
 
@@ -22,6 +23,8 @@ public:
 
     QPushButton *buttImport;
     QPushButton *buttCancelImport;
+
+    QProgressDialog *progress;
 
 signals:
 

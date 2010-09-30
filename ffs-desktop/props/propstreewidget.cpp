@@ -57,6 +57,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->addWidget(treeToolbar);
     treeToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
+    //** Refresh Button
     QAction *actionRefreshTree = new QAction(this);
     treeToolbar->addAction(actionRefreshTree);
     actionRefreshTree->setText("Refresh");
@@ -67,6 +68,11 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 
     //*****************************************
     //** Autorefresh
+    //****************************************
+    timer = new QTimer(this);
+    timer->setInterval(1000); //TODO default more
+
+    //** Check Autorefresh enabled
     chkAutoRefresh = new QCheckBox();
     treeToolbar->addWidget(chkAutoRefresh);
     chkAutoRefresh->setText("Autorefresh Enabled");
@@ -75,6 +81,7 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
             this, SLOT(on_auto_refresh_enabled())
     );
 
+    //** ComboBox sets refresh rate
     comboAutoRefreshRate = new QComboBox();
     treeToolbar->addWidget(comboAutoRefreshRate);
     comboAutoRefreshRate->addItem("1");
@@ -82,8 +89,10 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     comboAutoRefreshRate->addItem("3");
     comboAutoRefreshRate->addItem("4");
     comboAutoRefreshRate->addItem("5");
+    connect(comboAutoRefreshRate, SIGNAL(activated(int)),
+            this, SLOT(on_set_timer_rate())
+    );
 
-    timer = new QTimer(this);
 
     //******************************************************
     //** Tree Widgets
@@ -249,6 +258,17 @@ void PropsTreeWidget::on_item_clicked(QTreeWidgetItem *item, int col){
     }
 }
 
+//*************************************************************
+//* checkbox to start/stop timer in toolbar check button
 void PropsTreeWidget::on_auto_refresh_enabled(){
-
+    if( chkAutoRefresh->checkState() ){
+        timer->start();
+    }else{
+        timer->stop();
+    }
+}
+//** Combobox event to set timer rate
+void PropsTreeWidget::on_set_timer_rate(){
+    int rate = comboAutoRefreshRate->itemText( comboAutoRefreshRate->currentIndex() ).toInt();
+    timer->setInterval(rate * 1000);
 }

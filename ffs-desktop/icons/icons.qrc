@@ -33,5 +33,6 @@
         <file alias="folder_expanded">folder_database.png</file>
         <file alias="node_val">application.png</file>
         <file alias="send">link_go.png</file>
+        <file alias="import">database_go.png</file>
     </qresource>
 </RCC>

@@ -1,23 +1,26 @@
 #ifndef APTDATPARSER_H
 #define APTDATPARSER_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-//#include <QtSql/QSqlDatabase>
+
 class AptDatParser : public QObject
 {
 Q_OBJECT
 public:
-   // enum ROW_CODES{
-     //   C_AIRPORT = 1
-    //};
+
     explicit AptDatParser(QObject *parent = 0);
 
+    int estimated_lines;
+    int line_counter;
 
-
-    //QSqlDatabase db;
     void import_aptdat();
+
 signals:
+    void airport_data(QString, QString, QString, QString);
+    void runway_data(QString, QString);
+    void line_count(int);
 
 public slots:
 

@@ -1,5 +1,6 @@
 #include "importairportswidget.h"
 #include "aptdatparser.h"
+#include "airportsdb.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -9,6 +10,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
 #include <QtGui/QGroupBox>
+#include <QtGui/QProgressDialog>
 //#include <QtGui/>
 
 ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) :
@@ -16,9 +18,10 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
 {
 
     mainObject = mainOb;
+ //   airportsDb = new AirportsDb(this);
 
     setWindowTitle("Import Airports");
-    setWindowIcon(QIcon(":/icons/favicon"));
+    setWindowIcon(QIcon(":/icons/import"));
     //setWindowFlags(  Qt::WindowStaysOnTopHint);
 
     //* MainWidget and MainLayout
@@ -46,22 +49,29 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
     mainVBox->addWidget(lblHelp, 1);
     lblHelp->setStyleSheet("background-color: #efefef; padding: 5px; border: 1px solid #000099;");
 
+    //** IACO Only
     buttIcaoOnly = new QRadioButton();
     mainVBox->addWidget(buttIcaoOnly, 1);
     buttIcaoOnly->setText("Import ICAO airports only");
     buttIcaoOnly->setChecked(true);
 
+    //** All Airports
     buttAllAiports = new QRadioButton();
     mainVBox->addWidget(buttAllAiports, 1);
     buttAllAiports->setText("Import all airports.");
+    buttAllAiports->setDisabled(true);
 
+    //** Seaports
     chkImportSeaports = new QCheckBox();
     chkImportSeaports->setText(tr("Import Seaports"));
     mainVBox->addWidget(chkImportSeaports, 1);
+    chkImportSeaports->setDisabled(true);
 
+    //** Heliports
     chkImportHeliports = new QCheckBox();
     chkImportHeliports->setText(tr("Import Heliports"));
     mainVBox->addWidget(chkImportHeliports, 1);
+    chkImportHeliports->setDisabled(true);
 
     //*****************************************************************
     //** Bottom Button Box
@@ -82,7 +92,7 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
     buttImport = new QPushButton();
     buttonBox->addWidget(buttImport);
     buttImport->setText(tr("Import"));
-    buttImport->setIcon(QIcon(":/icons/import"));
+    buttImport->setIcon(QIcon(":/icons/save"));
     connect(buttImport, SIGNAL(clicked()),
             this, SLOT(on_import_button_clicked())
             );
@@ -92,8 +102,20 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
 
 void ImportAirportsWidget::on_import_button_clicked(){
     qDebug() << "on_import_button_clicked()";
+
+
     AptDatParser *aptDatParser = new AptDatParser(this);
 
+    progress = new QProgressDialog("Importing Airports...", "Cancel", 0, aptDatParser->estimated_lines, this);
+    progress.setWindowModality(Qt::WindowModal);
+
+    AirportsDb *airportsDb = new AirportsDb();
+    connect(aptDatParser,   SIGNAL(airport_data(QString, QString, QString, QString)),
+            airportsDb,      SLOT(insert_airport(QString, QString, QString, QString))
+    );
+    connect(aptDatParser,   SIGNAL(line_count(int)),
+            progress,      SLOT(setValue(int))
+    );
     aptDatParser->import_aptdat();
     //QProgressBar progress = new QProgressBar
 }
