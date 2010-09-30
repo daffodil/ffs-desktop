@@ -14,6 +14,12 @@ class AirportsWidget : public QWidget
 {
 Q_OBJECT
 public:
+    enum COLS{
+        C_CODE = 0,
+        C_NAME = 3,
+        C_TOWER = 1,
+        C_ELEVATION = 2
+    };
 
     explicit AirportsWidget(MainObject *mOb, QWidget *parent = 0);
 

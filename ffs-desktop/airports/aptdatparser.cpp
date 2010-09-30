@@ -12,6 +12,8 @@
   Other aiports whousl be available on demand as a parse etc..
   eg integration with FG
 
+  Make a way to send new data online for verification
+
   */
 
 
@@ -33,6 +35,7 @@
 #include <QtSql/QSqlError>
 
 #include <QtGui/QProgressDialog>
+#include <QtGui/QIcon>
 
 
 /* From the guide >>
@@ -62,17 +65,9 @@ AptDatParser::AptDatParser(QObject *parent) :
 {
     estimated_lines = 1510000;
     line_counter = -1;
-    cancel_import_flag = false;
-}
-
-void AptDatParser::cancel_import(){
-    cancel_import_flag = true;
 }
 
 void AptDatParser::import_aptdat(){
-
-
-
 
 
     qDebug("AptDatParser::process_file()");
@@ -90,7 +85,6 @@ void AptDatParser::import_aptdat(){
     queryC.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
 
     line_counter = 0;
-    cancel_import_flag = false;
     QRegExp rxICAOAirport("[A-Z]{4}");
 
     QSqlQuery queryAirportInsert;
@@ -107,8 +101,9 @@ void AptDatParser::import_aptdat(){
     bool is_icao;
 
     QProgressDialog progress("Importing Airports", "Cancel", 0, estimated_lines);
-    //QProgressDialog()
     progress.setWindowModality(Qt::WindowModal);
+    progress.setFixedWidth(400);
+    progress.setWindowIcon(QIcon(":/icons/import"));
 
     while( !file.atEnd() ){
 //        if(cancel_import_flag == true){
