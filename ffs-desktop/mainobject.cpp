@@ -13,9 +13,15 @@
 //#include <QtGui/
 
 #include <QCoreApplication>
+#include <QtGui/QDesktopServices>
+
 #include <QtGui/QAction>
 #include <QtGui/QMenu>
 #include <QtGui/QCursor>
+
+
+
+#include <QtSql/QSqlError>
 
 /*
   The Idea - me not a c++ coder but here are some thoughts.. and my problems
@@ -84,14 +90,18 @@ MainObject::MainObject(QObject *parent) :
     //********************************************************************
     //** SQL database problem
     // I dont want to connect et until required
-    //QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setUserName("root");
-    db.setPassword("mash");
-    db.setDatabaseName("ffs-desktop");
-    //db.setDatabaseName("/home/ffs/ffs-desktop/data.db");
-    db.open();
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    //db = QSqlDatabase::addDatabase("QMYSQL");
+    //db.setHostName("localhost");
+    //db.setUserName("root");
+    //db.setPassword("mash");
+    //db.setDatabaseName("ffs-desktop");
+    qDebug() << QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    db.setDatabaseName(QDesktopServices::storageLocation(QDesktopServices::DataLocation).append("ffs-desktop.sqlite"));
+    if( !db.open() ){
+        qDebug() << db.lastError();
+        return;
+    }
 
 
     //***********************************

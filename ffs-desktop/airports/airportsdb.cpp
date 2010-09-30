@@ -38,8 +38,11 @@ bool AirportsDb::check_tables(){
 
 bool AirportsDb::create_tables(){
     QSqlQuery query;
-    query.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL, INDEX (name)) ");
-    query.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3), INDEX (airport, runway))");
+    query.exec("DROP TABLE IF EXISTS airports");
+    query.exec("DROP TABLE IF EXISTS runways");
+    query.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
+    query.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
+    qDebug() << "dropped" << query.lastError();
     return true;
 }
 
@@ -88,29 +91,32 @@ void AirportsDb::insert_airport(QString airport, QString airport_name, QString e
     qDebug() << "insert_airport() = " << airport;
    // QRegExp rxICAOAirport("[A-Z]{1,4}");
 
-    QSqlQuery queryAptInsert;
-    queryAptInsert.prepare("insert into airports( airport, name, elevation, tower)values(?, ?, ?, ?)");
 
-    QSqlQuery queryRwySel;
-    queryRwySel.prepare("select * from runways where airport=? and runway=?");
-    QSqlQuery queryRwyIns;
-    queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
+    queryAirportInsert.prepare("insert into airports( airport, name, elevation, tower)values(?, ?, ?, ?)");
+
+//    QSqlQuery queryRwySel;
+//    queryRwySel.prepare("select * from runways where airport=? and runway=?");
+//    QSqlQuery queryRwyIns;
+//    queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
     bool ok;
-    int c = 0;
+
 
     //QString airport;
     //bool is_icao;
 
 
-    queryAptInsert.addBindValue( airport );
-    queryAptInsert.addBindValue( airport_name );
-    queryAptInsert.addBindValue( elevation );
-    queryAptInsert.addBindValue( tower );
-            ok = queryAptInsert.exec();
-
-       // }
+    queryAirportInsert.addBindValue( airport );
+    queryAirportInsert.addBindValue( airport_name );
+    queryAirportInsert.addBindValue( elevation );
+    queryAirportInsert.addBindValue( tower );
+    ok = queryAirportInsert.exec();
+     if(!ok){
+         qDebug() << queryAirportInsert.lastError();
+         qDebug() << "ERR: queryAirportInsert";
+         return;
+     }
 
 }
 //

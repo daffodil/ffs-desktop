@@ -119,6 +119,7 @@ void ImportAirportsWidget::on_import_button_clicked(){
     connect(aptDatParser,   SIGNAL(line_count(int)),
             progress,      SLOT(setValue(int))
     );
+    airportsDb->create_tables();
     aptDatParser->import_aptdat();
     //QProgressBar progress = new QProgressBar
 }

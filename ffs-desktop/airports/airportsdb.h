@@ -3,7 +3,8 @@
 
 #include <QObject>
 
-#include <QtSql/QSqlDatabase>
+//#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
 
 //#include "mainobject.h"
 
@@ -14,7 +15,10 @@ public:
     explicit AirportsDb(QObject *parent = 0);
 
     //MainObject *mainObject;
-    QSqlDatabase db;
+    //QSqlDatabase db;
+
+    QSqlQuery queryAirportInsert;
+
 
     bool check_tables();
     bool create_tables();
