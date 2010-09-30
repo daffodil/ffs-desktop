@@ -30,6 +30,7 @@ signals:
 
 public slots:
     void on_import_button_clicked();
+    void update_progress(int);
 };
 
 #endif // IMPORTAIRPORTSWIDGET_H

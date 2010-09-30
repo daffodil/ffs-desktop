@@ -106,20 +106,25 @@ void ImportAirportsWidget::on_import_button_clicked(){
 
     AptDatParser *aptDatParser = new AptDatParser(this);
 
-    progress = new QProgressDialog("Importing Airports...", "Cancel", 0, aptDatParser->estimated_lines, this);
-    progress->setWindowModality(Qt::WindowModal);
-    connect(progress, SIGNAL(canceled()),
-            aptDatParser, SLOT(cancel_import())
-    );
-
-    AirportsDb *airportsDb = new AirportsDb();
-    connect(aptDatParser,   SIGNAL(airport_data(QString, QString, QString, QString)),
-            airportsDb,      SLOT(insert_airport(QString, QString, QString, QString))
-    );
-    connect(aptDatParser,   SIGNAL(line_count(int)),
-            progress,      SLOT(setValue(int))
-    );
-    airportsDb->create_tables();
+//    progress = new QProgressDialog("Importing Airports...", "Cancel", 0, aptDatParser->estimated_lines, this);
+//    progress->setWindowModality(Qt::WindowModal);
+//    connect(progress, SIGNAL(canceled()),
+//            aptDatParser, SLOT(cancel_import())
+//    );
+//
+//    AirportsDb *airportsDb = new AirportsDb();
+//    connect(aptDatParser,   SIGNAL(airport_data(QString, QString, QString, QString)),
+//            airportsDb,     SLOT(insert_airport(QString, QString, QString, QString))
+//    );
+//    connect(aptDatParser,   SIGNAL(line_count(int)),
+//            this,           SLOT(update_progress(int))
+//    );
+//    airportsDb->create_tables();
     aptDatParser->import_aptdat();
     //QProgressBar progress = new QProgressBar
+}
+
+void ImportAirportsWidget::update_progress(int value){
+    progress->setValue(value);
+    progress->setLabelText(QString::number(value));
 }

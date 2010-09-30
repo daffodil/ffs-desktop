@@ -7,15 +7,13 @@
 #include "airports/airportsdb.h"
 
 #include <QtCore/QDebug>
-//#include <QtCore/QByteArray>
 #include <QtCore/QString>
 //#include <QtCore/QStringList>
 
 
 // layouts
 #include <QtGui/QVBoxLayout>
-//#include <QtGui/QHBoxLayout>
-//#include <QtGui/QGroupBox>
+
 #include <QtGui/QSplitter>
 
 #include <QtGui/QToolBar>
@@ -40,10 +38,10 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     mainObject = mOb;
 
-    //airportsDb = new AirportsDb(this);
-    //connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
-    //        this, SLOT(on_airport(QString,QString,QString,QString))
-     //       );
+    airportsDb = new AirportsDb(this);
+    connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
+            this, SLOT(on_airport(QString,QString,QString,QString))
+    );
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -171,10 +169,17 @@ void AirportsWidget::load_airports(){
     //aptDatParser->process_file();
     airportsDb->airports();
 
+
+}
+void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
+    qDebug() <<  airport << name << tower <<  elevation;
+    QStandardItem *itemAirport = new QStandardItem();
+    itemAirport->setText(airport);
+    model->appendRow(itemAirport);
 }
 
 
-
+//*** Import Airport
 void AirportsWidget::import_airports_dialog(){
     //* TODO message you are about to do this and take a few moment etc (or background)
      qDebug("AirportsWidget::load_airports_DB()");
@@ -182,11 +187,8 @@ void AirportsWidget::import_airports_dialog(){
     //progress.show();
      ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
      imp->exec();
-    return;
+     return;
 
 
 }
 
-void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
-    qDebug() <<  airport << name << tower <<  elevation;
-}

@@ -37,12 +37,12 @@ bool AirportsDb::check_tables(){
 }
 
 bool AirportsDb::create_tables(){
-    QSqlQuery query;
-    query.exec("DROP TABLE IF EXISTS airports");
-    query.exec("DROP TABLE IF EXISTS runways");
-    query.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
-    query.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
-    qDebug() << "dropped" << query.lastError();
+//    QSqlQuery query;
+//    query.exec("DROP TABLE IF EXISTS airports");
+//    query.exec("DROP TABLE IF EXISTS runways");
+//    query.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
+//    query.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
+//    qDebug() << "dropped" << query.lastError();
     return true;
 }
 
@@ -88,7 +88,7 @@ void AirportsDb::runways(QString airport){
 //*****************************************************************
 //** Insert Airport
 void AirportsDb::insert_airport(QString airport, QString airport_name, QString elevation, QString tower){
-    qDebug() << "insert_airport() = " << airport;
+    //qDebug() << "insert_airport() = " << airport;
    // QRegExp rxICAOAirport("[A-Z]{1,4}");
 
 
@@ -100,7 +100,7 @@ void AirportsDb::insert_airport(QString airport, QString airport_name, QString e
 //    queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
-    bool ok;
+    bool success;
 
 
     //QString airport;
@@ -111,8 +111,8 @@ void AirportsDb::insert_airport(QString airport, QString airport_name, QString e
     queryAirportInsert.addBindValue( airport_name );
     queryAirportInsert.addBindValue( elevation );
     queryAirportInsert.addBindValue( tower );
-    ok = queryAirportInsert.exec();
-     if(!ok){
+    success = queryAirportInsert.exec();
+     if(!success){
          qDebug() << queryAirportInsert.lastError();
          qDebug() << "ERR: queryAirportInsert";
          return;
