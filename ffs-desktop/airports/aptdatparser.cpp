@@ -32,7 +32,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
-
+//#include <zip.h>
 
 /* From the guide >>
 
@@ -70,9 +70,9 @@ void AptDatParser::cancel_import(){
 
 void AptDatParser::import_aptdat(){
 
-
-
-    return;
+    //QString fileName("/home/mash/ffs-desktop/apt.dat.gz");
+    //int err = 0;
+    // struct zip *zip = zip_open(fileName.toLatin1().constData(), 0, &err);
 
 
     qDebug("AptDatParser::process_file()");
