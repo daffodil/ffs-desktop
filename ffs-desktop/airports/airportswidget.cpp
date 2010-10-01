@@ -13,8 +13,8 @@
 
 // layouts
 #include <QtGui/QVBoxLayout>
-
 #include <QtGui/QSplitter>
+#include <QtGui/QSizePolicy>
 
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
@@ -30,7 +30,8 @@
 #include <QtGui/QItemSelection>
 #include <QtGui/QItemSelectionModel>
 #include <QtGui/QAbstractItemView>
-//#include <QtGui/QPixmap>
+#include <QtGui/QHeaderView>
+#include <QtGui/QLineEdit>
 
 AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
@@ -52,7 +53,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QSplitter *splitter = new QSplitter(this);
     mainLayout->addWidget(splitter);
 
-    //***************************************************
+    //************************************************************************************************
     //** Left
     QWidget *leftWidget = new QWidget();
     splitter->addWidget(leftWidget);
@@ -61,19 +62,15 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->setContentsMargins(0,0,0,0);
     treeLayout->setSpacing(0);
 
-
+    //*************************************************
     //** Toolbar
     QToolBar *treeToolbar = new QToolBar();
     treeLayout->addWidget(treeToolbar);
     treeToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    QAction *actionRefreshTree = new QAction(this);
-    treeToolbar->addAction(actionRefreshTree);
-    actionRefreshTree->setText("Refresh");
-    actionRefreshTree->setIcon(QIcon(":/icons/refresh"));
-    connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_airports()) );
+    //** Filter Code
+    treeToolbar->addWidget(new QLabel(tr("In").append(":")));
 
-    treeToolbar->addSeparator();
 
 
     //******************************************************
@@ -92,24 +89,52 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     buttAll->setIcon(QIcon(":/icons/pink"));
     buttAll->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    QToolButton *buttInstalled = new QToolButton();
-    treeToolbar->addWidget(buttInstalled);
-    buttViewGroup->addButton(buttInstalled);
-    buttInstalled->setText("Installed");
-    buttInstalled->setCheckable(true);
-    buttInstalled->setIcon(QIcon(":/icons/purple"));
-    buttInstalled->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    QToolButton *buttCode = new QToolButton();
+    treeToolbar->addWidget(buttCode);
+    buttViewGroup->addButton(buttCode);
+    buttCode->setText("Code");
+    buttCode->setCheckable(true);
+    buttCode->setIcon(QIcon(":/icons/purple"));
+    buttCode->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    QToolButton *buttAvailable = new QToolButton();
-    treeToolbar->addWidget(buttAvailable);
-    buttViewGroup->addButton(buttAvailable);
-    buttAvailable->setText("Available");
-    buttAvailable->setCheckable(true);
-    buttAvailable->setIcon(QIcon(":/icons/purple"));
-    buttAvailable->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    QToolButton *buttName = new QToolButton();
+    treeToolbar->addWidget(buttName);
+    buttViewGroup->addButton(buttName);
+    buttName->setText("Name");
+    buttName->setCheckable(true);
+    buttName->setIcon(QIcon(":/icons/purple"));
+    buttName->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     buttAll->setChecked(true);
 
+    treeToolbar->addWidget(new QLabel(tr("find").append(":")));
+
+    //** Find Text
+    QLineEdit *txtFindCode = new QLineEdit();
+    treeToolbar->addWidget(txtFindCode);
+    txtFindCode->setFixedWidth(100);
+    connect(txtFindCode,    SIGNAL(textChanged(QString)),
+            this,           SLOT(on_find_text_changed(QString))
+    );
+
+    treeToolbar->addSeparator();
+
+    //** Add spacer widget to force right
+    QWidget *spacerWidget = new QWidget();
+
+    QSizePolicy *sizePolicy = new QSizePolicy();
+    //sizePolicy->setHorizontalPolicy( QSizePolicy::Expanding );
+    spacerWidget->setSizePolicy( QSizePolicy::Expanding , QSizePolicy::Minimum );
+    treeToolbar->addWidget(spacerWidget);
+
+
+    QAction *actionRefreshTree = new QAction(this);
+    treeToolbar->addAction(actionRefreshTree);
+    actionRefreshTree->setText("Refresh");
+    actionRefreshTree->setIcon(QIcon(":/icons/refresh"));
+    connect(actionRefreshTree, SIGNAL(triggered()), this, SLOT(load_airports()) );
+
+    treeToolbar->addSeparator();
 
 
     QAction *actionReloadAiportsDb = new QAction(this);
@@ -118,7 +143,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     actionReloadAiportsDb->setIcon(QIcon(":/icons/import"));
     connect(actionReloadAiportsDb, SIGNAL(triggered()), this, SLOT(import_airports_dialog()) );
 
-    treeToolbar->addSeparator();
+
 
 
     //******************************************************
@@ -126,22 +151,33 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
     QStringList headerLabelsList;
-    headerLabelsList << "Code" << "Aiport";
+    headerLabelsList << "Code" << "Tower" << "Elevation" << "Airport";
     model->setHorizontalHeaderLabels(headerLabelsList);
 
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
+    proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+
+    proxyModel->setFilterKeyColumn(0);
+    //proxyModel->setFilterFixedString();
 
     //******************************************************
-    //** Aircraft Tree
+    //**  Tree
     treeView = new QTreeView(this);
     treeLayout->addWidget(treeView);
     treeView->setModel(proxyModel);
+
+    treeView->setUniformRowHeights(true);
     treeView->setAlternatingRowColors(true);
     treeView->setRootIsDecorated(false);
     treeView->setSortingEnabled(true);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
     treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    //** Deaders and columns
+    treeView->header()->setStretchLastSection(true);
+    treeView->setColumnHidden(C_ELEVATION, true);
+    treeView->setColumnHidden(C_TOWER, true);
     /*
     connect( treeView->selectionModel(),
              SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
@@ -157,8 +193,6 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");
 
-    // TODO
-    //import_airports_dialog();
 
 }
 
@@ -171,15 +205,40 @@ void AirportsWidget::load_airports(){
 
 
 }
+
+//*** Load Airports
 void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
-    qDebug() <<  airport << name << tower <<  elevation;
-    QStandardItem *itemAirport = new QStandardItem();
-    itemAirport->setText(airport);
-    model->appendRow(itemAirport);
+    //qDebug() <<  airport << name << tower <<  elevation;
+
+    //* insert new row into the model
+    int new_row_index = model->rowCount();
+    model->insertRow(new_row_index);
+
+    //* create and set items
+    QStandardItem *itemAirportCode = new QStandardItem();
+    itemAirportCode->setText(airport);
+    model->setItem(new_row_index, C_CODE, itemAirportCode);
+
+    QStandardItem *itemAirportName = new QStandardItem();
+    itemAirportName->setText(name);
+    model->setItem(new_row_index, C_NAME, itemAirportName);
+
+    QStandardItem *itemAirportTower = new QStandardItem();
+    itemAirportTower->setText(tower);
+    model->setItem(new_row_index, C_TOWER, itemAirportTower);
+
+    QStandardItem *itemAirportElevation = new QStandardItem();
+    itemAirportElevation->setText(elevation);
+    model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
+
 }
 
+void AirportsWidget::on_find_text_changed(QString txt){
+    proxyModel->setFilterFixedString(txt);
+    proxyModel->setFilterKeyColumn(C_NAME);
+}
 
-//*** Import Airport
+//*** Import Airports Dialog
 void AirportsWidget::import_airports_dialog(){
     //* TODO message you are about to do this and take a few moment etc (or background)
      qDebug("AirportsWidget::load_airports_DB()");
@@ -187,8 +246,5 @@ void AirportsWidget::import_airports_dialog(){
     //progress.show();
      ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
      imp->exec();
-     return;
-
-
 }
 

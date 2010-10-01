@@ -14,6 +14,12 @@ class AirportsWidget : public QWidget
 {
 Q_OBJECT
 public:
+    enum COLS{
+        C_CODE = 0,
+        C_NAME = 3,
+        C_TOWER = 1,
+        C_ELEVATION = 2
+    };
 
     explicit AirportsWidget(MainObject *mOb, QWidget *parent = 0);
 
@@ -32,6 +38,7 @@ public slots:
     void import_airports_dialog();
 
     void on_airport(QString,QString,QString,QString);
+    void on_find_text_changed(QString);
 };
 
 #endif // AIRPORTSWIDGET_H

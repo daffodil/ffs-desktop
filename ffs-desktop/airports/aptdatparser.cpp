@@ -12,6 +12,8 @@
   Other aiports whousl be available on demand as a parse etc..
   eg integration with FG
 
+  Make a way to send new data online for verification
+
   */
 
 
@@ -32,7 +34,12 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+
 //#include <zip.h>
+
+#include <QtGui/QProgressDialog>
+#include <QtGui/QIcon>
+
 
 /* From the guide >>
 
@@ -61,18 +68,9 @@ AptDatParser::AptDatParser(QObject *parent) :
 {
     estimated_lines = 1510000;
     line_counter = -1;
-    cancel_import_flag = false;
-}
-
-void AptDatParser::cancel_import(){
-    cancel_import_flag = true;
 }
 
 void AptDatParser::import_aptdat(){
-
-    //QString fileName("/home/mash/ffs-desktop/apt.dat.gz");
-    //int err = 0;
-    // struct zip *zip = zip_open(fileName.toLatin1().constData(), 0, &err);
 
 
     qDebug("AptDatParser::process_file()");
@@ -90,7 +88,6 @@ void AptDatParser::import_aptdat(){
     queryC.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
 
     line_counter = 0;
-    cancel_import_flag = false;
     QRegExp rxICAOAirport("[A-Z]{4}");
 
     QSqlQuery queryAirportInsert;
@@ -102,19 +99,18 @@ void AptDatParser::import_aptdat(){
     //queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
-    bool ok;
-    //int c = 0;
-
+    bool success;
     QString airport;
     bool is_icao;
 
-
+    QProgressDialog progress("Importing Airports", "Cancel", 0, estimated_lines);
+    progress.setWindowTitle("Importing Airports");
+    progress.setWindowModality(Qt::WindowModal);
+    progress.setFixedWidth(400);
+    progress.setWindowIcon(QIcon(":/icons/import"));
+    progress.setMinimumDuration(0);
 
     while( !file.atEnd() ){
-        if(cancel_import_flag == true){
-            qDebug("Cancelled");
-            return;
-        }
 
         QByteArray lineBytes = file.readLine();
         QString line = QString(lineBytes).trimmed();
@@ -134,23 +130,23 @@ void AptDatParser::import_aptdat(){
             }
             QString tower =  parts[2] == "1" ? "1" : "";
             if(is_icao){
-                qDebug() << airport;
+                //qDebug() << airport;
                 queryAirportInsert.addBindValue( airport);
                 queryAirportInsert.addBindValue( airport_name.trimmed() );
                 queryAirportInsert.addBindValue( elevation);
                 queryAirportInsert.addBindValue( parts[2] == "1" ? "1" : NULL );
-                ok = queryAirportInsert.exec();
-                if(!ok){
+                success = queryAirportInsert.exec();
+                if(!success){
                     qDebug() << queryAirportInsert.lastError();
                     qDebug() << "DIE queryApt";
                     return;
                 }
                 //emit airport_data(airport, airport_name.trimmed(), parts[1], parts[2] == "1" ? "1" : "");
-            }
+            } /* if(is_icao) */
             //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
             //qDebug() << "Parts   =" << parts.join("#");
             //qDebug(""); // << "Airport" << line << " = ";
-        }
+        } /* if(row_code == "1") airport */
 
         //*** Runway
         if(row_code == "100"){
@@ -180,7 +176,7 @@ void AptDatParser::import_aptdat(){
 //                        return;
 //                    }
 //                }
-        }
+        //} /* if(row_code == "100") Runway */
 //            bool is_icao = rxICAOAirport.exactMatch(airport_code);
 //            int elevation = parts[1].toInt();
 //            QString airport;
@@ -201,12 +197,21 @@ void AptDatParser::import_aptdat(){
             //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
             //qDebug() << "Parts   =" << parts.join("#");
             //qDebug(""); // << "Airport" << line << " = ";
-        }
+        } /* if(row_code == "100") Runway */
 
-        line_counter++;
-        if(line_counter % 1000 == 0){
-            emit line_count(line_counter);
+        if (progress.wasCanceled()){
+            return;
         }
+        line_counter++;
+        if(line_counter % 10000 == 0){
+            qDebug() <<  line_counter;
+            progress.setValue(line_counter);
+            //QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
+           // progress.setLabelText(prog_text);
+        }
+       //if(line_counter % 1000 == 0){
+        //    emit line_count(line_counter);
+       // }
         //qDebug() << line_counter;
         //if(line_counter == 200){
             //return;
