@@ -28,9 +28,10 @@ public:
 
 signals:
     void airport(QString, QString, QString, QString);
+   // void airports_count(int);
 
 public slots:
-    void insert_airport(QString, QString, QString, QString);
+    //void insert_airport(QString, QString, QString, QString);
 };
 
 #endif // AIRPORTSDB_H

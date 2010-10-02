@@ -14,24 +14,26 @@
 // layouts
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QSplitter>
+
 #include <QtGui/QSizePolicy>
+#include <QtGui/QFont>
 
 #include <QtGui/QToolBar>
 #include <QtGui/QToolButton>
-//#include <QtGui/QAbstractButton>
-#include <QtGui/QButtonGroup>
 
 #include <QtGui/QAction>
 #include <QtGui/QLabel>
 #include <QtGui/QProgressDialog>
-//#include <QtGui/QTabWidget>
+#include <QtGui/QLineEdit>
 
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QItemSelection>
 #include <QtGui/QItemSelectionModel>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QHeaderView>
-#include <QtGui/QLineEdit>
+#include <QtGui/QTreeWidgetItem>
+
+
 
 AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
@@ -43,6 +45,9 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
             this, SLOT(on_airport(QString,QString,QString,QString))
     );
+//    connect(airportsDb, SIGNAL(airports_count(int)),
+//            this, SLOT(update_airports_count())
+//    );
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -69,18 +74,18 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeToolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     //** Filter Code
-    treeToolbar->addWidget(new QLabel(tr("In").append(":")));
+    treeToolbar->addWidget(new QLabel(tr("Filter").append(":")));
 
 
 
     //******************************************************
     //** Filter Buttons
-    QButtonGroup *buttViewGroup = new QButtonGroup(this);
+    buttViewGroup = new QButtonGroup(this);
     buttViewGroup->setExclusive(true);
-//    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
-//            this, SLOT(on_view_button_clicked(QAbstractButton*))
-//    );
-
+    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
+            this,           SLOT(on_update_filter())
+    );
+    /*
     QToolButton *buttAll = new QToolButton();
     treeToolbar->addWidget(buttAll);
     buttViewGroup->addButton(buttAll);
@@ -88,33 +93,35 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     buttAll->setCheckable(true);
     buttAll->setIcon(QIcon(":/icons/pink"));
     buttAll->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-    QToolButton *buttCode = new QToolButton();
+    */
+    QRadioButton *buttCode = new QRadioButton();
     treeToolbar->addWidget(buttCode);
     buttViewGroup->addButton(buttCode);
     buttCode->setText("Code");
-    buttCode->setCheckable(true);
-    buttCode->setIcon(QIcon(":/icons/purple"));
-    buttCode->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    buttCode->setProperty("column", QVariant(C_CODE));
 
-    QToolButton *buttName = new QToolButton();
+    //buttCode->setIcon(QIcon(":/icons/purple"));
+    //buttCode->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    QRadioButton *buttName = new QRadioButton();
     treeToolbar->addWidget(buttName);
     buttViewGroup->addButton(buttName);
     buttName->setText("Name");
-    buttName->setCheckable(true);
-    buttName->setIcon(QIcon(":/icons/purple"));
-    buttName->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    buttCode->setProperty("column", QVariant(C_NAME));
+    //buttName->setCheckable(true);
+    //buttName->setIcon(QIcon(":/icons/purple"));
+   // buttName->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    buttAll->setChecked(true);
+    buttCode->setChecked(true);
 
-    treeToolbar->addWidget(new QLabel(tr("find").append(":")));
+    //treeToolbar->addWidget(new QLabel(tr("find").append(":")));
 
     //** Find Text
-    QLineEdit *txtFindCode = new QLineEdit();
+    txtFindCode = new QLineEdit();
     treeToolbar->addWidget(txtFindCode);
     txtFindCode->setFixedWidth(100);
     connect(txtFindCode,    SIGNAL(textChanged(QString)),
-            this,           SLOT(on_find_text_changed(QString))
+            this,           SLOT(on_update_filter())
     );
 
     treeToolbar->addSeparator();
@@ -157,9 +164,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
-
-    proxyModel->setFilterKeyColumn(0);
-    //proxyModel->setFilterFixedString();
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     //******************************************************
     //**  Tree
@@ -178,24 +183,41 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeView->header()->setStretchLastSection(true);
     treeView->setColumnHidden(C_ELEVATION, true);
     treeView->setColumnHidden(C_TOWER, true);
+
     /*
     connect( treeView->selectionModel(),
              SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
              SLOT( set_aircraft(const QItemSelection&, const QItemSelection&) )
     );
     */
-//    connect(treeView,
-//            SIGNAL(clicked(QModelIndex)),
-//            this, SLOT(on_tree_clicked(QModelIndex))
-//    );
+    //connect(treeView,
+    //        SIGNAL(clicked(QModelIndex)),
+    //        this, SLOT(on_tree_clicked(QModelIndex))
+    //);
 
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");
 
 
-}
 
+    //************************************************************************************************
+    //** Right
+    QWidget *rightWidget = new QWidget();
+    splitter->addWidget(rightWidget);
+    QVBoxLayout *airportLayout = new QVBoxLayout();
+    rightWidget->setLayout(airportLayout);
+    airportLayout->setContentsMargins(0,0,0,0);
+    airportLayout->setSpacing(0);
+
+
+    treeWidgetRunways = new QTreeWidget();
+    airportLayout->addWidget(treeWidgetRunways);
+    QTreeWidgetItem *headerItem = treeWidgetRunways->headerItem();
+    headerItem->setText(0, tr("Runways"));
+
+}
+//*******************************************************************************
 //** Load_Airports() from database
 void AirportsWidget::load_airports(){
 
@@ -217,6 +239,9 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
     //* create and set items
     QStandardItem *itemAirportCode = new QStandardItem();
     itemAirportCode->setText(airport);
+    QFont font = itemAirportCode->font();
+    font.setFamily("monospace");
+    itemAirportCode->setFont(font);
     model->setItem(new_row_index, C_CODE, itemAirportCode);
 
     QStandardItem *itemAirportName = new QStandardItem();
@@ -232,10 +257,15 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
     model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
 
 }
+//void AirportsWidget::update_airports_count(){
+   // QString status_lbl = QString("%1 aiports").arg( model->rowCount() );
+    //statusBarTree->showMessage(status_lbl);
+//}
 
-void AirportsWidget::on_find_text_changed(QString txt){
-    proxyModel->setFilterFixedString(txt);
-    proxyModel->setFilterKeyColumn(C_NAME);
+
+void AirportsWidget::on_update_filter(){
+    proxyModel->setFilterFixedString( txtFindCode->text() );
+    proxyModel->setFilterKeyColumn( buttViewGroup->checkedButton()->property("column").toInt() );
 }
 
 //*** Import Airports Dialog
