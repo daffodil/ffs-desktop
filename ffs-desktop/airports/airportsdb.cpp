@@ -51,25 +51,29 @@ void AirportsDb::airports(){
     bool success;
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
     if(!success){
-        qDebug() << "SELECT" << query.lastError();
+        qDebug() << "SELECT airports" << query.lastError();
         return;
     }
+    //** I want to return a list
+    //QList<QString, QString, QString, QString> airports;
     while (query.next()) {
-        //QString name = query.value(0).toString();
-        // int salary = query.value(1).toInt();
-        //qDebug() << name ;
         emit airport(query.value(0).toString(),
                      query.value(1).toString(),
                      query.value(2).toString(),
                      query.value(3).toString()
                     );
+        /* airports.append(query.value(0).toString(),
+            query.value(1).toString(),
+            query.value(2).toString(),
+            query.value(3).toString()
+        ); */
     }
-    //emit airports_count(query.size());
+    //return airports;
 }
 
 //*****************************************************************
 //** Runways
-void AirportsDb::runways(QString airport){
+void AirportsDb::runways(QString airport_code){
     QSqlQuery query;
     // success;
     query.prepare("SELECT runway from runways where airport=? order by runway");

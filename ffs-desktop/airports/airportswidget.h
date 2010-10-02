@@ -18,10 +18,11 @@ class AirportsWidget : public QWidget
 Q_OBJECT
 public:
     enum COLS{
-        C_CODE = 0,
-        C_NAME = 3,
-        C_TOWER = 1,
-        C_ELEVATION = 2
+        C_FAV = 0,
+        C_CODE = 1,
+        C_TOWER = 2,
+        C_ELEVATION = 3,
+        C_NAME = 4
     };
 
     explicit AirportsWidget(MainObject *mOb, QWidget *parent = 0);
@@ -49,6 +50,7 @@ public slots:
     void on_airport(QString, QString, QString, QString);
     //void update_airports_count();
     void on_update_filter();
+    void on_aiport_clicked(const QItemSelection&, const QItemSelection&);
 };
 
 #endif // AIRPORTSWIDGET_H

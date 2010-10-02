@@ -173,9 +173,6 @@ void AptDatParser::import_aptdat(){
             QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
             progress.setLabelText(prog_text);
         }
-        //if(line_counter == 200){
-            //return;
-        //}
-        //process_line(line);
+
     }
 }
