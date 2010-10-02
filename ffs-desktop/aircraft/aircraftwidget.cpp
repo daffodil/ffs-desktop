@@ -145,6 +145,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
             this, SLOT(on_tree_clicked(QModelIndex))
     );
 
+
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");

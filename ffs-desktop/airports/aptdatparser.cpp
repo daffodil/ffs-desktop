@@ -143,6 +143,7 @@ void AptDatParser::import_aptdat(){
                 }
                 //emit airport_data(airport, airport_name.trimmed(), parts[1], parts[2] == "1" ? "1" : "");
             } /* if(is_icao) */
+
             //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
             //qDebug() << "Parts   =" << parts.join("#");
             //qDebug(""); // << "Airport" << line << " = ";
