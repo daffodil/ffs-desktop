@@ -77,6 +77,7 @@ void AirportsDb::runways(QString airport_code){
     QSqlQuery query;
     // success;
     query.prepare("SELECT runway from runways where airport=? order by runway");
+    //query.addBindValue( airport);
     bool success = query.exec();
     if(!success){
         qDebug() << "SELECT" << query.lastError();

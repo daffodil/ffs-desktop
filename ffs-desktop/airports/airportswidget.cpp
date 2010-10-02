@@ -33,7 +33,8 @@
 #include <QtGui/QHeaderView>
 #include <QtGui/QTreeWidgetItem>
 
-
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
 
 AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
@@ -215,17 +216,57 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
 }
 //*******************************************************************************
-//** Load_Airports() from database
+//** Load Airports from database
 void AirportsWidget::load_airports(){
 
-    qDebug("load_airports()");
-    //aptDatParser->process_file();
-    airportsDb->airports();
+    QSqlQuery query;
+    bool success;
+    success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
+    if(!success){
+        qDebug() << "SELECT airports" << query.lastError();
+        return;
+    }
+    //** I want to return a list
+    //QList<QString, QString, QString, QString> airports;
+    while (query.next()) {
+        //emit airport(query.value(0).toString(),
+                    // query.value(1).toString(),
+                    // query.value(2).toString(),
+                    // query.value(3).toString()
+                   // );
+        int new_row_index = model->rowCount();
+        model->insertRow(new_row_index);
 
+        //* create and set items
+        QStandardItem *itemFav = new QStandardItem();
+        itemFav->setCheckable(true);
+        model->setItem(new_row_index, C_FAV, itemFav);
+
+        QStandardItem *itemAirportCode = new QStandardItem();
+        itemAirportCode->setText(query.value(0).toString());
+        QFont font = itemAirportCode->font();
+        font.setFamily("monospace");
+        itemAirportCode->setFont(font);
+        model->setItem(new_row_index, C_CODE, itemAirportCode);
+
+        QStandardItem *itemAirportName = new QStandardItem();
+        itemAirportName->setText(query.value(1).toString());
+        model->setItem(new_row_index, C_NAME, itemAirportName);
+
+        QStandardItem *itemAirportTower = new QStandardItem();
+        itemAirportTower->setText(query.value(2).toString());
+        model->setItem(new_row_index, C_TOWER, itemAirportTower);
+
+        QStandardItem *itemAirportElevation = new QStandardItem();
+        itemAirportElevation->setText(query.value(3).toString());
+        model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
+    }
+    qDebug() << "set row count";
 
 }
 
-//*** Load Airports
+//*****************************************
+//*** DEADLoad Airports
 void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
     //qDebug() <<  airport << name << tower <<  elevation;
 
@@ -263,7 +304,8 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
     //statusBarTree->showMessage(status_lbl);
 //}
 
-
+//**********************************************
+//*** Update Filter
 void AirportsWidget::on_update_filter(){
     proxyModel->setFilterFixedString( txtFindCode->text() );
     int column = buttViewGroup->checkedButton()->property("column").toInt();
@@ -271,6 +313,7 @@ void AirportsWidget::on_update_filter(){
     treeView->sortByColumn(column);
 }
 
+//**********************************************
 //*** Import Airports Dialog
 void AirportsWidget::import_airports_dialog(){
     //* TODO message you are about to do this and take a few moment etc (or background)
@@ -283,7 +326,25 @@ void AirportsWidget::import_airports_dialog(){
 
 
 
-
+//**********************************************
+//*** Airport Row Clicked
 void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
     qDebug() << "CLICK";
+    QModelIndex proxyIndex =  treeView->selectionModel()->selectedRows(C_CODE).first();
+    QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
+    QString airportCode = model->item(srcIndex.row(), C_CODE)->text();
+
+    QSqlQuery query;
+    query.prepare("SELECT runway from runways where airport=? order by runway");
+    query.addBindValue( airportCode );
+    bool success = query.exec();
+    if(!success){
+        qDebug() << "SELECT runways" << query.lastError();
+        return;
+    }
+    while (query.next()) {
+        QString name = query.value(0).toString();
+        // int salary = query.value(1).toInt();
+        qDebug() << name ;
+    }
 }
