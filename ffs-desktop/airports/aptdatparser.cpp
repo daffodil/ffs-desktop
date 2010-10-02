@@ -74,8 +74,8 @@ void AptDatParser::import_aptdat(){
 
 
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    //QFile file("/home/ffs/ffs-desktop/apt.dat");
+    //QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -95,8 +95,8 @@ void AptDatParser::import_aptdat(){
 
     //QSqlQuery queryRwySel;
     //queryRwySel.prepare("select * from runways where airport=? and runway=?");
-    //QSqlQuery queryRwyIns;
-    //queryRwyIns.prepare("insert into runways(  airport, runway)values(?, ?)");
+    QSqlQuery queryRunwayInsert;
+    queryRunwayInsert.prepare("insert into runways(  airport, runway)values(?, ?)");
 
 
     bool success;
@@ -141,64 +141,27 @@ void AptDatParser::import_aptdat(){
                     qDebug() << "DIE queryApt";
                     return;
                 }
-                //emit airport_data(airport, airport_name.trimmed(), parts[1], parts[2] == "1" ? "1" : "");
             } /* if(is_icao) */
-
-            //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
-            //qDebug() << "Parts   =" << parts.join("#");
-            //qDebug(""); // << "Airport" << line << " = ";
         } /* if(row_code == "1") airport */
+
 
         //*** Runway
         if(row_code == "100"){
             if(is_icao){
                 QString runway = parts[8];
-            //QString ki = QString("%1/%2").arg(airport).arg(runway);
-//                queryRwySel.addBindValue(airport);
-//                queryRwySel.addBindValue(runway);
-//                ok = queryRwySel.exec();
-//                if(!ok){
-//                    qDebug() << queryRwySel.lastError();
-//                    qDebug() << "DIE queryRwySel";
-//                    return;
-//                }
-//                if(queryRwySel.size() == 0){
-//
-//                    qDebug() << airport << " = " << runway;
-//                    //queryRwyIns.addBindValue( ki);
-//                    queryRwyIns.addBindValue( airport);
-//                    queryRwyIns.addBindValue( runway );
-//
-//
-//                    ok = queryRwyIns.exec();
-//                    if(!ok){
-//                        qDebug() << queryRwyIns.lastError();
-//                        qDebug() << "DIE queryRwyIns";
-//                        return;
-//                    }
-//                }
-        //} /* if(row_code == "100") Runway */
-//            bool is_icao = rxICAOAirport.exactMatch(airport_code);
-//            int elevation = parts[1].toInt();
-//            QString airport;
-//            for(int p = 5; p < parts.size(); p++){
-//                airport.append(parts[p]).append(" ");
-//            }
-//            QString tower =  parts[2] == "1" ? "1" : "";
-//            if(is_icao){
-//                queryApt.addBindValue( airport_code);
-//                queryApt.addBindValue( airport.trimmed() );
-//                queryApt.addBindValue( elevation);
-//                queryApt.addBindValue( parts[2] == "1" ? "1" : NULL );
-//                ok = queryApt.exec();
-//                if(!ok){
-//                    qDebug() << queryApt.lastError();
-//                }
-//            }
-            //qDebug() << "APT Line=" << aiport_code << "=" << is_icao;  //<< " >> " << line << "  "
-            //qDebug() << "Parts   =" << parts.join("#");
-            //qDebug(""); // << "Airport" << line << " = ";
+                queryRunwayInsert.addBindValue( airport);
+                queryRunwayInsert.addBindValue( runway );
+
+
+                success = queryRunwayInsert.exec();
+                if(!success){
+                    qDebug() << queryRunwayInsert.lastError();
+                    qDebug() << "DIE queryRwyIns";
+                    return;
+                }
+            } /* is_icao */
         } /* if(row_code == "100") Runway */
+
 
         if (progress.wasCanceled()){
             return;
@@ -207,13 +170,9 @@ void AptDatParser::import_aptdat(){
         if(line_counter % 10000 == 0){
             qDebug() <<  line_counter;
             progress.setValue(line_counter);
-            //QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
-           // progress.setLabelText(prog_text);
+            QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
+            progress.setLabelText(prog_text);
         }
-       //if(line_counter % 1000 == 0){
-        //    emit line_count(line_counter);
-       // }
-        //qDebug() << line_counter;
         //if(line_counter == 200){
             //return;
         //}
