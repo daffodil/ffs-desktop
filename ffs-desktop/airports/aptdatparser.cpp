@@ -74,8 +74,8 @@ void AptDatParser::import_aptdat(){
 
 
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    //QFile file("/home/ffs/ffs-desktop/apt.dat");
+    //Q//File file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -85,7 +85,7 @@ void AptDatParser::import_aptdat(){
     queryCreate.exec("DROP TABLE IF EXISTS airports");
     queryCreate.exec("DROP TABLE IF EXISTS runways");
     queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
-    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
+    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3), width numeric(2,2) )");
 
     line_counter = 0;
     QRegExp rxICAOAirport("[A-Z]{4}");
@@ -145,14 +145,25 @@ void AptDatParser::import_aptdat(){
         } /* if(row_code == "1") airport */
 
 
-        //*** Runway
+        //*** Runway                                                                      mark tdz
+        //      width surface/shou/sm/   No   lat           lng          disp_len  blast_len light  f f f
+        //100   49.99   1   0 0.25 1 2 0 09L  51.47747035 -000.48962591  306.02    0.00 5  4 1 1 27R  51.47767520 -000.43326100    0.00   21.03 5  4 1 1
+        //100   49.99   1   0 0.25 1 2 0 09R  51.46477398 -000.48694615  306.93    0.00 5  4 1 1 27L  51.46495200 -000.43407800    0.00   21.03 5  4 1 1
+
         if(row_code == "100"){
             if(is_icao){
                 QString runway = parts[8];
                 queryRunwayInsert.addBindValue( airport);
                 queryRunwayInsert.addBindValue( runway );
-
-
+                success = queryRunwayInsert.exec();
+                if(!success){
+                    qDebug() << queryRunwayInsert.lastError();
+                    qDebug() << "DIE queryRwyIns";
+                    return;
+                }
+                QString runwayOp = parts[17];
+                queryRunwayInsert.addBindValue( airport);
+                queryRunwayInsert.addBindValue( runwayOp );
                 success = queryRunwayInsert.exec();
                 if(!success){
                     qDebug() << queryRunwayInsert.lastError();

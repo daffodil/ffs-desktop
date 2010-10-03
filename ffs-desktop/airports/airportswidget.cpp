@@ -156,7 +156,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     proxyModel->setSourceModel(model);
     proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-
+    proxyModel->setFilterKeyColumn( C_NAME );
 
     //******************************************************
     //**  Tree
@@ -209,6 +209,8 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     treeWidgetRunways = new QTreeWidget();
     airportLayout->addWidget(treeWidgetRunways);
+    treeWidgetRunways->setAlternatingRowColors(true);
+    treeWidgetRunways->setRootIsDecorated(false);
     QTreeWidgetItem *headerItem = treeWidgetRunways->headerItem();
     headerItem->setText(0, tr("Runways"));
 
@@ -219,7 +221,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 //** Load Airports from database
 void AirportsWidget::load_airports(){
 
-    model->clear();
+    model->removeRows(0, model->rowCount());
     QSqlQuery query;
     bool success;
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
@@ -263,7 +265,7 @@ void AirportsWidget::load_airports(){
         model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
     }
     qDebug() << "set row count";
-
+    statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
 //*****************************************
@@ -308,11 +310,18 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
 //**********************************************
 //*** Update Filter
 void AirportsWidget::on_update_filter(){
-    proxyModel->setFilterFixedString( txtAirportsFilter->text() );
+   // qDebug() << txtAirportsFilter->text();
+
     int column = buttGroupFilter->checkedButton()->property("column").toInt();
     proxyModel->setFilterKeyColumn( column );
+    proxyModel->setFilterFixedString( txtAirportsFilter->text() );
+    //qDebug() << column;
+    //return;
+    //proxyModel->setFilterKeyColumn( column );
     treeView->sortByColumn(column);
-    txtAirportsFilter->setFocus();
+    //if( !txtAirportsFilter->hasFocus() ){ // WTF?
+       // txtAirportsFilter->setFocus();
+    //}
 }
 
 //**********************************************
