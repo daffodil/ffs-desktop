@@ -81,11 +81,11 @@ void AptDatParser::import_aptdat(){
         return;
      }
 
-    QSqlQuery queryC;
-    queryC.exec("DROP TABLE IF EXISTS airports");
-    queryC.exec("DROP TABLE IF EXISTS runways");
-    queryC.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
-    queryC.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
+    QSqlQuery queryCreate;
+    queryCreate.exec("DROP TABLE IF EXISTS airports");
+    queryCreate.exec("DROP TABLE IF EXISTS runways");
+    queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
+    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3))");
 
     line_counter = 0;
     QRegExp rxICAOAirport("[A-Z]{4}");
@@ -174,5 +174,8 @@ void AptDatParser::import_aptdat(){
             progress.setLabelText(prog_text);
         }
 
-    }
+    } /* end while readline */
+
+    queryCreate.exec("CREATE INDEX idx_airport_name on airports(name)");
+    queryCreate.exec("CREATE INDEX idx_airport_icao on runways(airport)");
 }

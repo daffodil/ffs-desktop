@@ -36,8 +36,8 @@ public:
 
     QStatusBar *statusBarTree;
 
-    QLineEdit *txtFindCode;
-    QButtonGroup *buttViewGroup;
+    QLineEdit *txtAirportsFilter;
+    QButtonGroup *buttGroupFilter;
 
     QTreeWidget *treeWidgetRunways;
 

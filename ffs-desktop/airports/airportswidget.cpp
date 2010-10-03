@@ -82,9 +82,9 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     //***********************************s*******************
     //** Filter Buttons
-    buttViewGroup = new QButtonGroup(this);
-    buttViewGroup->setExclusive(true);
-    connect(buttViewGroup, SIGNAL(buttonClicked(QAbstractButton*)),
+    buttGroupFilter = new QButtonGroup(this);
+    buttGroupFilter->setExclusive(true);
+    connect(buttGroupFilter, SIGNAL(buttonClicked(QAbstractButton*)),
             this,           SLOT(on_update_filter())
     );
     /*
@@ -98,23 +98,23 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     */
     QRadioButton *buttCode = new QRadioButton();
     treeToolbar->addWidget(buttCode);
-    buttViewGroup->addButton(buttCode);
+    buttGroupFilter->addButton(buttCode);
     buttCode->setText("Code");
     buttCode->setProperty("column", QVariant(C_CODE));
 
     QRadioButton *buttName = new QRadioButton();
     treeToolbar->addWidget(buttName);
-    buttViewGroup->addButton(buttName);
+    buttGroupFilter->addButton(buttName);
     buttName->setText("Name");
     buttName->setProperty("column", QVariant(C_NAME));
     buttName->setChecked(true);
 
 
     //** Find Text
-    txtFindCode = new QLineEdit();
-    treeToolbar->addWidget(txtFindCode);
-    txtFindCode->setFixedWidth(100);
-    connect(txtFindCode,    SIGNAL(textChanged(QString)),
+    txtAirportsFilter = new QLineEdit();
+    treeToolbar->addWidget(txtAirportsFilter);
+    txtAirportsFilter->setFixedWidth(100);
+    connect(txtAirportsFilter,    SIGNAL(textChanged(QString)),
             this,           SLOT(on_update_filter())
     );
 
@@ -307,10 +307,11 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
 //**********************************************
 //*** Update Filter
 void AirportsWidget::on_update_filter(){
-    proxyModel->setFilterFixedString( txtFindCode->text() );
-    int column = buttViewGroup->checkedButton()->property("column").toInt();
+    proxyModel->setFilterFixedString( txtAirportsFilter->text() );
+    int column = buttGroupFilter->checkedButton()->property("column").toInt();
     proxyModel->setFilterKeyColumn( column );
     treeView->sortByColumn(column);
+    txtAirportsFilter->setFocus();
 }
 
 //**********************************************
@@ -327,7 +328,7 @@ void AirportsWidget::import_airports_dialog(){
 
 
 //**********************************************
-//*** Airport Row Clicked
+//*** Airport Row Clicked = Show Runways
 void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
     qDebug() << "CLICK";
     QModelIndex proxyIndex =  treeView->selectionModel()->selectedRows(C_CODE).first();
@@ -346,5 +347,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         QString name = query.value(0).toString();
         // int salary = query.value(1).toInt();
         qDebug() << name ;
+        QTreeWidgetItem *itemRun = new QTreeWidgetItem();
+
     }
 }
