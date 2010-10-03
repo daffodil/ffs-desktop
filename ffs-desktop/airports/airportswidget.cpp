@@ -219,6 +219,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 //** Load Airports from database
 void AirportsWidget::load_airports(){
 
+    model->clear();
     QSqlQuery query;
     bool success;
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
@@ -333,16 +334,18 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     qDebug() << "CLICK";
     QModelIndex proxyIndex =  treeView->selectionModel()->selectedRows(C_CODE).first();
     QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
-    QString airportCode = model->item(srcIndex.row(), C_CODE)->text();
+    QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
     QSqlQuery query;
     query.prepare("SELECT runway from runways where airport=? order by runway");
-    query.addBindValue( airportCode );
+    query.addBindValue( airport_code );
     bool success = query.exec();
     if(!success){
         qDebug() << "SELECT runways" << query.lastError();
         return;
     }
+    qDebug() << query.size() << " " << airport_code;
+    //sif(query.is)
     while (query.next()) {
         QString name = query.value(0).toString();
         // int salary = query.value(1).toInt();

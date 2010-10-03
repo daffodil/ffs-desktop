@@ -74,8 +74,8 @@ void AptDatParser::import_aptdat(){
 
 
     qDebug("AptDatParser::process_file()");
-    //QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    QFile file("/home/ffs/ffs-desktop/apt.dat");
+    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
