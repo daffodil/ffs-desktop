@@ -332,7 +332,17 @@ void AirportsWidget::import_airports_dialog(){
 //*** Airport Row Clicked = Show Runways
 void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
     qDebug() << "CLICK";
+
+    //model->removeRows(0, model->rowCount());
+    treeWidgetRunways->model()->removeRows(0,
+                                            treeWidgetRunways->model()->rowCount()
+                                            );
+
     QModelIndex proxyIndex =  treeView->selectionModel()->selectedRows(C_CODE).first();
+    if(!proxyIndex.isValid()){
+        return;
+    }
+   // qDebug() << "proxy=" << proxyIndex;
     QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
@@ -344,13 +354,12 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         qDebug() << "SELECT runways" << query.lastError();
         return;
     }
+
     qDebug() << query.size() << " " << airport_code;
     //sif(query.is)
     while (query.next()) {
-        QString name = query.value(0).toString();
-        // int salary = query.value(1).toInt();
-        qDebug() << name ;
         QTreeWidgetItem *itemRun = new QTreeWidgetItem();
-
+        itemRun->setText( 0, query.value(0).toString() );
+        treeWidgetRunways->addTopLevelItem(itemRun);
     }
 }
