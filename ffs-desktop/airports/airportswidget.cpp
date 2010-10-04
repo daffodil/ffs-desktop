@@ -332,7 +332,9 @@ void AirportsWidget::import_airports_dialog(){
     //QProgressDialog progress("Importing airports", "Abort Copy", 0, 2000, this);
     //progress.show();
      ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
-     imp->exec();
+     if(imp->exec()){
+        load_airports();
+     }
 }
 
 
@@ -356,11 +358,11 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
     QSqlQuery query;
-    query.prepare("SELECT runway from runways where airport=? order by runway");
+    query.prepare("SELECT * from runways where airport=? order by runways");
     query.addBindValue( airport_code );
     bool success = query.exec();
     if(!success){
-        qDebug() << "SELECT runways" << query.lastError();
+        qDebug() << "SELECT runways" << airport_code << "==" << query.lastError();
         return;
     }
 

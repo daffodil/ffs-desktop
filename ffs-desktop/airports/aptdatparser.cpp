@@ -74,8 +74,8 @@ void AptDatParser::import_aptdat(){
 
 
     qDebug("AptDatParser::process_file()");
-    //Q//File file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    QFile file("/home/ffs/ffs-desktop/apt.dat");
+    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -85,7 +85,7 @@ void AptDatParser::import_aptdat(){
     queryCreate.exec("DROP TABLE IF EXISTS airports");
     queryCreate.exec("DROP TABLE IF EXISTS runways");
     queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
-    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(3), width numeric(2,2) )");
+    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runways varchar(15), width numeric(2,2), lat1 numeric(3,8), lng1 numeric(3,8), lat2 numeric(3,8), lng2 numeric(3,8) )");
 
     line_counter = 0;
     QRegExp rxICAOAirport("[A-Z]{4}");
@@ -96,7 +96,7 @@ void AptDatParser::import_aptdat(){
     //QSqlQuery queryRwySel;
     //queryRwySel.prepare("select * from runways where airport=? and runway=?");
     QSqlQuery queryRunwayInsert;
-    queryRunwayInsert.prepare("insert into runways(  airport, runway)values(?, ?)");
+    queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
 
 
     bool success;
@@ -152,24 +152,33 @@ void AptDatParser::import_aptdat(){
 
         if(row_code == "100"){
             if(is_icao){
-                QString runway = parts[8];
+                QString runways = parts[8];
+                runways.append("-").append(parts[17]);
+                qDebug() << runways;
                 queryRunwayInsert.addBindValue( airport);
-                queryRunwayInsert.addBindValue( runway );
+                queryRunwayInsert.addBindValue( runways );
+                queryRunwayInsert.addBindValue( parts[1] );
+                queryRunwayInsert.addBindValue( parts[9] );
+                queryRunwayInsert.addBindValue( parts[10] );
+                queryRunwayInsert.addBindValue( parts[18] );
+                queryRunwayInsert.addBindValue( parts[19] );
                 success = queryRunwayInsert.exec();
                 if(!success){
                     qDebug() << queryRunwayInsert.lastError();
                     qDebug() << "DIE queryRwyIns";
                     return;
+                }else{
+                    qDebug() << "runway ok";
                 }
-                QString runwayOp = parts[17];
-                queryRunwayInsert.addBindValue( airport);
-                queryRunwayInsert.addBindValue( runwayOp );
-                success = queryRunwayInsert.exec();
-                if(!success){
-                    qDebug() << queryRunwayInsert.lastError();
-                    qDebug() << "DIE queryRwyIns";
-                    return;
-                }
+//                QString runwayOp = parts[17];
+//                queryRunwayInsert.addBindValue( airport);
+//                queryRunwayInsert.addBindValue( runwayOp );
+//                success = queryRunwayInsert.exec();
+//                if(!success){
+//                    qDebug() << queryRunwayInsert.lastError();
+//                    qDebug() << "DIE queryRwyIns";
+//                    return;
+//                }
             } /* is_icao */
         } /* if(row_code == "100") Runway */
 

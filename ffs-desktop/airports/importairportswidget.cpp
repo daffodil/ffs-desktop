@@ -121,6 +121,7 @@ void ImportAirportsWidget::on_import_button_clicked(){
 //    );
 //    airportsDb->create_tables();
     aptDatParser->import_aptdat();
+    this->accept();
     //QProgressBar progress = new QProgressBar
 }
 
