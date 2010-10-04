@@ -74,8 +74,8 @@ void AptDatParser::import_aptdat(){
 
 
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    //QFile file("/home/ffs/ffs-desktop/apt.dat");
+    //QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -95,8 +95,8 @@ void AptDatParser::import_aptdat(){
 
     //QSqlQuery queryRwySel;
     //queryRwySel.prepare("select * from runways where airport=? and runway=?");
-    QSqlQuery queryRunwayInsert;
-    queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
+    //QSqlQuery queryRunwayInsert;
+    //queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
 
 
     bool success;
@@ -119,6 +119,7 @@ void AptDatParser::import_aptdat(){
         //qDebug() << row_code;
         QStringList parts = line.split(" ", QString::SkipEmptyParts);
 
+        //**********************************************************************
         //*** Airport
         if(row_code == "1"){
             airport = parts[4];
@@ -144,7 +145,7 @@ void AptDatParser::import_aptdat(){
             } /* if(is_icao) */
         } /* if(row_code == "1") airport */
 
-
+        //**********************************************************************8
         //*** Runway                                                                      mark tdz
         //      width surface/shou/sm/   No   lat           lng          disp_len  blast_len light  f f f
         //100   49.99   1   0 0.25 1 2 0 09L  51.47747035 -000.48962591  306.02    0.00 5  4 1 1 27R  51.47767520 -000.43326100    0.00   21.03 5  4 1 1
@@ -155,6 +156,10 @@ void AptDatParser::import_aptdat(){
                 QString runways = parts[8];
                 runways.append("-").append(parts[17]);
                 qDebug() << runways;
+                QSqlQuery queryRunwayInsert;
+                queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
+                qDebug() << airport << " - " << runways << " - " <<  parts[1] << " - " << parts[9] << " - " << parts[10] << " - " << parts[18] << " - " << parts[19];
+
                 queryRunwayInsert.addBindValue( airport);
                 queryRunwayInsert.addBindValue( runways );
                 queryRunwayInsert.addBindValue( parts[1] );
@@ -170,6 +175,7 @@ void AptDatParser::import_aptdat(){
                 }else{
                     qDebug() << "runway ok";
                 }
+
 //                QString runwayOp = parts[17];
 //                queryRunwayInsert.addBindValue( airport);
 //                queryRunwayInsert.addBindValue( runwayOp );
@@ -193,8 +199,12 @@ void AptDatParser::import_aptdat(){
             QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
             progress.setLabelText(prog_text);
         }
+        if(line_counter == 20000){
+            qDebug() << "had enouth";
+            return;
+        }
 
-    } /* end while readline */
+        } /* end while readline */
 
     queryCreate.exec("CREATE INDEX idx_airport_name on airports(name)");
     queryCreate.exec("CREATE INDEX idx_airport_icao on runways(airport)");
