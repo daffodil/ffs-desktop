@@ -195,6 +195,8 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");
 
+    progressAirportsLoad = new QProgressBar();
+    statusBarTree->addPermanentWidget(progressAirportsLoad);
 
 
     //************************************************************************************************

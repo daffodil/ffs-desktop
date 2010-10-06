@@ -12,6 +12,7 @@
 #include <QtGui/QStatusBar>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
+#include <QtGui/QProgressBar>
 
 class AirportsWidget : public QWidget
 {
@@ -35,6 +36,7 @@ public:
     QTreeView *treeView;
 
     QStatusBar *statusBarTree;
+    QProgressBar *progressAirportsLoad;
 
     QLineEdit *txtAirportsFilter;
     QButtonGroup *buttGroupFilter;
