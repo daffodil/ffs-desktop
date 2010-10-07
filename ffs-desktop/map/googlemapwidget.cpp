@@ -233,6 +233,13 @@ void GoogleMapWidget::add_runway(QString label, QString lat1, QString lng1, QStr
 
 }
 
+void GoogleMapWidget::zoom_to(QString lat, QString lng, QString zoom){
+    QString js_str = QString("zoom_to(%1, %2, %3);").arg( lat ).arg( lng ).arg( zoom );
+    qDebug() << js_str;
+    this->execute_js(js_str);
+
+}
+
 void GoogleMapWidget::execute_js(QString js_str){
     webView->page()->mainFrame()->evaluateJavaScript(js_str);
 }

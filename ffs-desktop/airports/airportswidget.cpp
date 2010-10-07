@@ -391,6 +391,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
 
     qDebug() << query.size() << " " << airport_code << "-" ;
     //sif(query.is)
+    bool first = true;
     while (query.next()) {
         QTreeWidgetItem *itemRun = new QTreeWidgetItem();
         itemRun->setText( 0, query.value(0).toString() );
@@ -406,5 +407,10 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
                             query.value(2).toString(), query.value(3).toString(),
                             query.value(4).toString(), query.value(5).toString()
         );
+        if(first){
+            //TODO this is aworkaround to zoom in
+            map->zoom_to(query.value(2).toString(), query.value(3).toString(), QString::number(14L));
+            first = false;
+        }
     }
 }

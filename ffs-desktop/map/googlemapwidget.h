@@ -27,7 +27,11 @@ public:
     QToolButton *buttZoom;
 
     QString to_lat(QVariant);
+
     void execute_js(QString js_string);
+    void zoom_to(QString lat, QString lng, QString zoom);
+
+    void add_runway(QString label, QString lat1, QString lng1, QString lat2, QString lng2);
 
 signals:
 
@@ -44,7 +48,7 @@ public slots:
       void marker_clicked(QVariant marker, QVariant mId);
       void marker_unselected(QVariant curr_idx, QVariant mLocationId);
 
-      void add_runway(QString label, QString lat1, QString lng1, QString lat2, QString lng2);
+
 
 };
 

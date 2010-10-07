@@ -129,9 +129,9 @@ function set_marker_icon(widget_name, myId, icon_color){
 }
 
 //*****************************************
-//** add_address_marker()
+//** DEADadd_address_marker()
 //*****************************************
-function add_address_marker(location_id, label, lat, lng, lbl_method){
+function DEADadd_address_marker(location_id, label, lat, lng, lbl_method){
 	if(init_flag == false){
 		return false;
 	}
@@ -157,6 +157,25 @@ function add_address_marker(location_id, label, lat, lng, lbl_method){
 	idx++;
 	return idx - 1; // return new id we just incremented
 }
+
+//*****************************************
+//** add_runway()
+//*****************************************
+function add_runway(label, lat1, lng1, lat2, lng2){
+	var coordinates = [
+		new google.maps.LatLng(lat1, lng1),
+		new google.maps.LatLng(lat2, lng2)
+	];
+	var runwayPath = new google.maps.Polyline({
+		path: coordinates,
+		strokeColor: "#FF0000",
+		strokeOpacity: 1.0,
+		strokeWeight: 2
+	});
+	//alert(coordinates);
+	runwayPath.setMap(map);
+}
+
 
 //*****************************************
 //** add_marker()
