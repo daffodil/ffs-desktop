@@ -3,13 +3,14 @@
 
 #include "airports/airportsdb.h"
 #include "mainobject.h"
+#include "xwidgets/xstatusbar.h"
 
 #include <QtGui/QWidget>
 #include <QtGui/QStandardItemModel>
 #include <QtGui/QSortFilterProxyModel>
 #include <QtGui/QTreeView>
 #include <QtGui/QTreeWidget>
-#include <QtGui/QStatusBar>
+
 #include <QtGui/QButtonGroup>
 #include <QtGui/QRadioButton>
 #include <QtGui/QProgressBar>
@@ -35,13 +36,15 @@ public:
     QSortFilterProxyModel *proxyModel;
     QTreeView *treeView;
 
-    QStatusBar *statusBarTree;
+    XStatusBar *statusBarTree;
     QProgressBar *progressAirportsLoad;
 
     QLineEdit *txtAirportsFilter;
     QButtonGroup *buttGroupFilter;
 
     QTreeWidget *treeWidgetRunways;
+
+    void show_progress(bool state);
 
 signals:
 

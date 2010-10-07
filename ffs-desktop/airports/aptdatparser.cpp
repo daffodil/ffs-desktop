@@ -81,16 +81,28 @@ void AptDatParser::import_aptdat(){
         return;
      }
 
+    bool success;
     QSqlQuery queryCreate;
 
-    queryCreate.exec("DROP TABLE IF EXISTS airports");
+    //** Create airports table
+    if( !queryCreate.exec("DROP TABLE IF EXISTS airports") ){
+        qDebug() << queryCreate.lastError();
+        return;
+    }
+    if( !queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ")){
+        qDebug() << queryCreate.lastError();
+        return;
+    }
 
-    queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
-
-    queryCreate.exec("DROP TABLE IF EXISTS runways");
-
-    queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runways varchar(15), width numeric(2,2), lat1 numeric(3,8), lng1 numeric(3,8), lat2 numeric(3,8), lng2 numeric(3,8) )");
-
+    //** create Runways table
+    if( !queryCreate.exec("DROP TABLE IF EXISTS runways")){
+        qDebug() << queryCreate.lastError();
+        return;
+    }
+    if( !queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runways varchar(15), width numeric(2,2), lat1 numeric(3,8), lng1 numeric(3,8), lat2 numeric(3,8), lng2 numeric(3,8) )")){
+        qDebug() << queryCreate.lastError();
+        return;
+    }
     line_counter = 0;
     QRegExp rxICAOAirport("[A-Z]{4}");
 
@@ -103,7 +115,7 @@ void AptDatParser::import_aptdat(){
     //queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
 
 
-    bool success;
+
     QString airport;
     bool is_icao;
 

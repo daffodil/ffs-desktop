@@ -171,6 +171,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeView->sortByColumn(C_NAME, Qt::AscendingOrder);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
     treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    treeView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     //** Deaders and columns
     treeView->header()->setStretchLastSection(true);
@@ -191,9 +192,9 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     //        this, SLOT(on_tree_clicked(QModelIndex))
     //);
 
-    statusBarTree = new QStatusBar();
+    statusBarTree = new XStatusBar();
     treeLayout->addWidget(statusBarTree);
-    statusBarTree->showMessage("Idle");
+    statusBarTree->show_message("Idle");
 
     progressAirportsLoad = new QProgressBar();
     statusBarTree->addPermanentWidget(progressAirportsLoad);
@@ -219,19 +220,32 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     load_airports();
 
 }
+
+void AirportsWidget::show_progress(bool state){
+    if(state){
+        progressAirportsLoad->setRange(0,0);
+        progressAirportsLoad->setValue(0);
+        progressAirportsLoad->show();
+        progressAirportsLoad->repaint();
+    }else{
+        progressAirportsLoad->setRange(0,100);
+        progressAirportsLoad->hide();
+    }
+}
+
 //*******************************************************************************
 //** Load Airports from database
 void AirportsWidget::load_airports(){
-    progressAirportsLoad->setRange(0,0);
-    progressAirportsLoad->setValue(0);
-    progressAirportsLoad->show();
-    //progressAirportsLoad->repaint();
+
+    show_progress(true);
     model->removeRows(0, model->rowCount());
     QSqlQuery query;
     bool success;
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
     if(!success){
         qDebug() << "SELECT airports" << query.lastError();
+        statusBarTree->show_error( QString("Error: %1").arg(query.lastError().text() ), 5000);
+        show_progress(false);
         return;
     }
     //** I want to return a list
@@ -272,9 +286,8 @@ void AirportsWidget::load_airports(){
         model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
     }
     qDebug() << "set row count";
-    progressAirportsLoad->setRange(0,100);
-    progressAirportsLoad->hide();
-    statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
+    show_progress(false);
+    statusBarTree->show_message( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
 //*****************************************
@@ -352,7 +365,7 @@ void AirportsWidget::import_airports_dialog(){
 //*** Airport Row Clicked = Show Runways
 void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
     qDebug() << "CLICK";
-    return;
+    //return;
     //model->removeRows(0, model->rowCount());
     treeWidgetRunways->model()->removeRows(0,
                                             treeWidgetRunways->model()->rowCount()
@@ -367,7 +380,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
     QSqlQuery query;
-    query.prepare("SELECT * from runways where airport=? order by runways");
+    query.prepare("SELECT runways, lat1, lng1, lat2, lng2 from runways where airport=? order by runways");
     query.addBindValue( airport_code );
     bool success = query.exec();
     if(!success){

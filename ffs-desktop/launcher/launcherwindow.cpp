@@ -61,12 +61,16 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     mainVBox->addWidget(controlBarWidget, 1);
     //controlBarWidget->hide();
 
-    resize(800, 600);
+    resize(800, 800);
     move(10,10);
     tabWidget->setCurrentIndex(2);
 }
 
 LauncherWindow::~LauncherWindow()
 {
-
 }
+
+//void LauncherWindow::closeEvent( event ){
+//   //     self.main.settings.save_window( "account_dialog", self )
+//    qDebug() << "close";
+//}
