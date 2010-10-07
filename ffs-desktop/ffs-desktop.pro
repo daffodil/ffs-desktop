@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     map/googlemapwidget.cpp \
     airports/aptdatparser.cpp \
     airports/airportswidget.cpp \
-    airports/airportsdb.cpp \
     airports/importairportswidget.cpp \
     props/telnetslave.cpp \
     props/propstreewidget.cpp \
@@ -35,7 +34,6 @@ HEADERS += launcher/launcherwindow.h \
     map/googlemapwidget.h \
     airports/aptdatparser.h \
     airports/airportswidget.h \
-    airports/airportsdb.h \
     props/telnetslave.h \
     props/propstreewidget.h \
     launcher/controlbarwidget.h \

@@ -1,9 +1,10 @@
 #ifndef AIRPORTSWIDGET_H
 #define AIRPORTSWIDGET_H
 
-#include "airports/airportsdb.h"
+
 #include "mainobject.h"
 #include "xwidgets/xstatusbar.h"
+#include "map/googlemapwidget.h"
 
 #include <QtGui/QWidget>
 #include <QtGui/QStandardItemModel>
@@ -30,7 +31,6 @@ public:
     explicit AirportsWidget(MainObject *mOb, QWidget *parent = 0);
 
     MainObject *mainObject;
-    AirportsDb *airportsDb;
 
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
@@ -43,6 +43,7 @@ public:
     QButtonGroup *buttGroupFilter;
 
     QTreeWidget *treeWidgetRunways;
+    GoogleMapWidget *map;
 
     void show_progress(bool state);
 

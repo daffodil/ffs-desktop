@@ -4,7 +4,7 @@
 
 #include "airports/importairportswidget.h"
 #include "airports/aptdatparser.h"
-#include "airports/airportsdb.h"
+
 
 #include <QtCore/QDebug>
 #include <QtCore/QString>
@@ -41,14 +41,6 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 {
 
     mainObject = mOb;
-
-    airportsDb = new AirportsDb(this);
-    connect(airportsDb, SIGNAL(airport(QString,QString,QString,QString)),
-            this, SLOT(on_airport(QString,QString,QString,QString))
-    );
-//    connect(airportsDb, SIGNAL(airports_count(int)),
-//            this, SLOT(update_airports_count())
-//    );
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -210,12 +202,17 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     airportLayout->setSpacing(0);
 
 
+    //*** Runways Tree
     treeWidgetRunways = new QTreeWidget();
-    airportLayout->addWidget(treeWidgetRunways);
+    airportLayout->addWidget(treeWidgetRunways, 3);
     treeWidgetRunways->setAlternatingRowColors(true);
     treeWidgetRunways->setRootIsDecorated(false);
     QTreeWidgetItem *headerItem = treeWidgetRunways->headerItem();
     headerItem->setText(0, tr("Runways"));
+
+    //** Map
+    map = new GoogleMapWidget(this);
+    airportLayout->addWidget(map, 10);
 
     load_airports();
 
@@ -380,19 +377,34 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
     QSqlQuery query;
-    query.prepare("SELECT runways, lat1, lng1, lat2, lng2 from runways where airport=? order by runways");
+    query.prepare("SELECT runways, width, lat1, lng1, lat2, lng2 from runways where airport=? order by runways");
     query.addBindValue( airport_code );
+
     bool success = query.exec();
     if(!success){
         qDebug() << "SELECT runways" << airport_code << "==" << query.lastError();
         return;
     }
+    qDebug() << query.lastQuery();
+   // qDebug() << query.value(1).toString() << " = " << query.value(2).toString();
 
-    qDebug() << query.size() << " " << airport_code;
+
+    qDebug() << query.size() << " " << airport_code << "-" ;
     //sif(query.is)
     while (query.next()) {
         QTreeWidgetItem *itemRun = new QTreeWidgetItem();
         itemRun->setText( 0, query.value(0).toString() );
+        itemRun->setText( 1, query.value(1).toString() );
         treeWidgetRunways->addTopLevelItem(itemRun);
+
+        //QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( quetoString()ry.value(0). )
+         //                .arg( query.value(1).toString() ).arg( query.value(2).toString() )
+         //                .arg( query.value(3).toString() ).arg( query.value(4).toString() ) ;
+       // qDebug() << js_str;
+        //(js_str);
+        map->add_runway(    query.value(0).toString(),
+                            query.value(2).toString(), query.value(3).toString(),
+                            query.value(4).toString(), query.value(5).toString()
+        );
     }
 }

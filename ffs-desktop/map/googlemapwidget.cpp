@@ -1,5 +1,6 @@
 #include "googlemapwidget.h"
 
+#include <QtCore/QDebug>
 
 #include <QtCore/QByteArray>
 #include <QtCore/QFile>
@@ -96,7 +97,7 @@ GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
     for(int z=1; z < 8; z++){
         QAction *act = new QAction(this);
         act->setText(QString(" %1 ").arg(z));
-        act->setProperty("zoom", QVariant("z"));
+        act->setProperty("zoom", QVariant(z));
         act->setCheckable(true);
         //act.setChecked(b[0] == 'Uk');
         menuZoom->addAction(act);
@@ -193,7 +194,10 @@ void GoogleMapWidget::map_zoom_changed(QVariant zoom){
 }
 
 void GoogleMapWidget::on_zoom_action(QAction *act){
-    qDebug("on_zoom_action()");
+
+    QString js_str = QString("set_zoom(%1);").arg(act->property("zoom").toString());
+     qDebug() << act->property("zoom").toString() << js_str;
+    this->execute_js(js_str);
 }
 
 /*
@@ -217,3 +221,18 @@ QString GoogleMapWidget::to_lat(QVariant lat){
 /*
   /home/mash/ffs-desktop/ffs-desktop/map/googlemapwidget.cpp:128: error: invalid use of incomplete type ‘struct QDebug’
   */
+
+
+void GoogleMapWidget::add_runway(QString label, QString lat1, QString lng1, QString lat2, QString lng2){
+
+    QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( label )
+                     .arg( lat1 ).arg( lng1 )
+                     .arg( lat2 ).arg( lng2 ) ;
+    qDebug() << js_str;
+    this->execute_js(js_str);
+
+}
+
+void GoogleMapWidget::execute_js(QString js_str){
+    webView->page()->mainFrame()->evaluateJavaScript(js_str);
+}
