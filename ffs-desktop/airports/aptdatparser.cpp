@@ -159,7 +159,7 @@ void AptDatParser::import_aptdat(){
                 QSqlQuery queryRunwayInsert;
                 queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
                 qDebug() << airport << " - " << runways << " - " <<  parts[1] << " - " << parts[9] << " - " << parts[10] << " - " << parts[18] << " - " << parts[19];
-
+                 qDebug() << "runways" << runways;
                 queryRunwayInsert.addBindValue( airport);
                 queryRunwayInsert.addBindValue( runways );
                 queryRunwayInsert.addBindValue( parts[1] );
