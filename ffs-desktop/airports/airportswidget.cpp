@@ -409,7 +409,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         );
         if(first){
             //TODO this is aworkaround to zoom in
-            map->zoom_to(query.value(2).toString(), query.value(3).toString(), QString::number(14L));
+            //map->zoom_to(query.value(2).toString(), query.value(3).toString(), QString::number(14L));
             first = false;
         }
     }
