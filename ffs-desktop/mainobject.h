@@ -4,6 +4,7 @@
 #include "props/telnetslave.h"
 
 #include <QtCore/QObject>
+#include <QtCore/QSettings>
 
 #include <QtSql/QSqlDatabase>
 
@@ -22,6 +23,7 @@ public:
     //** Objects
     TelnetSlave *telnet;
     QSqlDatabase db;
+    QSettings settings;
 
     QAction *actionTelnetConnect;
     QAction *actionTelnetDisconnect;

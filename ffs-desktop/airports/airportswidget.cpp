@@ -222,7 +222,10 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 //*******************************************************************************
 //** Load Airports from database
 void AirportsWidget::load_airports(){
-
+    progressAirportsLoad->setRange(0,0);
+    progressAirportsLoad->setValue(0);
+    progressAirportsLoad->show();
+    //progressAirportsLoad->repaint();
     model->removeRows(0, model->rowCount());
     QSqlQuery query;
     bool success;
@@ -269,6 +272,8 @@ void AirportsWidget::load_airports(){
         model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
     }
     qDebug() << "set row count";
+    progressAirportsLoad->setRange(0,100);
+    progressAirportsLoad->hide();
     statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
@@ -347,7 +352,7 @@ void AirportsWidget::import_airports_dialog(){
 //*** Airport Row Clicked = Show Runways
 void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
     qDebug() << "CLICK";
-
+    return;
     //model->removeRows(0, model->rowCount());
     treeWidgetRunways->model()->removeRows(0,
                                             treeWidgetRunways->model()->rowCount()
