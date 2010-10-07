@@ -82,9 +82,13 @@ void AptDatParser::import_aptdat(){
      }
 
     QSqlQuery queryCreate;
+
     queryCreate.exec("DROP TABLE IF EXISTS airports");
-    queryCreate.exec("DROP TABLE IF EXISTS runways");
+
     queryCreate.exec("CREATE TABLE airports(airport varchar(10) NOT NULL PRIMARY KEY, name varchar(50) NULL, elevation int, tower tinyint NULL) ");
+
+    queryCreate.exec("DROP TABLE IF EXISTS runways");
+
     queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runways varchar(15), width numeric(2,2), lat1 numeric(3,8), lng1 numeric(3,8), lat2 numeric(3,8), lng2 numeric(3,8) )");
 
     line_counter = 0;

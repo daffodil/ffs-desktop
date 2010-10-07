@@ -233,6 +233,8 @@ void AirportsWidget::load_airports(){
     }
     //** I want to return a list
     //QList<QString, QString, QString, QString> airports;
+    //qDebug() << "size=" << query.size();
+
     while (query.next()) {
         //emit airport(query.value(0).toString(),
                     // query.value(1).toString(),
