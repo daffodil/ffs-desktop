@@ -4,6 +4,12 @@ LatLng::LatLng()
 {
 }
 
+LatLng::LatLng(float lat, float lng)
+{
+    _lat = lat;
+    _lng = lng;
+}
+
 float LatLng::lat(){
     return _lat;
 }

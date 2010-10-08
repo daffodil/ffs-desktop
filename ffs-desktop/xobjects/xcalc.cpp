@@ -1,12 +1,9 @@
 #include "xcalc.h"
 #include "math.h"
 
-XCalc::XCalc(QObject *parent) :
-    QObject(parent)
-{
-}
 
-LatLng XCalc::latlng_dist_heading(LatLng latlng, int dist, float heading) {
+
+LatLng XCalc::latlng_dist_heading(LatLng latlng, int distance, float heading) {
 
     // The simpliest lat/lon to distance formula
     // thanks pigeon http://pigeond.net/git/?p=flightgear/fgmap.git;a=blob;f=fgmap.js;
@@ -17,18 +14,20 @@ LatLng XCalc::latlng_dist_heading(LatLng latlng, int dist, float heading) {
     int rad = XCalc::deg_to_rad(heading);
 
     //var a = Math.cos(rad) * dist;
-    float a = cos(rad) * dist;
+    float a = cos(rad) * distance;
 
     //var o = Math.sin(rad) * dist;
-    float o = sin(rad) * dist;
+    float o = sin(rad) * distance;
 
     //var dlat = a / r;
+    //LatLng rLatLng;
     float dLat = a / r;
+    //rLatLng.setLat( a / r );
 
     //var dlng = o / Math.cos(deg_to_rad(latlng.lat() + dlat)) / r;
-    float dLng = o / (cos(XCalc::deg_to_rad(latlng.lat() + dLat))) / r;
-
-    return  LatLng();
+    float dLng = o / (cos( XCalc::deg_to_rad(latlng.lat() + dLat) )) / r;
+    //rLatLng.setLng(dLng);
+    return  LatLng(dLat, dLng);
     //return new GLatLng(latlng.lat() + dlat, latlng.lng() + dlng);
     //*/
 }
@@ -48,7 +47,6 @@ float XCalc::rad_to_deg(float rad) {
     //return (rad * 180 / Math.PI);
     return (rad * 180 / 3.142);
 }
-
 
 int XCalc::rev_deg(int deg) {
     return deg > 180 ? deg - 180 : deg + 180;

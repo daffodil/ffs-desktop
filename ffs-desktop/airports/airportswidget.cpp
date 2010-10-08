@@ -410,7 +410,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         itemRun->setText( 4, query.value(4).toString() ); //lng
         itemRun->setText( 5, query.value(5).toString() ); //heading
         treeWidgetRunways->addTopLevelItem(itemRun);
-        LatLng midLatLng(query.value(3).toFloat(), query.value(4).toFloat())
+        LatLng midLatLng = LatLng(query.value(3).toFloat(), query.value(4).toFloat());
         LatLng p1 = XCalc::latlng_dist_heading(midLatLng, 100,  query.value(5).toFloat());
 
 

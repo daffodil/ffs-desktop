@@ -5,6 +5,7 @@ class LatLng
 {
 public:
     LatLng();
+    LatLng(float lat, float lng);
     float lat();
     float lng();
     void setLat(float lat);

@@ -7,7 +7,7 @@ class XCalc
 {
 public:
 
-    LatLng latlng_dist_heading(LatLng latlng, int dist, float heading);
+    static LatLng latlng_dist_heading(LatLng latlng, int dist, float heading);
 
     static  float deg_to_rad(float deg);
     static float deg_to_quad(float deg);
