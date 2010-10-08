@@ -250,4 +250,6 @@ void MainObject::on_telnet_connected(bool state){
     actionTelnetDisconnect->setDisabled(!state);
 }
 
+//****************************************************************************
+//** Alerts
 

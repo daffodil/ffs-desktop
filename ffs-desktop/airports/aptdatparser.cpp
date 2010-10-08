@@ -76,8 +76,10 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
 
     //QString filePath =
 
+   // return;
+
     qDebug("AptDatParser::process_file()");
-    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    QFile file(tarball_fullpath);
     //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
@@ -131,29 +133,79 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
     progress.show();
     progress.repaint();
 
+    //* ignore first line
+    file.readLine();
+
+    //** second line contains the version string
+    QString credits = file.readLine();
+    int version = 0;
+    if(credits.startsWith("810 Version")){
+        version = 810;
+    }
+    if(version == 0){
+        return;
+    }
+    qDebug() << "version=" << version;
+    //qDebug() << "1" << file.readLine();
+    //qDebug() << "2" << file.readLine();
+   // qDebug() << "3" << file.readLine();
+    //qDebug() << "4" << file.readLine();
+    //return;
+     QString airport_code;
+     QString airport_name;
+     int elevation;
+     QString tower;
+
     while( !file.atEnd() ){
 
         QByteArray lineBytes = file.readLine();
         QString line = QString(lineBytes).trimmed();
-        qDebug() << line;
+        //qDebug() << line;
         QString row_code = line.section(' ',0, 0);
-        qDebug() << row_code;
+        //qDebug() << row_code;
         QStringList parts = line.split(" ", QString::SkipEmptyParts);
 
         //**********************************************************************
         //*** Airport
         if(row_code == "1"){
-            airport = parts[4];
-            is_icao = rxICAOAirport.exactMatch(airport);
-            int elevation = parts[1].toInt();
-            QString airport_name;
+
+
+
+            //if(version == 810){
+            /** http://data.x-plane.com/file_specs/Apt715.htm
+              0 = airport code
+              1 = elevation
+              2 = has tower
+              3 = not approp
+              4 = code
+              5+ description
+            **/
+            //qDebug() << parts;
+
+            airport_code = parts[4];
+            elevation = parts[1].toInt();
+
+            airport_name.clear();
             for(int p = 5; p < parts.size(); p++){ //** TODO WTF ?
                 airport_name.append(parts[p]).append(" ");
             }
-            QString tower =  parts[2] == "1" ? "1" : "";
+            tower =  parts[2] == "1" ? "1" : "";
+
+            //}else{
+//                airport_code = parts[4];
+//                //is_icao = rxICAOAirport.exactMatch(airport_code);
+//                elevation = parts[1].toInt();
+//
+//                for(int p = 5; p < parts.size(); p++){ //** TODO WTF ?
+//                    airport_name.append(parts[p]).append(" ");
+//                }
+//                tower =  parts[2] == "1" ? "1" : "";
+            //}
+            is_icao = rxICAOAirport.exactMatch(airport_code);
+
             if(is_icao){
-                //qDebug() << airport;
-                queryAirportInsert.addBindValue( airport);
+                qDebug() << "##" << airport_code << "=" << airport_name << " @ " << elevation << tower;
+                queryAirportInsert.addBindValue( airport_code);
                 queryAirportInsert.addBindValue( airport_name.trimmed() );
                 queryAirportInsert.addBindValue( elevation);
                 queryAirportInsert.addBindValue( parts[2] == "1" ? "1" : NULL );

@@ -186,7 +186,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     statusBarTree = new XStatusBar();
     treeLayout->addWidget(statusBarTree);
-    statusBarTree->show_message("Idle");
+    statusBarTree->showMessage("Idle");
 
     progressAirportsLoad = new QProgressBar();
     statusBarTree->addPermanentWidget(progressAirportsLoad);
@@ -215,6 +215,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     airportLayout->addWidget(map, 10);
 
     load_airports();
+    import_airports_dialog();
 
 }
 
@@ -241,7 +242,7 @@ void AirportsWidget::load_airports(){
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
     if(!success){
         qDebug() << "SELECT airports" << query.lastError();
-        statusBarTree->show_error( QString("Error: %1").arg(query.lastError().text() ), 5000);
+        statusBarTree->showError( QString("Error: %1").arg(query.lastError().text() ), 5000);
         show_progress(false);
         return;
     }
@@ -284,7 +285,7 @@ void AirportsWidget::load_airports(){
     }
     qDebug() << "set row count";
     show_progress(false);
-    statusBarTree->show_message( QString("%1 airports in total").arg(model->rowCount()) );
+    statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
 //*****************************************

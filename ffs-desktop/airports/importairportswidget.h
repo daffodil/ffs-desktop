@@ -8,6 +8,7 @@
 #include <QtGui/QProgressDialog>
 
 #include "mainobject.h"
+#include "xwidgets/xstatusbar.h"
 
 class ImportAirportsWidget : public QDialog
 {
@@ -26,6 +27,7 @@ public:
 
     QProgressDialog *progress;
 
+    XStatusBar *statusBar;
 signals:
 
 public slots:

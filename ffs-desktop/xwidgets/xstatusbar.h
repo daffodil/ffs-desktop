@@ -9,11 +9,11 @@ Q_OBJECT
 public:
     explicit XStatusBar(QWidget *parent = 0);
 
-    void show_message(QString message, int timeout);
-    void show_message(QString message);
+    void showMessage(QString message, int timeout);
+    void showMessage(QString message);
 
-    void show_error(QString message, int timeout);
-    void show_error(QString message);
+    void showError(QString message, int timeout);
+    void showError(QString message);
 
 
 signals:

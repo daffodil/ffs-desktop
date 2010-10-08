@@ -1,6 +1,9 @@
 #include "importairportswidget.h"
 #include "aptdatparser.h"
 
+#include <QtCore/QFileInfo>
+#include <QtCore/QProcess>
+
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -9,42 +12,33 @@
 #include <QtGui/QIcon>
 #include <QtGui/QLabel>
 #include <QtGui/QCheckBox>
-#include <QtGui/QGroupBox>
 #include <QtGui/QProgressDialog>
-//#include <QtGui/>
+
 
 ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) :
     QDialog(parent)
 {
 
     mainObject = mainOb;
- //   airportsDb = new AirportsDb(this);
 
     setWindowTitle("Import Airports");
     setWindowIcon(QIcon(":/icons/import"));
     //setWindowFlags(  Qt::WindowStaysOnTopHint);
 
-    //* MainWidget and MainLayout
-    //QWidget *mainWidget = new QWidget(this);
-    //setCentralWidget(mainWidget);
     setFixedWidth(400);
 
+    QVBoxLayout *outerContainer = new QVBoxLayout();
+    this->setLayout(outerContainer);
+    outerContainer->setContentsMargins(0,0,0,0);
+    outerContainer->setSpacing(10);
+
     QVBoxLayout *mainVBox = new QVBoxLayout();
-    this->setLayout(mainVBox);
+    outerContainer->addLayout(mainVBox);
     int m = 20;
     mainVBox->setContentsMargins(m,m,m,m);
     mainVBox->setSpacing(10);
 
 
-//    QLabel *headerLabel = new QLabel(this);
-//    headerLabel->setText("Import Airports");
-//    headerLabel->setStyleSheet("font-size: 20pt; font-weight: bold; background-color: white;");
-//    mainVBox->addWidget(headerLabel, 1);
-
-    //QGroupBox *grpOpts = new QGroupBox();
-    //mainVBox->addWidget(grpOpts);
-    //grpOpts->setTitle(tr("Aiport Import Options"));
-   // mainVBox->addWidget(headerLabel, 1);
     QLabel *lblHelp = new QLabel("<ul><li>Select the airports to import</li><li>You can run this more than once</li></ul>");
     mainVBox->addWidget(lblHelp, 1);
     lblHelp->setStyleSheet("background-color: #efefef; padding: 5px; border: 1px solid #000099;");
@@ -97,38 +91,53 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
             this, SLOT(on_import_button_clicked())
             );
 
+    statusBar = new XStatusBar();
+    outerContainer->addWidget(statusBar);
 
 }
 
-void ImportAirportsWidget::on_import_button_clicked(){
-    qDebug() << "on_import_button_clicked()";
 
-
-    AptDatParser *aptDatParser = new AptDatParser(this);
-
-//    progress = new QProgressDialog("Importing Airports...", "Cancel", 0, aptDatParser->estimated_lines, this);
-//    progress->setWindowModality(Qt::WindowModal);
-//    connect(progress, SIGNAL(canceled()),
-//            aptDatParser, SLOT(cancel_import())
-//    );
-//
-//    AirportsDb *airportsDb = new AirportsDb();
-//    connect(aptDatParser,   SIGNAL(airport_data(QString, QString, QString, QString)),
-//            airportsDb,     SLOT(insert_airport(QString, QString, QString, QString))
-//    );
-//    connect(aptDatParser,   SIGNAL(line_count(int)),
-//            this,           SLOT(update_progress(int))
-//    );
-//    airportsDb->create_tables();
-    QString file_path = mainObject->settings->fg_root("Airports/apt.dat.gz");
-    qDebug() << file_path;
-    return;
-    aptDatParser->import_aptdat(file_path);
-    this->accept();
-    //QProgressBar progress = new QProgressBar
-}
 
 void ImportAirportsWidget::update_progress(int value){
     progress->setValue(value);
     progress->setLabelText(QString::number(value));
 }
+
+//*********************************************************************
+//** Import Clicked
+void ImportAirportsWidget::on_import_button_clicked(){
+
+    QString tarball_path = mainObject->settings->fg_root("Airports/apt.dat.gz");
+    qDebug() << tarball_path;
+    QFileInfo fileInfo = QFileInfo(tarball_path);
+    if(!fileInfo.exists()){
+        statusBar->showError(QString("Cannot open '%1'").arg(tarball_path));
+        return;
+    }
+    QString temp_file = mainObject->settings->temp("apt.dat");
+
+    statusBar->showMessage(QString("Unpacking tarball"));
+    //** Unzip to temp file
+    //TODO but does it work on WindoZE ??
+    QString command = QString("zcat %1")
+                      .arg(tarball_path);
+
+    QProcess unzipProcess;
+    unzipProcess.setStandardOutputFile(temp_file);
+    unzipProcess.start(command);
+    if (!unzipProcess.waitForStarted())
+        return; // false;
+    if (!unzipProcess.waitForFinished())
+        return; // false;
+    QByteArray result = unzipProcess.readAll();
+
+    //qDebug() <<  result;
+    //return;
+    statusBar->showMessage( QString("Importing '%1'").arg(temp_file) );
+
+    AptDatParser *aptDatParser = new AptDatParser(this);
+    aptDatParser->import_aptdat(temp_file);
+
+    //this->accept();
+}
+
