@@ -208,14 +208,20 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     treeWidgetRunways->setAlternatingRowColors(true);
     treeWidgetRunways->setRootIsDecorated(false);
     QTreeWidgetItem *headerItem = treeWidgetRunways->headerItem();
-    headerItem->setText(0, tr("Runways"));
-
+    headerItem->setText(0, tr("Runway"));
+    headerItem->setText(1, tr("Width"));
+    headerItem->setText(2, tr("Length"));
+    headerItem->setText(3, tr("Lat"));
+    headerItem->setText(4, tr("Lng"));
+    headerItem->setText(5, tr("Alignment"));
     //** Map
     map = new GoogleMapWidget(this);
     airportLayout->addWidget(map, 10);
 
+    splitter->setStretchFactor(0, 3);
+    splitter->setStretchFactor(1, 1);
     load_airports();
-    import_airports_dialog();
+    //import_airports_dialog();
 
 }
 
@@ -378,7 +384,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
     QSqlQuery query;
-    query.prepare("SELECT runways, width, lat1, lng1, lat2, lng2 from runways where airport=? order by runways");
+    query.prepare("SELECT runway, width, length, lat, lng, heading from runways where airport=? order by runway");
     query.addBindValue( airport_code );
 
     bool success = query.exec();
@@ -397,6 +403,10 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         QTreeWidgetItem *itemRun = new QTreeWidgetItem();
         itemRun->setText( 0, query.value(0).toString() );
         itemRun->setText( 1, query.value(1).toString() );
+        itemRun->setText( 2, query.value(2).toString() );
+        itemRun->setText( 3, query.value(3).toString() );
+        itemRun->setText( 4, query.value(4).toString() );
+        itemRun->setText( 5, query.value(5).toString() );
         treeWidgetRunways->addTopLevelItem(itemRun);
 
         //QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( quetoString()ry.value(0). )

@@ -104,7 +104,7 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
         qDebug() << queryCreate.lastError();
         return;
     }
-    if( !queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runways varchar(15), width numeric(2,2), lat1 numeric(3,8), lng1 numeric(3,8), lat2 numeric(3,8), lng2 numeric(3,8) )")){
+    if( !queryCreate.exec("CREATE TABLE runways(airport varchar(10) NULL, runway varchar(15), width numeric(2,2), length numeric(4,0), lat numeric(3,8), lng numeric(3,8), heading numeric(3,2) )")){
         qDebug() << queryCreate.lastError();
         return;
     }
@@ -138,7 +138,7 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
 
     //** second line contains the version string
     QString credits = file.readLine();
-    int version = 0;
+    int version = 999;
     if(credits.startsWith("810 Version")){
         version = 810;
     }
@@ -169,9 +169,6 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
         //*** Airport
         if(row_code == "1"){
 
-
-
-            //if(version == 810){
             /** http://data.x-plane.com/file_specs/Apt715.htm
               0 = airport code
               1 = elevation
@@ -180,31 +177,17 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
               4 = code
               5+ description
             **/
-            //qDebug() << parts;
-
             airport_code = parts[4];
             elevation = parts[1].toInt();
-
+            tower =  parts[2] == "1" ? "1" : "";
             airport_name.clear();
             for(int p = 5; p < parts.size(); p++){ //** TODO WTF ?
                 airport_name.append(parts[p]).append(" ");
             }
-            tower =  parts[2] == "1" ? "1" : "";
-
-            //}else{
-//                airport_code = parts[4];
-//                //is_icao = rxICAOAirport.exactMatch(airport_code);
-//                elevation = parts[1].toInt();
-//
-//                for(int p = 5; p < parts.size(); p++){ //** TODO WTF ?
-//                    airport_name.append(parts[p]).append(" ");
-//                }
-//                tower =  parts[2] == "1" ? "1" : "";
-            //}
             is_icao = rxICAOAirport.exactMatch(airport_code);
 
             if(is_icao){
-                qDebug() << "##" << airport_code << "=" << airport_name << " @ " << elevation << tower;
+                //qDebug() << "##" << airport_code << "=" << airport_name << " @ " << elevation << tower;
                 queryAirportInsert.addBindValue( airport_code);
                 queryAirportInsert.addBindValue( airport_name.trimmed() );
                 queryAirportInsert.addBindValue( elevation);
@@ -224,31 +207,68 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
         //100   49.99   1   0 0.25 1 2 0 09L  51.47747035 -000.48962591  306.02    0.00 5  4 1 1 27R  51.47767520 -000.43326100    0.00   21.03 5  4 1 1
         //100   49.99   1   0 0.25 1 2 0 09R  51.46477398 -000.48694615  306.93    0.00 5  4 1 1 27L  51.46495200 -000.43407800    0.00   21.03 5  4 1 1
 
-        if(row_code == "100"){
-            qDebug() << row_code;
+        if(row_code == "10" ){
+            QString lat;
+            QString lng;
+            QString runway;
+           // QString runways;
+            QString heading;
+            QString length;
+            QString width;
+
+
             if(is_icao){
-                QString runways = parts[8];
-                runways.append("-").append(parts[17]);
-                qDebug() << runways;
-                QSqlQuery queryRunwayInsert;
-                queryRunwayInsert.prepare("insert into runways(  airport, runways, width, lat1, lng1, lat2, lng2)values(?, ?, ?, ?, ?, ?, ?)");
-                qDebug() << airport << " - " << runways << " - " <<  parts[1] << " - " << parts[9] << " - " << parts[10] << " - " << parts[18] << " - " << parts[19];
-                 qDebug() << "runways" << runways;
-                queryRunwayInsert.addBindValue( airport);
-                queryRunwayInsert.addBindValue( runways );
-                queryRunwayInsert.addBindValue( parts[1] );
-                queryRunwayInsert.addBindValue( parts[9] );
-                queryRunwayInsert.addBindValue( parts[10] );
-                queryRunwayInsert.addBindValue( parts[18] );
-                queryRunwayInsert.addBindValue( parts[19] );
-                success = queryRunwayInsert.exec();
-                if(!success){
-                    qDebug() << queryRunwayInsert.lastError();
-                    qDebug() << "DIE queryRwyIns";
-                    return;
+                if(version > 0){
+                    /*
+                      0 = 10 = runway code
+                      1= lat
+                      2=lon
+                      3 = rwyno
+                      4 = true heading
+                      5 = length
+                      6 = len of displaced
+                      */
+                      lat = parts[1];
+                      lng = parts[2];
+                      runway = parts[3];
+                      heading = parts[4];
+                      length = parts[5];
+
+                      if(runway == "xxx"){
+                        //qDebug() << "uh?" << runway;
+                      }else{
+                          if(runway.endsWith("x")){
+                              runway = runway.left(runway.length() - 1);
+                          }
+                        //qDebug() << line;
+                        qDebug() << "Runway= " << airport_code << runway << lat << lng << "\n\n";
+                        QSqlQuery queryRunwayInsert;
+                        queryRunwayInsert.prepare("insert into runways(  airport, runway, width, length, lat, lng, heading)values(?, ?, ?, ?, ?, ?, ?)");
+                       // qDebug() << airport << " - " << runways << " - " <<  parts[1] << " - " << parts[9] << " - " << parts[10] << " - " << parts[18] << " - " << parts[19];
+                         //qDebug() << "runways" << runways;
+                        queryRunwayInsert.addBindValue( airport_code);
+                        queryRunwayInsert.addBindValue( runway );
+                        queryRunwayInsert.addBindValue( width );
+                        queryRunwayInsert.addBindValue( length );
+                        queryRunwayInsert.addBindValue( lat );
+                        queryRunwayInsert.addBindValue( lng );
+                        queryRunwayInsert.addBindValue( heading );
+                        success = queryRunwayInsert.exec();
+                        if(!success){
+                            qDebug() << queryRunwayInsert.lastError();
+                            qDebug() << "DIE queryRwyIns";
+                            return;
+                        }else{
+                            qDebug() << "runway ok";
+                        }
+                      }
                 }else{
-                    qDebug() << "runway ok";
-                }
+                    //QString runways = parts[8];
+                    //runways.append("-").append(parts[17]);
+                    //qDebug() << runways;
+                } /* version */
+
+
 
 //                QString runwayOp = parts[17];
 //                queryRunwayInsert.addBindValue( airport);

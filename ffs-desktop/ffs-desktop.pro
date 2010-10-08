@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     props/propstreewidget.cpp \
     launcher/controlbarwidget.cpp \
     xwidgets/xstatusbar.cpp \
-    xobjects/xsettings.cpp
+    xobjects/xsettings.cpp \
+    xobjects/xcalc.cpp \
+    xobjects/latlng.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -40,6 +42,8 @@ HEADERS += launcher/launcherwindow.h \
     launcher/controlbarwidget.h \
     airports/importairportswidget.h \
     xwidgets/xstatusbar.h \
-    xobjects/xsettings.h
+    xobjects/xsettings.h \
+    xobjects/xcalc.h \
+    xobjects/latlng.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc
