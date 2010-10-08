@@ -410,19 +410,27 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         itemRun->setText( 4, query.value(4).toString() ); //lng
         itemRun->setText( 5, query.value(5).toString() ); //heading
         treeWidgetRunways->addTopLevelItem(itemRun);
+
         LatLng midLatLng = LatLng(query.value(3).toFloat(), query.value(4).toFloat());
+        qDebug() << midLatLng.lat() << midLatLng.lng();
+
         LatLng p1 = XCalc::latlng_dist_heading(midLatLng, 100,  query.value(5).toFloat());
+        qDebug() << p1.lat() << p1.lng();
 
-
+        /*
+        var latlng = new GLatLng(lat, lng);
+        var p1 = latlng_dist_heading(latlng, length / 2.0, heading);
+        var p2 = latlng_dist_heading(latlng, length / 2.0, rev_deg(heading));
+        */
         //QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( quetoString()ry.value(0). )
          //                .arg( query.value(1).toString() ).arg( query.value(2).toString() )
          //                .arg( query.value(3).toString() ).arg( query.value(4).toString() ) ;
        // qDebug() << js_str;
         //(js_str);
-        map->add_runway(    query.value(0).toString(),
-                            query.value(2).toString(), query.value(3).toString(),
-                            query.value(4).toString(), query.value(5).toString()
-        );
+//        map->add_runway(    query.value(0).toString(),
+//                            query.value(2).toString(), query.value(3).toString(),
+//                            query.value(4).toString(), query.value(5).toString()
+//        );
         if(first){
             //TODO this is aworkaround to zoom in
             //map->zoom_to(query.value(2).toString(), query.value(3).toString(), QString::number(14L));
