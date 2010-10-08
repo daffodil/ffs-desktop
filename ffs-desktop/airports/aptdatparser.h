@@ -14,7 +14,8 @@ public:
 
     int estimated_lines;
     int line_counter;
-    void import_aptdat();
+    //void set_tarball(QString file_path);
+    void import_aptdat(QString tarball_fullpath);
 
 signals:
 

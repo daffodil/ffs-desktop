@@ -1,6 +1,8 @@
 #ifndef SETTINGSWIDGET_H
 #define SETTINGSWIDGET_H
 
+#include <mainobject.h>
+
 #include <QtCore/QString>
 
 #include <QtGui/QWidget>
@@ -15,10 +17,10 @@ class SettingsWidget : public QWidget
 {
 Q_OBJECT
 public:
-    explicit SettingsWidget(QWidget *parent = 0);
+    explicit SettingsWidget(MainObject *mOb, QWidget *parent = 0);
 
 private:
-
+    MainObject *mainObject;
     QGroupBox *grpExecutable;
     QGroupBox *grpFgRoot;
     QGroupBox *grpFgScenery;

@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     props/telnetslave.cpp \
     props/propstreewidget.cpp \
     launcher/controlbarwidget.cpp \
-    xwidgets/xstatusbar.cpp
+    xwidgets/xstatusbar.cpp \
+    xobjects/xsettings.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -38,6 +39,7 @@ HEADERS += launcher/launcherwindow.h \
     props/propstreewidget.h \
     launcher/controlbarwidget.h \
     airports/importairportswidget.h \
-    xwidgets/xstatusbar.h
+    xwidgets/xstatusbar.h \
+    xobjects/xsettings.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

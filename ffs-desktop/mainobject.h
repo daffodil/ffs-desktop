@@ -3,8 +3,9 @@
 
 #include "props/telnetslave.h"
 
+#include "xobjects/xsettings.h"
+
 #include <QtCore/QObject>
-#include <QtCore/QSettings>
 
 #include <QtSql/QSqlDatabase>
 
@@ -23,7 +24,7 @@ public:
     //** Objects
     TelnetSlave *telnet;
     QSqlDatabase db;
-    QSettings settings;
+    XSettings *settings;
 
     QAction *actionTelnetConnect;
     QAction *actionTelnetDisconnect;
@@ -36,6 +37,8 @@ public:
 
     QAction *actionLauncher;
     QAction *actionMpMap;
+    QAction *actionSettings;
+
     QAction *actionQuit;
 
 signals:
@@ -51,6 +54,7 @@ public slots:
     void on_launcher();
     void on_mpmap();
     void on_map();
+    void on_settings();
     void on_quit();
 };
 

@@ -1,6 +1,6 @@
 #include "importairportswidget.h"
 #include "aptdatparser.h"
-#include "airportsdb.h"
+
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -120,7 +120,10 @@ void ImportAirportsWidget::on_import_button_clicked(){
 //            this,           SLOT(update_progress(int))
 //    );
 //    airportsDb->create_tables();
-    aptDatParser->import_aptdat();
+    QString file_path = mainObject->settings->fg_root("Airports/apt.dat.gz");
+    qDebug() << file_path;
+    return;
+    aptDatParser->import_aptdat(file_path);
     this->accept();
     //QProgressBar progress = new QProgressBar
 }

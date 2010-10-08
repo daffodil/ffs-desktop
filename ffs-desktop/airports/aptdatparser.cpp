@@ -70,12 +70,15 @@ AptDatParser::AptDatParser(QObject *parent) :
     line_counter = -1;
 }
 
-void AptDatParser::import_aptdat(){
 
+
+void AptDatParser::import_aptdat(QString tarball_fullpath){
+
+    //QString filePath =
 
     qDebug("AptDatParser::process_file()");
-    //QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
-    QFile file("/home/ffs/ffs-desktop/apt.dat");
+    QFile file("/home/mash/ffs-desktop/apt.dat/apt.dat");
+    //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -125,14 +128,16 @@ void AptDatParser::import_aptdat(){
     progress.setFixedWidth(400);
     progress.setWindowIcon(QIcon(":/icons/import"));
     progress.setMinimumDuration(0);
+    progress.show();
+    progress.repaint();
 
     while( !file.atEnd() ){
 
         QByteArray lineBytes = file.readLine();
         QString line = QString(lineBytes).trimmed();
-        //qDebug() << line;
+        qDebug() << line;
         QString row_code = line.section(' ',0, 0);
-        //qDebug() << row_code;
+        qDebug() << row_code;
         QStringList parts = line.split(" ", QString::SkipEmptyParts);
 
         //**********************************************************************
@@ -168,6 +173,7 @@ void AptDatParser::import_aptdat(){
         //100   49.99   1   0 0.25 1 2 0 09R  51.46477398 -000.48694615  306.93    0.00 5  4 1 1 27L  51.46495200 -000.43407800    0.00   21.03 5  4 1 1
 
         if(row_code == "100"){
+            qDebug() << row_code;
             if(is_icao){
                 QString runways = parts[8];
                 runways.append("-").append(parts[17]);
@@ -214,6 +220,7 @@ void AptDatParser::import_aptdat(){
             progress.setValue(line_counter);
             QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
             progress.setLabelText(prog_text);
+            progress.repaint();
         }
         if(line_counter == 20000){
             qDebug() << "had enouth";

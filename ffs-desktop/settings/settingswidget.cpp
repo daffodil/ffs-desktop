@@ -17,9 +17,11 @@
 #include <QtGui/QTreeWidget>
 
 
-SettingsWidget::SettingsWidget(QWidget *parent) :
+SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
+
+    mainObject = mOb;
 
     //* Main Layout
     QVBoxLayout *mainContainer = new QVBoxLayout();

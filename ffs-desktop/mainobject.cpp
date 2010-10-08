@@ -5,6 +5,7 @@
 #include "mp/mpmapwidget.h"
 #include "map/googlemapwidget.h"
 
+#include "settings/settingswidget.h"
 
 //?? HELP
 // need if test eg in pythonI got
@@ -73,7 +74,7 @@ MainObject::MainObject(QObject *parent) :
 
     //**********************************************************************
     //** Settings connection
-    //settings = new QSettings();
+    settings = new XSettings();
 
     //********************************************************************
     //** Telnet connection
@@ -129,6 +130,7 @@ MainObject::MainObject(QObject *parent) :
     actionMpMap = popupMenu->addAction(QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
     connect(actionMpMap, SIGNAL(triggered()), this, SLOT(on_mpmap()));
 
+    //**** Telnet Menu
     QMenu *actionTelnetMenu = new QMenu();    
     popupMenu->addMenu(actionTelnetMenu);
     actionTelnetMenu->setTitle("Telnet");
@@ -150,8 +152,21 @@ MainObject::MainObject(QObject *parent) :
             this, SLOT(on_telnet_disconnect_action())
     );
 
+
+    //*** Settings
+    QAction *actionSettings= new QAction(this);
+    actionSettings->setIcon(QIcon(":/icons/settings"));
+    actionSettings->setText(tr("Settings"));
+    popupMenu->addAction(actionSettings);
+    connect(actionSettings, SIGNAL(triggered()),
+            this, SLOT(on_settings())
+    );
+
     popupMenu->addSeparator();
 
+
+
+    //*** Quit
     actionQuit = popupMenu->addAction(QIcon(":/icons/quit"), tr("Quit"));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(on_quit()));
 
@@ -171,23 +186,34 @@ void MainObject::on_launcher(){
     launcherWindow->show();
 }
 
+//****************************************************************************
+//** Settings Dialog
+void MainObject::on_settings(){
+    SettingsWidget *sWidget = new SettingsWidget(this);
+    sWidget->show();
+}
+
+//****************************************************************************
 //** Map
 void MainObject::on_map(){
     GoogleMapWidget *gmapWidget = new GoogleMapWidget();
     gmapWidget->show();
 }
 
+//****************************************************************************
 //** MpMap
 void MainObject::on_mpmap(){
     MpMapWidget *mpMapWidget = new MpMapWidget();
     mpMapWidget->show();
 }
 
+//****************************************************************************
 //** Quit
 void MainObject::on_quit(){
     QCoreApplication::instance()->quit();
 }
 
+//****************************************************************************
 //** Tray Icon
 void MainObject::on_tray_icon(QSystemTrayIcon::ActivationReason reason){   
     //* Right click will show the context Menu above system tray
