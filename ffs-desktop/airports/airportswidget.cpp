@@ -1,4 +1,6 @@
 
+#include "xobjects/latlng.h"
+#include "xobjects/xcalc.h"
 
 #include "airportswidget.h"
 
@@ -401,13 +403,16 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     bool first = true;
     while (query.next()) {
         QTreeWidgetItem *itemRun = new QTreeWidgetItem();
-        itemRun->setText( 0, query.value(0).toString() );
-        itemRun->setText( 1, query.value(1).toString() );
-        itemRun->setText( 2, query.value(2).toString() );
-        itemRun->setText( 3, query.value(3).toString() );
-        itemRun->setText( 4, query.value(4).toString() );
-        itemRun->setText( 5, query.value(5).toString() );
+        itemRun->setText( 0, query.value(0).toString() ); //rwy
+        itemRun->setText( 1, query.value(1).toString() ); //width
+        itemRun->setText( 2, query.value(2).toString() ); //length
+        itemRun->setText( 3, query.value(3).toString() ); //lat
+        itemRun->setText( 4, query.value(4).toString() ); //lng
+        itemRun->setText( 5, query.value(5).toString() ); //heading
         treeWidgetRunways->addTopLevelItem(itemRun);
+        LatLng midLatLng(query.value(3).toFloat(), query.value(4).toFloat())
+        LatLng p1 = XCalc::latlng_dist_heading(midLatLng, 100,  query.value(5).toFloat());
+
 
         //QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( quetoString()ry.value(0). )
          //                .arg( query.value(1).toString() ).arg( query.value(2).toString() )
