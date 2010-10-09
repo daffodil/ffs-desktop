@@ -90,12 +90,16 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     buttAll->setIcon(QIcon(":/icons/pink"));
     buttAll->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     */
+
+    //** Code Filter
     QRadioButton *buttCode = new QRadioButton();
     treeToolbar->addWidget(buttCode);
     buttGroupFilter->addButton(buttCode);
     buttCode->setText("Code");
     buttCode->setProperty("column", QVariant(C_CODE));
 
+
+    //** Name Filter
     QRadioButton *buttName = new QRadioButton();
     treeToolbar->addWidget(buttName);
     buttGroupFilter->addButton(buttName);
