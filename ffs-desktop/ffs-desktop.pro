@@ -25,7 +25,9 @@ SOURCES += main.cpp \
     xwidgets/xstatusbar.cpp \
     xobjects/xsettings.cpp \
     xobjects/xcalc.cpp \
-    xobjects/latlng.cpp
+    xobjects/latlng.cpp \
+    nav/navdatparser.cpp \
+    airports/airport.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -44,6 +46,8 @@ HEADERS += launcher/launcherwindow.h \
     xwidgets/xstatusbar.h \
     xobjects/xsettings.h \
     xobjects/xcalc.h \
-    xobjects/latlng.h
+    xobjects/latlng.h \
+    nav/navdatparser.h \
+    airports/airport.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc
