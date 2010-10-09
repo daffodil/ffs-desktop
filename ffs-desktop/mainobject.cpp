@@ -21,7 +21,7 @@
 #include <QtGui/QCursor>
 
 
-
+#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
 /*
@@ -103,7 +103,10 @@ MainObject::MainObject(QObject *parent) :
         qDebug() << db.lastError();
         return;
     }
-
+    if(!db_sanity_check()){
+        qDebug() << "DB error";
+        return;
+    }
 
     //***********************************
     //** Tray Icon
@@ -207,11 +210,40 @@ void MainObject::on_mpmap(){
     mpMapWidget->show();
 }
 
+
+//****************************************************************************
+//** Database Sanity Check
+bool MainObject::db_sanity_check(){
+    QSqlQuery query;
+    query.prepare("select version from db_version;");
+    if(!query.exec()){
+        qDebug() << "Sanity=" << query.lastError();
+        QStringList queries;
+        queries.append("CREATE TABLE IF NOT EXISTS db_version( `version` varchar(20) );");
+        queries.append("INSERT INTO db_version ( `version` )VALUES( 0.1 );");
+        queries.append("CREATE TABLE IF NOT EXISTS airport_favs( airport varchar(20) );");
+        for(int i = 0; i < queries.size(); ++i){
+            qDebug() << queries.at(i);
+            QSqlQuery q;
+            //query.prepare(queries.at(i));
+            if(!q.exec(queries.at(i))){
+                qDebug() << "OOps=" << q.lastError();
+                return false;
+            }
+        }
+        return true;
+    }
+    return true;
+}
+
+
+
 //****************************************************************************
 //** Quit
 void MainObject::on_quit(){
     QCoreApplication::instance()->quit();
 }
+
 
 //****************************************************************************
 //** Tray Icon

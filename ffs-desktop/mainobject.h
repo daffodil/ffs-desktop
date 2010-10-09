@@ -41,6 +41,8 @@ public:
 
     QAction *actionQuit;
 
+    bool db_sanity_check();
+
 signals:
 
 public slots:
