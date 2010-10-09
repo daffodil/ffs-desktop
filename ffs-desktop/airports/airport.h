@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+#include "airports/tower.h"
+#include "airports/runway.h"
+
 class Airport : public QObject
 {
 Q_OBJECT

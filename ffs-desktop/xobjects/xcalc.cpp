@@ -1,7 +1,6 @@
 #include "xcalc.h"
 #include "math.h"
-
-
+#include <QtDebug>
 
 LatLng XCalc::latlng_dist_heading(LatLng latlng, int distance, float heading) {
 
@@ -12,7 +11,8 @@ LatLng XCalc::latlng_dist_heading(LatLng latlng, int distance, float heading) {
     float r = 365239.5;
 
     //var rad = deg_to_rad(parseFloat(heading));
-    int rad = XCalc::deg_to_rad(heading);
+    float rad = XCalc::deg_to_rad(heading);
+    qDebug() << "Heading radians=" << rad;
 
     //var a = Math.cos(rad) * dist;
     float a = cos(rad) * distance;
@@ -28,15 +28,15 @@ LatLng XCalc::latlng_dist_heading(LatLng latlng, int distance, float heading) {
     //var dlng = o / Math.cos(deg_to_rad(latlng.lat() + dlat)) / r;
     float dLng = o / (cos( XCalc::deg_to_rad(latlng.lat() + dLat) )) / r;
     //rLatLng.setLng(dLng);
-    return  LatLng(dLat, dLng);
+    return  LatLng(latlng.lat() + dLat, latlng.lng() + dLng);
     //return new GLatLng(latlng.lat() + dlat, latlng.lng() + dlng);
     //*/
 }
 
-
+//** Degrees To Radians
 float XCalc::deg_to_rad(float deg) {
     //return (deg * Math.PI / 180);
-    return (deg * 3.14159265 / 180);
+    return (deg * XCalc::PI / 180);
 }
 
 float XCalc::deg_to_quad(float deg) {
@@ -46,7 +46,7 @@ float XCalc::deg_to_quad(float deg) {
 
 float XCalc::rad_to_deg(float rad) {
     //return (rad * 180 / Math.PI);
-    return (rad * 180 / 3.14159265);
+    return (rad * 180 / XCalc::PI);
 }
 
 int XCalc::rev_deg(int deg) {

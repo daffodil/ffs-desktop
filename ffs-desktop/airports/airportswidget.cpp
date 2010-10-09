@@ -416,9 +416,14 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         treeWidgetRunways->addTopLevelItem(itemRun);
 
         LatLng midLatLng = LatLng(query.value(3).toFloat(), query.value(4).toFloat());
-        qDebug() << midLatLng.lat() << midLatLng.lng();
+        qDebug() << "mid=" << midLatLng.lat() << midLatLng.lng();
+        qDebug() << "length=" << query.value(2).toFloat();
+       qDebug() << "heading degrees=" << query.value(5).toFloat();
 
-        LatLng p1 = XCalc::latlng_dist_heading(midLatLng, query.value(2).toInt() ,  query.value(5).toFloat());
+        LatLng p1 = XCalc::latlng_dist_heading(midLatLng,
+                                               query.value(2).toFloat() / 2,
+                                               query.value(5).toFloat()
+                                               );
         qDebug() << p1.lat() << p1.lng();
 
         /*
