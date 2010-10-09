@@ -16,7 +16,26 @@
 
 #include <QtWebKit/QWebFrame>
 
+/*
+QList<int, int> zoomLevelMap
 
+zoomLevelMap[5000] = 1;
+zoomLevelMap[1500] = 2;
+zoomLevelMap[2000] = 3;
+zoomLevelMap[1000] = 4;
+zoomLevelMap[500] = 5;
+zoomLevelMap[200] = 6;
+zoomLevelMap[100] = 7;
+zoomLevelMap[100] = 8;
+zoomLevelMap[100] = 9;
+zoomLevelMap[100] = 10;
+zoomLevelMap[100] = 11;
+
+zoomLevelMap[100] = 12;
+zoomLevelMap[100] = 13;
+zoomLevelMap[100] = 14;
+
+*/
 GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
     QWidget(parent)
 {
