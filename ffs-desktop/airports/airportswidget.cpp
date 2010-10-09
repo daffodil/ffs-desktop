@@ -414,7 +414,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         LatLng midLatLng = LatLng(query.value(3).toFloat(), query.value(4).toFloat());
         qDebug() << midLatLng.lat() << midLatLng.lng();
 
-        LatLng p1 = XCalc::latlng_dist_heading(midLatLng, 100,  query.value(5).toFloat());
+        LatLng p1 = XCalc::latlng_dist_heading(midLatLng, query.value(2).toInt() ,  query.value(5).toFloat());
         qDebug() << p1.lat() << p1.lng();
 
         /*
