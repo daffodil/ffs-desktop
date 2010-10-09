@@ -7,6 +7,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 {
 
     mainObject = mainOb;
+    setProperty("settings_namespace", QVariant("win_launcher"));
 
     setWindowTitle("FlightGear Launcher");
     setWindowIcon(QIcon(":/icons/favicon"));
@@ -74,3 +75,8 @@ LauncherWindow::~LauncherWindow()
 //   //     self.main.settings.save_window( "account_dialog", self )
 //    qDebug() << "close";
 //}
+
+void LauncherWindow::closeEvent(QCloseEvent *event){
+    qDebug() << "close event";
+    mainObject->settings->saveWindow(this);
+}

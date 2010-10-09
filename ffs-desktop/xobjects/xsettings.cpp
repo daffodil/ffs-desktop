@@ -4,7 +4,7 @@
 #include <QtCore/QDir>
 
 #include <QtGui/QDesktopServices>
-
+#include <QtGui/QWidget>
 
 XSettings::XSettings(QObject *parent) :
     QSettings(parent)
@@ -38,4 +38,13 @@ QString XSettings::temp(){
 QString XSettings::temp(QString append_path){
     return this->temp().append(append_path);
 
+}
+
+
+//*********************************************
+//** Save Window
+void XSettings::saveWindow(QWidget *widget){
+   // QString prop = widget->peoperty("launcha")
+    QString ki = widget->property("settings_namespace").toString();
+    qDebug() << "saveWindow" << ki;
 }

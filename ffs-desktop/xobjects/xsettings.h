@@ -16,6 +16,7 @@ public:
     QString fg_root();
     QString fg_root(QString append_path);
 
+    void saveWindow(QWidget *widgeeeeEaaTt);
 signals:
 
 public slots:
