@@ -12,6 +12,8 @@
 
 #include <QtWebKit/QWebView>
 
+#include "xobjects/latlng.h"
+
 class GoogleMapWidget : public QWidget
 {
 Q_OBJECT
@@ -31,7 +33,12 @@ public:
     void execute_js(QString js_string);
     void zoom_to(QString lat, QString lng, QString zoom);
 
-    void add_runway(QString label, QString lat1, QString lng1, QString lat2, QString lng2);
+    void add_marker(LatLng latlng, QString label);
+
+    void add_runway(float lat1, float lng1, float lat2, float lng2, QString label);
+    void add_runway(QString lat1, QString lng1, QString lat2, QString lng2, QString label);
+    void add_runway(LatLng p1, LatLng p2, QString label);
+
 
 signals:
 

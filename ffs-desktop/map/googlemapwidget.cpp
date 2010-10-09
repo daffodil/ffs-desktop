@@ -137,7 +137,8 @@ GoogleMapWidget::GoogleMapWidget(QWidget *parent) :
     move(10,10);
 
     //qDebug() << QResource(":/map/gmap.html");
-    QFile *file = new QFile("/home/ffs/ffs-desktop/ffs-desktop/map/html/gmap.html");
+    QFile *file = new QFile("/home/mash/ffs-desktop/ffs-desktop/map/html/gmap.html");
+    qDebug() << file->fileName();
     //QFile *file = new QFile(":/gmap/gmap.html");
     if (!file->open(QIODevice::ReadOnly | QIODevice::Text)){
             qDebug("not open file");
@@ -223,14 +224,31 @@ QString GoogleMapWidget::to_lat(QVariant lat){
   */
 
 
-void GoogleMapWidget::add_runway(QString label, QString lat1, QString lng1, QString lat2, QString lng2){
+//*** Add Marker
+void GoogleMapWidget::add_marker(LatLng latLng, QString label){
 
-    QString js_str = QString("add_runway('%1', %2, %3, %4, %5);").arg( label )
-                     .arg( lat1 ).arg( lng1 )
-                     .arg( lat2 ).arg( lng2 ) ;
+    QString js_str = QString("add_marker(%1, %2, '%3');")
+                     .arg( latLng.lat() ).arg( latLng.lng() ).arg( label );
     qDebug() << js_str;
     this->execute_js(js_str);
 
+}
+
+//*** Add Runway
+void GoogleMapWidget::add_runway(float lat1, float lng1, float lat2, float lng2, QString label){
+
+    QString js_str = QString("add_runway(%1, %2, %3, %4, '%5');")
+                     .arg( lat1 ).arg( lng1 )
+                     .arg( lat2 ).arg( lng2 )
+                     .arg( label );
+    qDebug() << js_str;
+    this->execute_js(js_str);
+}
+void GoogleMapWidget::add_runway(QString lat1, QString lng1, QString lat2, QString lng2, QString label){
+    add_runway( lat1.toFloat(), lng1.toFloat(), lat2.toFloat(), lng2.toFloat(), label);
+}
+void GoogleMapWidget::add_runway(LatLng p1, LatLng p2, QString label){
+    this->add_runway(p1.lat(), p1.lng(), p2.lat(), p2.lng(), label);
 }
 
 void GoogleMapWidget::zoom_to(QString lat, QString lng, QString zoom){

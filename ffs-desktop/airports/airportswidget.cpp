@@ -415,17 +415,27 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
         itemRun->setText( 5, query.value(5).toString() ); //heading
         treeWidgetRunways->addTopLevelItem(itemRun);
 
+
         LatLng midLatLng = LatLng(query.value(3).toFloat(), query.value(4).toFloat());
         qDebug() << "mid=" << midLatLng.lat() << midLatLng.lng();
         qDebug() << "length=" << query.value(2).toFloat();
-       qDebug() << "heading degrees=" << query.value(5).toFloat();
+        qDebug() << "heading degrees=" << query.value(5).toFloat();
+        //map->add_marker(midLatLng, "");
 
         LatLng p1 = XCalc::latlng_dist_heading(midLatLng,
                                                query.value(2).toFloat() / 2,
                                                query.value(5).toFloat()
                                                );
         qDebug() << p1.lat() << p1.lng();
+        //map->add_marker(p1, "");
 
+        LatLng p2 = XCalc::latlng_dist_heading(midLatLng,
+                                               query.value(2).toFloat() / 2,
+                                               XCalc::rev_deg(query.value(5).toFloat())
+                                               );
+        qDebug() << p2.lat() << p2.lng();
+        map->add_runway(p1, p2, "F00o-Bar");
+        //map->add_marker(p2, "");
         /*
         var latlng = new GLatLng(lat, lng);
         var p1 = latlng_dist_heading(latlng, length / 2.0, heading);
