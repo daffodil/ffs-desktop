@@ -4,8 +4,9 @@
 QT += network \
     sql \
     webkit
-CONFIG  += qxt
-QXT     += core gui
+CONFIG += qxt
+QXT += core \
+    gui
 TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \
@@ -31,7 +32,8 @@ SOURCES += main.cpp \
     nav/navdatparser.cpp \
     airports/airport.cpp \
     airports/tower.cpp \
-    airports/runway.cpp
+    airports/runway.cpp \
+    setup/setupwidget.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -54,6 +56,7 @@ HEADERS += launcher/launcherwindow.h \
     nav/navdatparser.h \
     airports/airport.h \
     airports/tower.h \
-    airports/runway.h
+    airports/runway.h \
+    setup/setupwidget.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc
