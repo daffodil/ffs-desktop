@@ -389,6 +389,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
+    return;
     QSqlQuery query;
     query.prepare("SELECT runway, width, length, lat, lng, heading from runways where airport=? order by runway");
     query.addBindValue( airport_code );

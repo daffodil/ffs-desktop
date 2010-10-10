@@ -4,6 +4,8 @@
 QT += network \
     sql \
     webkit
+CONFIG  += qxt
+QXT     += core gui
 TARGET = ffs-desktop
 TEMPLATE = app
 SOURCES += main.cpp \

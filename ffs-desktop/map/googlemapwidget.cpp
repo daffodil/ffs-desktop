@@ -252,7 +252,7 @@ void GoogleMapWidget::add_marker(LatLng latLng, QString label){
     this->execute_js(js_str);
 
 }
-
+//*************************************************************************************************
 //*** Add Runway
 void GoogleMapWidget::add_runway(float lat1, float lng1, float lat2, float lng2, QString label){
 

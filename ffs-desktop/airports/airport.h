@@ -6,6 +6,9 @@
 #include "airports/tower.h"
 #include "airports/runway.h"
 
+#include <QtCore/QString>
+#include <QtCore/QList>
+
 class Airport : public QObject
 {
 Q_OBJECT
@@ -19,6 +22,8 @@ public:
 
     QList<Runway> runways;
 
+    static void add_fav(QString airport);
+    static void remove_fav(QString airport);
 
 
 
