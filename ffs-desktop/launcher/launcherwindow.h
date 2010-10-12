@@ -43,6 +43,8 @@ public:
 
     PropsTreeWidget *propsTreeWidget;
     ControlBarWidget *controlBarWidget;
+
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // LAUNCHERWINDOW_H
