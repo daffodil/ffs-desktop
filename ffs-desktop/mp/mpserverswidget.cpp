@@ -219,7 +219,7 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
             QString callsign = parts.at(0).split("@").at(0);
             QString mp_server = parts.at(0).split("@").at(1);
             QString mp_server_ip = QString("");
-            mp_server = mp_server.replace(QString(":"),QString("")); //* get rid of trailing ":" at end eg a.b.c.192:
+            mp_server = mp_server.replace(QString(":"), QString("")); //* get rid of trailing ":" at end eg a.b.c.192:
 
             //** Map to an IP address
             if(mp_server == "LOCAL"){
