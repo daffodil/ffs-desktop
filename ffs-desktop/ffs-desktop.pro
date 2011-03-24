@@ -32,8 +32,7 @@ SOURCES += main.cpp \
     nav/navdatparser.cpp \
     airports/airport.cpp \
     airports/tower.cpp \
-    airports/runway.cpp \
-    setup/setupwidget.cpp
+	airports/runway.cpp
 HEADERS += launcher/launcherwindow.h \
     mp/mpmapwidget.h \
     aircraft/aircraftwidget.h \
@@ -56,7 +55,6 @@ HEADERS += launcher/launcherwindow.h \
     nav/navdatparser.h \
     airports/airport.h \
     airports/tower.h \
-    airports/runway.h \
-    setup/setupwidget.h
+	airports/runway.h
 RESOURCES += icons/icons.qrc \
     map/map.qrc

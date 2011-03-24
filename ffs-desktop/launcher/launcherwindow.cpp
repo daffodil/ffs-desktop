@@ -32,28 +32,28 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     tabWidget = new QTabWidget(this);
     mainVBox->addWidget(tabWidget,100);
 
-   // mpMapWidget = new MpMapWidget(this);
-    //tabWidget->addTab(mpMapWidget,QString("MP Map"));
+	mpMapWidget = new MpMapWidget(this);
+	tabWidget->addTab(mpMapWidget,QString("MP Map"));
 
-    //settingsWidget = new SettingsWidget();
-   // tabWidget->addTab(settingsWidget, tr("Settings"));
+	settingsWidget = new SettingsWidget(mainObject);
+	tabWidget->addTab(settingsWidget, tr("Settings"));
 
-   // mpServersWidget = new MpServersWidget();
-   // tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
+	mpServersWidget = new MpServersWidget();
+	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 
 
-//    mainOptionsWidget = new MainOptionsWidget(mainObject);
-//    tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+	mainOptionsWidget = new MainOptionsWidget(mainObject);
+	tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 //
 //
-//    propsTreeWidget = new PropsTreeWidget(mainObject);
-//    tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
+	propsTreeWidget = new PropsTreeWidget(mainObject);
+	tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
     airportsWidget = new AirportsWidget(mainObject);
     tabWidget->addTab(airportsWidget, tr("Airports"));
 
-   // aircraftWidget = new AircraftWidget();
-   // tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+	aircraftWidget = new AircraftWidget();
+	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
     //*********************************************************
     //** Control Bar

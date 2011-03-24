@@ -15,6 +15,7 @@
 #include "airports/airportswidget.h"
 
 #include "mp/mpserverswidget.h"
+#include "mp/mpmapwidget.h"
 #include "settings/settingswidget.h"
 #include "launcher/mainoptionswidget.h"
 #include "props/propstreewidget.h"
@@ -34,7 +35,7 @@ public:
 
     QTabWidget *tabWidget;
 
-    //MpMapWidget *mpMapWidget;
+	MpMapWidget *mpMapWidget;
     AircraftWidget *aircraftWidget;
     AirportsWidget *airportsWidget;
     MpServersWidget *mpServersWidget;
