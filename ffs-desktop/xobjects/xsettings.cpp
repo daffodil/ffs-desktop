@@ -27,6 +27,7 @@ QString XSettings::fgfs_path(){
 }
 
 
+
 //===========================================================================
 //** fg_root()
 //===========================================================================
@@ -37,6 +38,20 @@ QString XSettings::fg_root(){
 QString XSettings::fg_root(QString append_path){
     return this->fg_root().append(append_path);
 }
+
+
+
+//===========================================================================
+//** aircraft_path()
+//===========================================================================
+QString XSettings::aircraft_path(){
+	return fg_root().append("/Aircraft");
+}
+
+QString XSettings::aircraft_path(QString dir){
+	return fg_root().append("/Aircraft/").append(dir);
+}
+
 
 
 //===========================================================================

@@ -45,6 +45,12 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	//==================================================
 	// Widgets
 
+	//* Aircraft Widget
+	aircraftWidget = new AircraftWidget(mainObject);
+	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+	connect(aircraftWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
+
+
 	//* Options
 	mainOptionsWidget = new MainOptionsWidget(mainObject);
 	tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
@@ -57,10 +63,6 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 
 
 
-	//* Aircraft Widget
-	aircraftWidget = new AircraftWidget(mainObject);
-	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
-	connect(aircraftWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 
 
 

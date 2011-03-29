@@ -4,11 +4,13 @@
     does a background call to a process that executes FG
   */
 
+#include <QtCore/QDebug>
 
 #include <QtCore/QProcess>
 #include <QtCore/QByteArray>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include <QtCore/QDir>
 
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -113,7 +115,7 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
     QStringList headerLabelsList;
-    headerLabelsList << "Model" << "Description";
+	headerLabelsList << "Model" << "Description" << "Path";
     model->setHorizontalHeaderLabels(headerLabelsList);
 
     proxyModel = new QSortFilterProxyModel(this);
@@ -220,60 +222,9 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 
     //***********************************
     //** Setup
-    load_aircraft();
+	load_aircraft_xml_set();
 }
 
-//========================================================
-//** Load Aircraft
-void AircraftWidget::load_aircraft(){
-
-	QString command = mainObject->settings->fgfs_path();
-	command.append(" --fg-root=").append(mainObject->settings->fg_root());
-	command.append(" --show-aircraft");
-
-    QProcess *process = new QProcess(this);
-	process->start(command);
-
-    QStringList::Iterator it;
-    QString line;
-    int row_count=0;
-
-    if(process->waitForStarted()){
-            process->waitForFinished();
-            QByteArray result =  process->readAllStandardOutput();
-            QByteArray errorResult = process->readAllStandardError();
-
-			//** The fgfs --show_a_mistake returns the "--help" and not an error output ;-(
-            //* so only way to detect is to get "-available aircraft" as text
-            QStringList lines = QString(result).split("\n");
-
-            for ( it = lines.begin() ; it != lines.end() ; it++ ){
-
-                line = it->simplified();
-
-                //* Unless first item == Available aircraft: then its an error (messy)
-                if(it == lines.begin()){
-                    if(line  != "Available aircraft:"){
-						  //TODO emit("error")
-                        return;
-                    }else{
-						//  first_line
-
-                    }
-                }else{
-
-                    QStandardItem *modelItem = new QStandardItem();
-                    modelItem->setText( line.section( ' ', 0, 0 )); //* first chars to space
-                    model->setItem(row_count, 0, modelItem);
-                    QStandardItem *descriptionItem = new QStandardItem();
-                    descriptionItem->setText( line.section( ' ', 1 )); //* after first space
-                    model->setItem(row_count, 1, descriptionItem);
-                    row_count++;
-                }
-            }
-
-    }
-}
 
 
 
@@ -285,22 +236,129 @@ void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
     //QString
 }
 
+
+
 //=====================================
 // Aircraft Selected
 void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
+	qDebug() << "on_tree_selection_changed";
 	Q_UNUSED(deselected);
-	QString arg_name("--aircraft=");
 	if(selected.count() == 0){
-		emit set_arg("remove", arg_name, "");
+		emit set_arg("remove", "--aircraft=", "");
 	}else{
 		QModelIndex proxyIndex =  selected.indexes().first();
 		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-		emit set_arg("set", arg_name, item->text());
+		emit set_arg("set", "--aircraft=", item->text());
 	}
+
+
 }
+
+
+
 
 //=====================================
 // Auto Coordination
 void AircraftWidget::on_auto_coordination(bool state){
-	emit set_arg(state ? "set" : "remove", "--enable-auto-coordination", "");
+	emit set_arg(state ? "set" : "remove", "--enable-auto-coordination", ""); //** --disable-auto-coordination is default
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//** Load Aircraft Shell
+void AircraftWidget::load_aircraft_shell(){
+
+	QString command = mainObject->settings->fgfs_path();
+	command.append(" --fg-root=").append(mainObject->settings->fg_root());
+	command.append(" --show-aircraft");
+
+	QProcess *process = new QProcess(this);
+	process->start(command);
+
+	QStringList::Iterator it;
+	QString line;
+	int row_count=0;
+
+	if(process->waitForStarted()){
+			process->waitForFinished();
+			QByteArray result =  process->readAllStandardOutput();
+			QByteArray errorResult = process->readAllStandardError();
+
+			//** The fgfs --show_a_mistake returns the "--help" and not an error output ;-(
+			//* so only way to detect is to get "-available aircraft" as text
+			QStringList lines = QString(result).split("\n");
+
+			for ( it = lines.begin() ; it != lines.end() ; it++ ){
+
+				line = it->simplified();
+
+				//* Unless first item == Available aircraft: then its an error (messy)
+				if(it == lines.begin()){
+					if(line  != "Available aircraft:"){
+						  //TODO emit("error")
+						return;
+					}else{
+						//  first_line
+
+					}
+				}else{
+
+					QStandardItem *modelItem = new QStandardItem();
+					modelItem->setText( line.section( ' ', 0, 0 )); //* first chars to space
+					model->setItem(row_count, 0, modelItem);
+					QStandardItem *descriptionItem = new QStandardItem();
+					descriptionItem->setText( line.section( ' ', 1 )); //* after first space
+					model->setItem(row_count, 1, descriptionItem);
+					row_count++;
+				}
+			}
+
+	}
+}
+
+
+//*** Borrowed from fgX gitourious - ta Gral ;-)
+void AircraftWidget::load_aircraft_xml_set(){
+
+
+	//QStringList str_list;
+	int row_count = 0;
+	QDir aircraftDir( mainObject->settings->aircraft_path() );
+	qDebug() << aircraftDir.absolutePath();
+	aircraftDir.setFilter( QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+
+	QStringList entries = aircraftDir.entryList();
+
+	for( QStringList::ConstIterator entry=entries.begin(); entry!=entries.end(); ++entry )
+
+	{
+		// Filter out default dir names, should be a QDir name filter?
+		if (*entry != "Instruments" &&  *entry != "Instruments-3d" && *entry != "Generic") {
+
+			QStandardItem *item = new QStandardItem();
+			item->setText( *entry); //* first chars to space
+			model->setItem(row_count, C_PATH, item);
+			//QStandardItem *descriptionItem = new QStandardItem();
+			//descriptionItem->setText( line.section( ' ', 1 )); //* after first space
+			//model->setItem(row_count, 1, descriptionItem);
+			row_count++;
+
+
+		}
+	}
+
+	//airCraft->clear();
+	//airCraft->addItems(str_list);
+
 }

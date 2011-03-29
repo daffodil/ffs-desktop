@@ -14,8 +14,13 @@ public:
     QString temp(QString append_path);
 
 	QString fgfs_path();
+
     QString fg_root();
     QString fg_root(QString append_path);
+
+	QString aircraft_path();
+	QString aircraft_path(QString dir);
+
 
 	void saveWindow(QWidget *widget);
 	void restoreWindow(QWidget *widget);
