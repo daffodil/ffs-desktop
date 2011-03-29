@@ -57,7 +57,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	//========================================================================
 	// Mp Servers Box
 	grpMpServer  = new QGroupBox("Enable Multiplayer");
-	middleLayout->addWidget(grpMpServer);
+	middleLayout->addWidget(grpMpServer, 3);
 	grpMpServer->setCheckable(true);
 	connect(grpMpServer, SIGNAL(clicked(bool)), this, SLOT(on_mp_server_checked()));
 
@@ -84,19 +84,39 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	gridMP->addWidget(new QLabel("Local Address:"), row, 0, 1, 1, Qt::AlignRight);
 
 	comboIpAddress = new QComboBox();
-	gridMP->addWidget(comboIpAddress, row, 1, 1, 1);
+	gridMP->addWidget(comboIpAddress, row, 1, 1, 2);
 
 	//** Remote Address Combo
 	row++;
 	gridMP->addWidget(new QLabel("Remote Address:"), row, 0, 1, 1, Qt::AlignRight);
 
 	comboRemoteAddress = new QComboBox();
-	gridMP->addWidget(comboRemoteAddress, row, 1, 1, 1);
+	gridMP->addWidget(comboRemoteAddress, row, 1, 1, 2);
 	comboRemoteAddress->addItem(tr("Use domain name"), "domain");
 	comboRemoteAddress->addItem(tr("Use IP address"), "ip");
 	comboRemoteAddress->setCurrentIndex(0);
 
+	//** Hz Out
+	row++;
+	gridMP->addWidget(new QLabel("Hz Out:"), row, 0, 1, 1, Qt::AlignRight);
 
+	comboHzOut = new QComboBox();
+	gridMP->addWidget(comboHzOut, row, 1, 1, 1);
+	populate_combo_hz(comboHzOut);
+
+
+	//** Hz IN
+	row++;
+	gridMP->addWidget(new QLabel("Hz In:"), row, 0, 1, 1, Qt::AlignRight);
+
+	comboHzIn = new QComboBox();
+	gridMP->addWidget(comboHzIn, row, 1, 1, 1);
+	populate_combo_hz(comboHzIn);
+
+
+	gridMP->setColumnStretch(0,1);
+	gridMP->setColumnStretch(1,2);
+	gridMP->setColumnStretch(2,5);
 
 	//=======================================
 	//* TreeWidget
@@ -140,7 +160,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	//========================================================================
 	// FgCom Box
 	grpFgCom = new QGroupBox(tr("fgCom - Voice Communications"));
-	middleLayout->addWidget(grpFgCom);
+	middleLayout->addWidget(grpFgCom, 2);
 	grpFgCom->setCheckable(true);
 	connect(grpFgCom, SIGNAL(clicked(bool)), this, SLOT(set_fgcom()));
 
@@ -186,15 +206,12 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 //=============================================================
 //** Network Addresses
 void MpServersWidget::load_addresses(){
-
 	QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
 	for (int i = 0; i < addresses.size(); ++i) {
 		if(addresses.at(i).protocol() == QAbstractSocket::IPv4Protocol){
 			comboIpAddress->addItem( addresses.at(i).toString() );
 		}
-
 	}
-	qDebug() << addresses;
 }
 
 
@@ -433,4 +450,14 @@ void MpServersWidget::set_fgcom(){
 		emit set_arg("remove", "--fgcom=","");
 	}
 }
+
+//=====================================
+// Setup Combo Hz
+void MpServersWidget::populate_combo_hz(QComboBox *combo){
+	for(int i=1; i < 31; i++){
+		combo->addItem(QString("%1").arg(i));
+	}
+	combo->setCurrentIndex(4);
+}
+
 

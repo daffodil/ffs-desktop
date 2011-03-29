@@ -72,7 +72,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	// ## Tree
 	tree = new QTreeWidget();
 	tree->setRootIsDecorated(false);
-	tree->setMinimumWidth(300);
+	tree->setMinimumWidth(400);
 	tree->headerItem()->setText(0, "Option");
 	tree->headerItem()->setText(1, "Value");
 	tree->header()->setStretchLastSection(true);

@@ -35,6 +35,8 @@ public:
 	QLineEdit *txtCallSign;
 	QComboBox *comboIpAddress;
 	QComboBox *comboRemoteAddress;
+	QComboBox *comboHzOut;
+	QComboBox *comboHzIn;
 	QTreeWidget *treeWidget;
 
 
@@ -44,7 +46,7 @@ public:
 
     void dns_lookup(int server_no);
 	void load_addresses();
-
+	void populate_combo_hz(QComboBox *combo);
 
 signals:
 	void set_arg(QString action, QString arg, QString value);
