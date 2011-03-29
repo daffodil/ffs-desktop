@@ -42,13 +42,21 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	splitter->addWidget(tabWidget);
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
 
+	//==================================================
+	// Widgets
+
+	//* Options
+	mainOptionsWidget = new MainOptionsWidget(mainObject);
+	tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
+	connect(mainOptionsWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
+
 	//* MpServers
 	mpServersWidget = new MpServersWidget(mainObject);
 	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 	connect(mpServersWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 
 
-	//*** WIDGETS ==================================================
+
 	//* Aircraft Widget
 	aircraftWidget = new AircraftWidget(mainObject);
 	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
@@ -56,10 +64,6 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 
 
 
-
-	//* Options
-	mainOptionsWidget = new MainOptionsWidget(mainObject);
-	tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
 
 

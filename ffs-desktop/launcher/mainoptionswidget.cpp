@@ -1,10 +1,9 @@
-#include "mainoptionswidget.h"
+
 
 
 #include <QtCore/QString>
 
-#include <QtGui/QGroupBox>
-#include <QtGui/QRadioButton>
+#include <QtGui/QAbstractButton>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -13,6 +12,11 @@
 #include <QtGui/QPushButton>
 #include <QtGui/QLabel>
 #include <QtGui/QMenu>
+
+#include <QIntValidator>
+
+#include "mainoptionswidget.h"
+
 
 MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
@@ -26,15 +30,17 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
 
     mainLayout->setContentsMargins(0,0,0,0);
 
-    QString styleX = QString("QGroupBox{  border:2px solid gray;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
+	QString styleX(""); //QGroupBox{  border:2px solid gray;border-radius:5px;  margin-top: 1ex;} QGroupBox::title{subcontrol-origin: margin;subcontrol-position:top center;padding:0 3px;}");
 
-    //***********************************************************************
+	//===============================================================
     //** Season
-    QGroupBox *grpSeason = new QGroupBox();
+	grpSeason = new QGroupBox();
     mainLayout->addWidget(grpSeason);
+	connect(grpSeason, SIGNAL(clicked()), this, SLOT(set_season()));
 
     grpSeason->setTitle(tr("Season"));
     grpSeason->setCheckable(true);
+	grpSeason->setChecked(false);
     grpSeason->setStyleSheet(styleX);
 
     QVBoxLayout *layoutSeason = new QVBoxLayout();
@@ -42,55 +48,86 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     layoutSeason->setSpacing(0);
     layoutSeason->setContentsMargins(0,0,0,0);
 
-    QRadioButton *buttonSeasonSummer = new QRadioButton(tr("Summer"));
+	buttonSeasonSummer = new QRadioButton(tr("Summer"));
     layoutSeason->addWidget(buttonSeasonSummer);
     buttonSeasonSummer->setChecked(true);
+	connect(buttonSeasonSummer, SIGNAL(clicked(bool)), this, SLOT(set_season()));
 
-    QRadioButton *buttonSeasonWinter = new QRadioButton(tr("Winter"));
+	buttonSeasonWinter = new QRadioButton(tr("Winter"));
     layoutSeason->addWidget(buttonSeasonWinter);
+	connect(buttonSeasonWinter, SIGNAL(clicked(bool)), this, SLOT(set_season()));
 
-    //***********************************************************************
+   //===============================================================
     //** Time Of Day
-    QGroupBox *grpTimeOfDay = new QGroupBox();
+	grpTimeOfDay = new QGroupBox();
     mainLayout->addWidget(grpTimeOfDay);
+	grpTimeOfDay->setTitle(tr("Time Of Day"));
+	grpTimeOfDay->setCheckable(true);
+	grpTimeOfDay->setChecked(false);
+	grpTimeOfDay->setStyleSheet(styleX);
+	connect(grpTimeOfDay, SIGNAL(clicked()), this, SLOT(set_time_of_day()));
 
-    grpTimeOfDay->setTitle(tr("Time Of Day"));
-    grpTimeOfDay->setCheckable(true);
-    grpTimeOfDay->setStyleSheet(styleX);
 
     QVBoxLayout *layoutTod = new QVBoxLayout();
     grpTimeOfDay->setLayout(layoutTod);
     layoutTod->setSpacing(0);
     layoutTod->setContentsMargins(0,0,0,0);
 
-    buttGroupTod = new QButtonGroup(this);
-    buttGroupTod->setExclusive(true);
+	buttonGroupTimeOfDay = new QButtonGroup(this);
+	buttonGroupTimeOfDay->setExclusive(true);
+	connect(buttonGroupTimeOfDay, SIGNAL(buttonClicked(QAbstractButton *)), this, SLOT(set_time_of_day()));
 
-    QRadioButton *buttonTodMidnight = new QRadioButton("Midnight");
-    layoutTod->addWidget(buttonTodMidnight);
+	QRadioButton *buttonTodRealTime = new QRadioButton(tr("Real Time"));
+	buttonTodRealTime->setProperty("value", QVariant("realtime"));
+	layoutTod->addWidget(buttonTodRealTime);
+	buttonGroupTimeOfDay->addButton(buttonTodRealTime);
 
-    QRadioButton *buttonTodDawn = new QRadioButton("Dawn");
+
+	QRadioButton *buttonTodDawn = new QRadioButton(tr("Dawn"));
+	buttonTodDawn->setProperty("value", QVariant("dawn"));
     layoutTod->addWidget(buttonTodDawn);
+	buttonGroupTimeOfDay->addButton(buttonTodDawn);
 
-    QRadioButton *buttonTodNoon = new QRadioButton("Noon");
+	QRadioButton *buttonTodMorning = new QRadioButton(tr("Morning"));
+	buttonTodMorning->setProperty("value", QVariant("morning"));
+	layoutTod->addWidget(buttonTodMorning);
+	buttonGroupTimeOfDay->addButton(buttonTodMorning);
+
+
+	QRadioButton *buttonTodNoon = new QRadioButton(tr("Noon"));
+	buttonTodNoon->setProperty("value", QVariant("noon"));
     layoutTod->addWidget(buttonTodNoon);
+	buttonGroupTimeOfDay->addButton(buttonTodNoon);
     buttonTodNoon->setChecked(true);
 
-    QRadioButton *buttonTodDusk = new QRadioButton("Dusk");
-    layoutTod->addWidget(buttonTodDusk);
+	QRadioButton *buttonTodAfternoon = new QRadioButton(tr("Afternoon"));
+	buttonTodAfternoon->setProperty("value", QVariant("afternoon"));
+	layoutTod->addWidget(buttonTodAfternoon);
+	buttonGroupTimeOfDay->addButton(buttonTodAfternoon);
 
+	QRadioButton *buttonTodDusk = new QRadioButton(tr("Dusk"));
+	buttonTodDusk->setProperty("value", QVariant("dusk"));
+    layoutTod->addWidget(buttonTodDusk);
+	buttonGroupTimeOfDay->addButton(buttonTodDusk);
+
+	QRadioButton *buttonTodEvening = new QRadioButton(tr("Evening"));
+	buttonTodEvening->setProperty("value", QVariant("evening"));
+	layoutTod->addWidget(buttonTodEvening);
+	buttonGroupTimeOfDay->addButton(buttonTodEvening);
+
+	QRadioButton *buttonTodMidnight = new QRadioButton(tr("Midnight"));
+	buttonTodMidnight->setProperty("value", QVariant("midnight"));
+	layoutTod->addWidget(buttonTodMidnight);
+	buttonGroupTimeOfDay->addButton(buttonTodMidnight);
+
+	/*
     QPushButton *buttSendTodTelnet = new QPushButton();
     layoutTod->addWidget(buttSendTodTelnet);
     buttSendTodTelnet->setText(tr("Send"));
     buttSendTodTelnet->setIcon(QIcon(":/icons/send"));
     connect(buttSendTodTelnet, SIGNAL(clicked()),
             this, SLOT(on_send_tod_telnet()));
-
-    //layoutTod->addStretch(20);
-   // layoutTod->addWidget(make_radio("Dawn"));
-//    layoutTod->addWidget(make_radio("Noon"));
-//    layoutTod->addWidget(make_radio("Dusk"));
-    //layoutTod->addWidget(make_radio("Dawn"));
+	*/
 
     //QWidget *aeroPanelWidget = new QWidget();
     //aeroLayout->addWidget(aeroPanelWidget);
@@ -114,16 +151,18 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     int mc =20;
     layoutNetContainer->setContentsMargins(mc,mc,mc,mc);
 
+	//==========================================================
     //** HTTP
-    QGroupBox *grpNetHttp = new QGroupBox();
-    layoutNetContainer->addWidget(grpNetHttp);
-
-    grpNetHttp->setTitle(tr("HTTP Web Server"));
-    grpNetHttp->setCheckable(true);
-    grpNetHttp->setStyleSheet(styleX);
+	grpHttp = new QGroupBox();
+	grpHttp->setTitle(tr("HTTP Web Server"));
+	grpHttp->setCheckable(true);
+	grpHttp->setChecked(false);
+	grpHttp->setStyleSheet(styleX);
+	layoutNetContainer->addWidget(grpHttp);
+	connect(grpHttp, SIGNAL(clicked(bool)), this, SLOT(set_http()));
 
     QHBoxLayout *layoutNetHttp = new QHBoxLayout();
-    grpNetHttp->setLayout(layoutNetHttp);
+	grpHttp->setLayout(layoutNetHttp);
     layoutNetHttp->setSpacing(10);
     int m = 5;
     layoutNetHttp->setContentsMargins(m,m,m,m);
@@ -131,8 +170,11 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     QLabel *lblHttp = new QLabel();
     lblHttp->setText(tr("Set Port No:"));
     layoutNetHttp->addWidget( lblHttp);
-    QLineEdit *txtHttp = new QLineEdit("5500");
+
+	txtHttp = new QLineEdit("5500");
+	txtHttp->setValidator(new QIntValidator(80, 32000, this));
     layoutNetHttp->addWidget(txtHttp);
+	connect(txtHttp, SIGNAL(textChanged(QString)), this, SLOT(set_http()));
 
     QToolButton *butHttp = new QToolButton();
     layoutNetHttp->addWidget(butHttp);
@@ -154,16 +196,18 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     actHttpBrowseTab->setText(tr("Open in new Tab"));
     //connect(actExeAutodetect, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
 
+	//===========================================================
     //** Telnet
-    QGroupBox *grpNetTelnet = new QGroupBox();
-    layoutNetContainer->addWidget(grpNetTelnet);
-
-    grpNetTelnet->setTitle(tr("Telnet Properties Server"));
-    grpNetTelnet->setCheckable(true);
-    grpNetTelnet->setStyleSheet(styleX);
+	grpTelnet = new QGroupBox();
+	grpTelnet->setTitle(tr("Telnet Properties Server"));
+	grpTelnet->setCheckable(true);
+	grpTelnet->setChecked(false);
+	grpTelnet->setStyleSheet(styleX);
+	layoutNetContainer->addWidget(grpTelnet);
+	connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
 
     QHBoxLayout *layoutNetTelnet = new QHBoxLayout();
-    grpNetTelnet->setLayout(layoutNetTelnet);
+	grpTelnet->setLayout(layoutNetTelnet);
     layoutNetTelnet->setSpacing(10);
     //int m = 5;
     layoutNetTelnet->setContentsMargins(m,m,m,m);
@@ -171,8 +215,11 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     QLabel *lblTelnet = new QLabel();
     lblTelnet->setText(tr("Set Port No:"));
     layoutNetTelnet->addWidget( lblTelnet);
-    QLineEdit *txtTelnet = new QLineEdit("5500");
+
+	txtTelnet = new QLineEdit("5500");
+	txtTelnet->setValidator(new QIntValidator(80, 32000, this));
     layoutNetTelnet->addWidget(txtTelnet);
+	connect(txtTelnet, SIGNAL(textChanged(QString)), this, SLOT(set_telnet()));
 
     QToolButton *buttTelnet = new QToolButton();
     layoutNetTelnet->addWidget(buttTelnet);
@@ -187,23 +234,73 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     QAction *actTelnetBrowse = new QAction(menuNetTelnet);
     menuNetTelnet->addAction(actTelnetBrowse);
     actTelnetBrowse->setText(tr("Open in eerminal"));
-    //connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
 
-    //QAction *actHttpBrowseTab = new QAction(menuNetHttp);
-    //menuNetHttp->addAction(actHttpBrowseTab);
-    //actHttpBrowseTab->setText(tr("Open in new Tab"));
-    //connect(actExeAutodetect, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
+
+
+	//===========================================================
+	//** Weather Fetch
+	grpWeatherFetch = new QGroupBox();
+	grpWeatherFetch->setTitle(tr("Telnet Properties Server"));
+	grpWeatherFetch->setCheckable(true);
+	grpWeatherFetch->setChecked(false);
+	grpWeatherFetch->setStyleSheet(styleX);
+	layoutNetContainer->addWidget(grpWeatherFetch);
+#connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
+
+	QHBoxLayout *layoutNetTelnet = new QHBoxLayout();
+	grpTelnet->setLayout(layoutNetTelnet);
+	layoutNetTelnet->setSpacing(10);
+	//int m = 5;
+	layoutNetTelnet->setContentsMargins(m,m,m,m);
+
+	QLabel *lblTelnet = new QLabel();
+	lblTelnet->setText(tr("Set Port No:"));
+	layoutNetTelnet->addWidget( lblTelnet);
+
 
 }
 
-QRadioButton MainOptionsWidget::make_radio(QString label){
-	 Q_UNUSED(label);
-    //return new QRadioButton(label);
-   // return button;
+
+//=================================================
+//** Set Season
+void MainOptionsWidget::set_season(){
+	if( grpSeason->isChecked() ){
+		emit set_arg("set", "--season=", buttonSeasonSummer->isChecked() ? "summer" : "winter");
+	}else{
+		emit set_arg("remove", "--season=", "");
+	}
 }
 
-void MainOptionsWidget::on_send_tod_telnet(){
-    QAbstractButton *curr = buttGroupTod->checkedButton();
-    //mainObject->telnet->set_node();
+//=================================================
+//** Set Time Of Day
+void MainOptionsWidget::set_time_of_day(){
+	if( grpTimeOfDay->isChecked() ){
+		emit set_arg("set", "--timeofday=", buttonGroupTimeOfDay->checkedButton()->property("value").toString());
+	}else{
+		emit set_arg("remove", "--timeofday=", "");
+	}
+}
 
+
+//=================================================
+//** Set Http
+void MainOptionsWidget::set_http(){
+	qDebug() << "set_http";
+	if( grpHttp->isChecked() ){
+		emit set_arg("set", "--http=", txtHttp->text());
+	}else{
+		emit set_arg("remove", "--http=", "");
+	}
+}
+
+
+//=================================================
+//** Set Telnet
+void MainOptionsWidget::set_telnet(){
+	qDebug() << "telnet";
+	if( grpTelnet->isChecked() ){
+		emit set_arg("set", "--telnet=", txtTelnet->text());
+	}else{
+		emit set_arg("remove", "--telnet=", "");
+	}
 }
