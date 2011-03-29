@@ -29,11 +29,6 @@ public:
 	QGroupBox *grpTimeOfDay;
 	QButtonGroup *buttonGroupTimeOfDay;
 
-	QGroupBox *grpHttp;
-	QLineEdit *txtHttp;
-
-	QGroupBox *grpTelnet;
-	QLineEdit *txtTelnet;
 
 signals:
 	void set_arg(QString action, QString arg, QString value);
@@ -43,8 +38,7 @@ public slots:
 
 	void set_season();
 	void set_time_of_day();
-	void set_http();
-	void set_telnet();
+
 
 };
 

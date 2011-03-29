@@ -151,70 +151,6 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     int mc =20;
     layoutNetContainer->setContentsMargins(mc,mc,mc,mc);
 
-	//==========================================================
-    //** HTTP
-	grpHttp = new QGroupBox();
-	grpHttp->setTitle(tr("HTTP Web Server"));
-	grpHttp->setCheckable(true);
-	grpHttp->setChecked(false);
-	grpHttp->setStyleSheet(styleX);
-	layoutNetContainer->addWidget(grpHttp);
-	connect(grpHttp, SIGNAL(clicked(bool)), this, SLOT(set_http()));
-
-    QHBoxLayout *layoutNetHttp = new QHBoxLayout();
-	grpHttp->setLayout(layoutNetHttp);
-    layoutNetHttp->setSpacing(10);
-    int m = 5;
-    layoutNetHttp->setContentsMargins(m,m,m,m);
-
-    QLabel *lblHttp = new QLabel();
-    lblHttp->setText(tr("Set Port No:"));
-    layoutNetHttp->addWidget( lblHttp);
-
-	txtHttp = new QLineEdit("5500");
-	txtHttp->setValidator(new QIntValidator(80, 32000, this));
-    layoutNetHttp->addWidget(txtHttp);
-	connect(txtHttp, SIGNAL(textChanged(QString)), this, SLOT(set_http()));
-
-    QToolButton *butHttp = new QToolButton();
-    layoutNetHttp->addWidget(butHttp);
-    butHttp->setIcon(QIcon(":/icons/dns_lookup"));
-	butHttp->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    butHttp->setPopupMode(QToolButton::InstantPopup);
-
-    QMenu *menuNetHttp = new QMenu();
-    butHttp->setMenu(menuNetHttp);
-
-    QAction *actHttpBrowse = new QAction(menuNetHttp);
-    menuNetHttp->addAction(actHttpBrowse);
-    actHttpBrowse->setText(tr("Open in external browser"));
-    //connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
-
-
-	//===========================================================
-    //** Telnet
-	grpTelnet = new QGroupBox();
-	grpTelnet->setTitle(tr("Telnet Properties Server"));
-	grpTelnet->setCheckable(true);
-	grpTelnet->setChecked(false);
-	grpTelnet->setStyleSheet(styleX);
-	layoutNetContainer->addWidget(grpTelnet);
-	connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
-
-    QHBoxLayout *layoutNetTelnet = new QHBoxLayout();
-	grpTelnet->setLayout(layoutNetTelnet);
-    layoutNetTelnet->setSpacing(10);
-    //int m = 5;
-    layoutNetTelnet->setContentsMargins(m,m,m,m);
-
-    QLabel *lblTelnet = new QLabel();
-    lblTelnet->setText(tr("Set Port No:"));
-    layoutNetTelnet->addWidget( lblTelnet);
-
-	txtTelnet = new QLineEdit("5500");
-	txtTelnet->setValidator(new QIntValidator(80, 32000, this));
-    layoutNetTelnet->addWidget(txtTelnet);
-	connect(txtTelnet, SIGNAL(textChanged(QString)), this, SLOT(set_telnet()));
 
 
 
@@ -228,12 +164,13 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
 	layoutNetContainer->addWidget(grpWeatherFetch);
 	//#connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
 
+	/*
 	QHBoxLayout *layoutEnviroment = new QHBoxLayout();
 	grpTelnet->setLayout(layoutEnviroment);
 	layoutEnviroment->setSpacing(10);
 	//int m = 5;
 	layoutEnviroment->setContentsMargins(m,m,m,m);
-
+	*/
 	/*
 	QLabel *lblTelnet = new QLabel();
 	lblTelnet->setText(tr("Set Port No:"));
@@ -263,26 +200,3 @@ void MainOptionsWidget::set_time_of_day(){
 	}
 }
 
-
-//=================================================
-//** Set Http
-void MainOptionsWidget::set_http(){
-	qDebug() << "set_http";
-	if( grpHttp->isChecked() ){
-		emit set_arg("set", "--http=", txtHttp->text());
-	}else{
-		emit set_arg("remove", "--http=", "");
-	}
-}
-
-
-//=================================================
-//** Set Telnet
-void MainOptionsWidget::set_telnet(){
-	qDebug() << "telnet";
-	if( grpTelnet->isChecked() ){
-		emit set_arg("set", "--telnet=", txtTelnet->text());
-	}else{
-		emit set_arg("remove", "--telnet=", "");
-	}
-}

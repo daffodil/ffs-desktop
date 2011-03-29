@@ -44,6 +44,15 @@ public:
 	QLineEdit *txtFgComNo;
 	QLineEdit *txtFgComPort;
 
+	QGroupBox *grpTelnet;
+	QLineEdit *txtTelnet;
+
+	QGroupBox *grpHttp;
+	QLineEdit *txtHttp;
+
+	QGroupBox *grpScreenShot;
+	QLineEdit *txtScreenShot;
+
     void dns_lookup(int server_no);
 	void load_addresses();
 	void populate_combo_hz(QComboBox *combo);
@@ -61,7 +70,9 @@ public slots:
 	 void set_mp_server();
 
 	 void set_fgcom();
-
+	 void set_http();
+	 void set_telnet();
+	 void set_screenshot();
 };
 
 #endif // MPSERVERS_H

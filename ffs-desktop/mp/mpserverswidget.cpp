@@ -139,13 +139,14 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	headerItem->setText(C_FLAG, "-");
     treeWidget->header()->setStretchLastSection(true);
     treeWidget->setColumnWidth(C_SERVER_NO, 40);
-    treeWidget->setColumnWidth(C_SERVER_NAME, 110);
+	treeWidget->setColumnWidth(C_SERVER_NAME, 80);
     treeWidget->setColumnWidth(C_DOMAIN, 100);
 	treeWidget->setColumnWidth(C_PILOTS_COUNT, 50);
 	treeWidget->setColumnWidth(C_FLAG, 10);
 
 	treeWidget->setColumnHidden(C_DOMAIN, true);
 	treeWidget->setColumnHidden(C_SERVER_NO, true);
+	treeWidget->setColumnHidden(C_FLAG, true);
 
 	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(set_mp_server()));
 
@@ -162,10 +163,15 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
 
 
+	//****************** RIGHT ********************************
+	QVBoxLayout *rightLayout = new QVBoxLayout();
+	rightLayout->setSpacing(20);
+	middleLayout->addLayout(rightLayout, 2);
+
 	//========================================================================
 	// FgCom Box
 	grpFgCom = new QGroupBox(tr("fgCom - Voice Communications"));
-	middleLayout->addWidget(grpFgCom, 2);
+	rightLayout->addWidget(grpFgCom, 2);
 	grpFgCom->setCheckable(true);
 	connect(grpFgCom, SIGNAL(clicked(bool)), this, SLOT(set_fgcom()));
 
@@ -197,7 +203,97 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	lblHelp2->setStyleSheet(style);
 	layoutFgCom->addWidget(lblHelp2);
 
-	layoutFgCom->addStretch(30);
+
+	//===========================================================
+	//** Telnet
+	grpTelnet = new QGroupBox();
+	grpTelnet->setTitle(tr("Telnet Properties Server"));
+	grpTelnet->setCheckable(true);
+	grpTelnet->setChecked(false);
+	rightLayout->addWidget(grpTelnet);
+	connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
+
+	QHBoxLayout *layoutNetTelnet = new QHBoxLayout();
+	grpTelnet->setLayout(layoutNetTelnet);
+	layoutNetTelnet->setSpacing(10);
+	//int m = 5;
+	layoutNetTelnet->setContentsMargins(m,m,m,m);
+
+	QLabel *lblTelnet = new QLabel();
+	lblTelnet->setText(tr("Set Port No:"));
+	layoutNetTelnet->addWidget( lblTelnet);
+
+	txtTelnet = new QLineEdit("5500");
+	txtTelnet->setValidator(new QIntValidator(80, 32000, this));
+	layoutNetTelnet->addWidget(txtTelnet);
+	connect(txtTelnet, SIGNAL(textChanged(QString)), this, SLOT(set_telnet()));
+
+
+	//===========================================================
+	//** Telnet
+	grpScreenShot = new QGroupBox();
+	grpScreenShot->setTitle(tr("Screen Shot Server"));
+	grpScreenShot->setCheckable(true);
+	grpScreenShot->setChecked(false);
+	rightLayout->addWidget(grpScreenShot);
+	connect(grpScreenShot, SIGNAL(clicked()), this, SLOT(set_screenshot()));
+
+	QHBoxLayout *layoutScreenShot = new QHBoxLayout();
+	grpScreenShot->setLayout(layoutScreenShot);
+	layoutScreenShot->setSpacing(10);
+	//int m = 5;
+	layoutScreenShot->setContentsMargins(m,m,m,m);
+
+	QLabel *lblScreenshot = new QLabel();
+	lblScreenshot->setText(tr("Set Port No:"));
+	layoutScreenShot->addWidget( lblScreenshot);
+
+	txtScreenShot = new QLineEdit("7777");
+	txtScreenShot->setValidator(new QIntValidator(80, 32000, this));
+	layoutScreenShot->addWidget(txtScreenShot);
+	connect(txtScreenShot, SIGNAL(textChanged(QString)), this, SLOT(set_screen_shot()));
+
+	//==========================================================
+	//** HTTP
+	grpHttp = new QGroupBox();
+	grpHttp->setTitle(tr("HTTP Web Server"));
+	grpHttp->setCheckable(true);
+	grpHttp->setChecked(false);
+	rightLayout->addWidget(grpHttp);
+	connect(grpHttp, SIGNAL(clicked(bool)), this, SLOT(set_http()));
+
+	QHBoxLayout *layoutNetHttp = new QHBoxLayout();
+	grpHttp->setLayout(layoutNetHttp);
+	layoutNetHttp->setSpacing(10);
+	//int m = 5;
+	//layoutNetHttp->setContentsMargins(m,m,m,m);
+
+	QLabel *lblHttp = new QLabel();
+	lblHttp->setText(tr("Set Port No:"));
+	layoutNetHttp->addWidget( lblHttp);
+
+	txtHttp = new QLineEdit("8080");
+	txtHttp->setValidator(new QIntValidator(80, 32000, this));
+	layoutNetHttp->addWidget(txtHttp);
+	connect(txtHttp, SIGNAL(textChanged(QString)), this, SLOT(set_http()));
+
+	QToolButton *butHttp = new QToolButton();
+	layoutNetHttp->addWidget(butHttp);
+	butHttp->setIcon(QIcon(":/icons/dns_lookup"));
+	butHttp->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	butHttp->setPopupMode(QToolButton::InstantPopup);
+
+	QMenu *menuNetHttp = new QMenu();
+	butHttp->setMenu(menuNetHttp);
+
+	QAction *actHttpBrowse = new QAction(menuNetHttp);
+	menuNetHttp->addAction(actHttpBrowse);
+	actHttpBrowse->setText(tr("Open in external browser"));
+	//connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
+
+
+	rightLayout->addStretch(20);
+
 
 	//** Setup network stuff
 	dns_lookup_all();
@@ -498,3 +594,36 @@ void MpServersWidget::populate_combo_hz(QComboBox *combo){
 }
 
 
+
+
+//=================================================
+//** Set Http
+void MpServersWidget::set_http(){
+	if( grpHttp->isChecked() ){
+		emit set_arg("set", "--http=", txtHttp->text());
+	}else{
+		emit set_arg("remove", "--http=", "");
+	}
+}
+
+
+//=================================================
+//** Set Telnet
+void MpServersWidget::set_telnet(){
+	if( grpTelnet->isChecked() ){
+		emit set_arg("set", "--telnet=", txtTelnet->text());
+	}else{
+		emit set_arg("remove", "--telnet=", "");
+	}
+}
+
+
+//=================================================
+//** Set ScreenShot
+void MpServersWidget::set_screenshot(){
+	if( grpScreenShot->isChecked() ){
+		emit set_arg("set", "--jpg-httpd=", txtScreenShot->text());
+	}else{
+		emit set_arg("remove", "--jpg-httpd=", "");
+	}
+}
