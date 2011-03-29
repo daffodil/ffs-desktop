@@ -6,7 +6,7 @@
 #include <QtCore/QMapIterator>
 
 
-
+#include <QVBoxLayout>
 
 #include <QtNetwork/QHostInfo>
 #include <QtNetwork/QHostAddress>
@@ -15,12 +15,12 @@
 #include <QtGui/QColor>
 
 #include <QtGui/QVBoxLayout>
-#include <QtGui/QToolBar>
 #include <QtGui/QAction>
 #include <QtGui/QProgressBar>
-
+#include <QtGui/QLabel>
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QHeaderView>
+#include <QToolButton>
 
 #include "mp/mpserverswidget.h"
 #include "mp/mptelnet.h"
@@ -38,23 +38,40 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     QVBoxLayout *mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(0,0,0,0);
+	int m = 10;
+	mainLayout->setContentsMargins(m,m,m,m);
 
-    //** Toolbar
-    QToolBar *toolbar = new QToolBar();
-    mainLayout->addWidget(toolbar);
-    toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	//========================================================================
+	// Mp Servers Box
+	grpMpServer  = new QGroupBox("Enable Multiplayer");
+	mainLayout->addWidget(grpMpServer);
+	grpMpServer->setCheckable(true);
 
-    QAction *refreshButton = new QAction(this);
-    toolbar->addAction(refreshButton);
-	refreshButton->setText("Find Servers");
-    refreshButton->setIcon(QIcon(":/icons/dns_lookup"));
+	QVBoxLayout *layoutMpServer = new QVBoxLayout();
+	grpMpServer->setLayout(layoutMpServer);
+
+	//** Top Hoizontal
+	QHBoxLayout *layoutTreeBar = new QHBoxLayout();
+	layoutMpServer->addLayout(layoutTreeBar);
+
+	//** Callsign
+	layoutTreeBar->addWidget(new QLabel("Callsign:"));
+	txtCallSign = new QLineEdit();
+	txtCallSign->setText("");
+	txtCallSign->setMaximumWidth(100);
+	layoutTreeBar->addWidget(txtCallSign);
+
+	layoutTreeBar->addStretch(20);
+
+	//* refresh MP servers
+	QToolButton *refreshButton = new QToolButton(this);
+	layoutTreeBar->addWidget(refreshButton);
+	refreshButton->setIcon(QIcon(":/icons/refresh"));
+	refreshButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
     connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
 
     treeWidget = new QTreeWidget();
-    mainLayout->addWidget(treeWidget, 100);
-
-    //treeWidget->setSortingEnabled(true);
+	layoutMpServer->addWidget(treeWidget, 100);
     treeWidget->setAlternatingRowColors(true);
     treeWidget->setRootIsDecorated(false);
 
@@ -78,10 +95,43 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_tree_selection_changed()));
 
 
+
+	//========================================================================
+	// FgCom Box
+	grpFgCom = new QGroupBox(tr("fgCom - Voice Communications"));
+	mainLayout->addWidget(grpFgCom);
+	grpFgCom->setCheckable(true);
+
+	QVBoxLayout *layoutFgCom = new QVBoxLayout();
+	grpFgCom->setLayout(layoutFgCom);
+
+	// fgCom NO
+	txtFgComNo = new QLineEdit();
+	layoutFgCom->addWidget(txtFgComNo);
+
+	QLabel *lblHelp1 = new QLabel("   Call FlightGear default fgCom server");
+	lblHelp1->setStyleSheet("font-size: 10pt; color: #000099;");
+	layoutFgCom->addWidget(lblHelp1);
+
+	layoutFgCom->addSpacing(10);
+
+	// fgCom Port
+	txtFgComPort = new QLineEdit();
+	layoutFgCom->addWidget(txtFgComPort);
+
+	QLabel *lblHelp2 = new QLabel("   Default fgCom UDP port");
+	lblHelp2->setStyleSheet("font-size: 10pt; color: #000099;");
+	layoutFgCom->addWidget(lblHelp2);
+
 	// Load
 	dns_lookup_all();
 }
 /* end constructor */
+
+
+
+
+
 
 
 //=============================================================
@@ -116,7 +166,7 @@ void MpServersWidget::dns_lookup(int server_int){
         newItem->setForeground(C_IP_ADDRESS, b);
 
         int newIdx = treeWidget->invisibleRootItem()->childCount();
-        m_Domain2Row.insert(domain_name, newIdx);
+		//m_Domain2Row.insert(domain_name, newIdx);
         treeWidget->insertTopLevelItem(newIdx, newItem);
     }
     //* execute lookup

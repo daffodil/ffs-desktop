@@ -5,6 +5,9 @@
 #include <QtNetwork/QHostInfo>
 
 #include <QtGui/QTreeWidget>
+#include <QtGui/QGroupBox>
+#include <QtGui/QCheckBox>
+#include <QtGui/QLineEdit>
 
 
 class MpServersWidget : public QWidget
@@ -25,8 +28,13 @@ public:
 
     QTreeWidget *treeWidget;
 
-	//QMap<QString, int> m_Ip2col;
-    QMap<QString, int>m_Domain2Row;
+	QGroupBox *grpMpServer;
+	QLineEdit *txtCallSign;
+
+
+	QGroupBox *grpFgCom;
+	QLineEdit *txtFgComNo;
+	QLineEdit *txtFgComPort;
 
     void dns_lookup(int server_no);
 
