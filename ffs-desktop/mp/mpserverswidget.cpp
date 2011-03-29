@@ -296,7 +296,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 
 
 	//** Setup network stuff
-	dns_lookup_all();
+	//dns_lookup_all();
 	load_addresses();
 
 

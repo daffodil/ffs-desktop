@@ -4,9 +4,7 @@
 #include <QtGui/QWidget>
 #include <QtGui/QAbstractButton>
 
-#include <QtGui/QStandardItemModel>
-#include <QtGui/QSortFilterProxyModel>
-#include <QtGui/QTreeView>
+#include <QtGui/QTreeWidget>
 #include <QtGui/QLabel>
 
 #include <QtGui/QStatusBar>
@@ -18,9 +16,10 @@ class AircraftWidget : public QWidget
 Q_OBJECT
 public:
 	enum COLS{
-		C_MODEL = 0,
-		C_DESCRIPTION = 1,
-		C_PATH = 2
+		C_PATH = 0,
+		C_AERO = 1,
+		C_DESCRIPTION = 2,
+		C_MODEL = 3
 	};
 
 	explicit AircraftWidget(MainObject *mOb, QWidget *parent = 0);
@@ -30,9 +29,7 @@ public:
 	QLabel *aeroImageLabel;
 
 private:
-    QStandardItemModel *model;
-    QSortFilterProxyModel *proxyModel;
-    QTreeView *treeView;
+	QTreeWidget *treeWidget;
 
     QLabel *lblAircraftModel;
     QLabel *lblAircraftDescription;
@@ -47,7 +44,7 @@ public slots:
 	void load_aircraft_shell();
 	void load_aircraft_xml_set();
 
-	void on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected);
+	void on_tree_selection_changed();
 	void on_auto_coordination(bool state);
 
     void on_view_button_clicked(QAbstractButton *button);

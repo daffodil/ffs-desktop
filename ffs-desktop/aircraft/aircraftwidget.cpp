@@ -27,9 +27,7 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QTabWidget>
 
-#include <QtGui/QStandardItemModel>
-#include <QtGui/QItemSelection>
-#include <QtGui/QItemSelectionModel>
+#include <QtGui/QTreeWidgetItem>
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QPixmap>
 
@@ -112,6 +110,7 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 
 	//===============================================================
     //** Models
+	/*
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
     QStringList headerLabelsList;
@@ -120,22 +119,27 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
-
+	*/
 	//===============================================================
     //** Aircraft Tree
-    treeView = new QTreeView(this);
-    treeLayout->addWidget(treeView);
-    treeView->setModel(proxyModel);
-    treeView->setAlternatingRowColors(true);
-    treeView->setRootIsDecorated(false);
-    treeView->setSortingEnabled(true);
-    treeView->setSelectionMode(QAbstractItemView::SingleSelection);
-    treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+	treeWidget = new QTreeWidget(this);
+	treeLayout->addWidget(treeWidget);
+	treeWidget->setAlternatingRowColors(true);
+	treeWidget->setRootIsDecorated(true);
+	treeWidget->setSortingEnabled(true);
+	treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	treeWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    connect( treeView->selectionModel(),
-             SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
-			 SLOT( on_tree_selection_changed(const QItemSelection&, const QItemSelection&) )
-    );
+	treeWidget->headerItem()->setText(C_PATH, "Dir");
+	treeWidget->headerItem()->setText(C_MODEL, "xml");
+	treeWidget->headerItem()->setText(C_AERO, "Model");
+	treeWidget->headerItem()->setText(C_DESCRIPTION, "Description");
+
+	connect( treeWidget,
+			 SIGNAL( itemSelectionChanged() ),
+			 SLOT( on_tree_selection_changed() )
+	);
+
 
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
@@ -242,24 +246,17 @@ void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
 //==========================================================================
 // Aircraft Selected
 //==========================================================================
-void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
+void AircraftWidget::on_tree_selection_changed(){
 
-	Q_UNUSED(deselected);
+	QTreeWidgetItem *item = treeWidget->currentItem();
 
-	if(selected.count() == 0){
+	if(!item | item->text(C_MODEL).length() == 0){
+		aeroImageLabel->clear();
 		emit set_arg("remove", "--aircraft=", "");
 		return;
 	}
-	/*
-	QModelIndex proxyIndex =  selected.indexes().first();
-	QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-	emit set_arg("set", "--aircraft=", item->text());
-	*/
 
-	QModelIndex proxyIndex =  selected.indexes()[2];
-	QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-	//#emit set_arg("set", "--aircraft=", item->text());
-	QString thumb_file( mainObject->settings->aircraft_path(item->text()) );
+	QString thumb_file( mainObject->settings->aircraft_path(item->text(C_PATH)) );
 	thumb_file.append("/thumbnail.jpg");
 	qDebug() << thumb_file;
 
@@ -269,6 +266,33 @@ void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, c
 	}
 	aeroImageLabel->setPixmap(aeroImage);
 
+	/*
+	QFile set_xml_file( mainObject->settings->aircraft_path(item->text(C_PATH)).append(item->text)
+
+	if (rwyfile.open(QIODevice::ReadOnly)) {
+
+		QXmlStreamReader rwyreader(&rwyfile);
+		QXmlStreamReader::TokenType tokenType;
+
+		QStringList runwayList;
+		QString rwy;
+		while ((tokenType = rwyreader.readNext()) != QXmlStreamReader::EndDocument) {
+			if (rwyreader.name() == "rwy") {
+				rwy = rwyreader.readElementText();
+				runwayList.append(rwy);
+			}
+		}
+
+		rwyfile.close();
+
+		runWay->clear();
+		runWay->addItems(runwayList);
+		runWay->setEnabled(true);
+
+	} else {
+		runWay->setEnabled(false);
+	}
+	*/
 
 }
 
@@ -331,13 +355,14 @@ void AircraftWidget::load_aircraft_shell(){
 
 					}
 				}else{
-
+					/*
 					QStandardItem *modelItem = new QStandardItem();
 					modelItem->setText( line.section( ' ', 0, 0 )); //* first chars to space
 					model->setItem(row_count, 0, modelItem);
 					QStandardItem *descriptionItem = new QStandardItem();
 					descriptionItem->setText( line.section( ' ', 1 )); //* after first space
 					model->setItem(row_count, 1, descriptionItem);
+					*/
 					row_count++;
 				}
 			}
@@ -364,15 +389,53 @@ void AircraftWidget::load_aircraft_xml_set(){
 		// Filter out default dir names, should be a QDir name filter?
 		if (*entry != "Instruments" &&  *entry != "Instruments-3d" && *entry != "Generic") {
 
-			QStandardItem *item = new QStandardItem();
-			item->setText( *entry); //* first chars to space
-			model->setItem(row_count, C_PATH, item);
+			//QStandardItem *item = new QStandardItem();
+			//item->setText( *entry); //* first chars to space
+			//model->setItem(row_count, C_PATH, item);
 			//QStandardItem *descriptionItem = new QStandardItem();
 			//descriptionItem->setText( line.section( ' ', 1 )); //* after first space
 			//model->setItem(row_count, 1, descriptionItem);
-			row_count++;
+
+			//** get the List of *-set.xml files in dir
+			QDir dir( mainObject->settings->aircraft_path(*entry) );
+			QStringList filters;
+			filters << "*-set.xml";
+			QStringList list_xml = dir.entryList(filters);
+
+			if(list_xml.count() > 0){
+
+				//** Add Path Node
+				QTreeWidgetItem *nodeItem = new QTreeWidgetItem();
+				nodeItem->setText( C_PATH, *entry);
+				treeWidget->addTopLevelItem(nodeItem);
+
+				//** Add Models
+				for (int i = 0; i < list_xml.size(); ++i){
+					QTreeWidgetItem *item = new QTreeWidgetItem(nodeItem);
+					item->setText( C_PATH, *entry);
+					QString xmlfile( list_xml.at(i) );
+					//QString aero(modelxml.chop(8));
+
+					item->setText(C_MODEL, xmlfile);
+					xmlfile.chop(8);
+					item->setText(C_AERO, xmlfile );
+
+				}
+
+			}
+
+			qDebug() << list_xml << " - " << *entry;
 
 
+
+			//QStandardItem *item = new QStandardItem();
+			//item->setText( *entry); //* first chars to space
+			//model->setItem(row_count, C_PATH, item);
+			//QStandardItem *descriptionItem = new QStandardItem();
+			//descriptionItem->setText( line.section( ' ', 1 )); //* after first space
+			//model->setItem(row_count, 1, descriptionItem);
+
+				row_count++;
 		}
 	}
 
