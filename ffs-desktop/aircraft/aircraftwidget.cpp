@@ -184,13 +184,14 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
     aeroPanelLayout->addWidget(lblAircraftDescription);
 	lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  color: #eeeeee; font-family: monospace; font-size: 10pt;");
 
-    QLabel *aeroImageLabel =  new QLabel(this);
+	aeroImageLabel =  new QLabel(this);
+	aeroImageLabel->setFixedWidth(171);
+	aeroImageLabel->setFixedHeight(128);
     aeroPanelLayout->addWidget(aeroImageLabel);
 
     QPixmap aeroImage("/home/ffs/ffs-desktop/ffs-desktop/icons/_test_.png");
     if(aeroImage.isNull()){
         qDebug("NULL");
-
     }
     aeroImageLabel->setPixmap(aeroImage);
 
@@ -238,18 +239,35 @@ void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
 
 
 
-//=====================================
+//==========================================================================
 // Aircraft Selected
+//==========================================================================
 void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
-	qDebug() << "on_tree_selection_changed";
+
 	Q_UNUSED(deselected);
+
 	if(selected.count() == 0){
 		emit set_arg("remove", "--aircraft=", "");
-	}else{
-		QModelIndex proxyIndex =  selected.indexes().first();
-		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-		emit set_arg("set", "--aircraft=", item->text());
+		return;
 	}
+	/*
+	QModelIndex proxyIndex =  selected.indexes().first();
+	QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
+	emit set_arg("set", "--aircraft=", item->text());
+	*/
+
+	QModelIndex proxyIndex =  selected.indexes()[2];
+	QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
+	//#emit set_arg("set", "--aircraft=", item->text());
+	QString thumb_file( mainObject->settings->aircraft_path(item->text()) );
+	thumb_file.append("/thumbnail.jpg");
+	qDebug() << thumb_file;
+
+	QPixmap aeroImage(thumb_file);
+	if(aeroImage.isNull()){
+		qDebug("NULL");
+	}
+	aeroImageLabel->setPixmap(aeroImage);
 
 
 }

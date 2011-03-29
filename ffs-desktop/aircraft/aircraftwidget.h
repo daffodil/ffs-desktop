@@ -27,6 +27,8 @@ public:
 
 	MainObject *mainObject;
 
+	QLabel *aeroImageLabel;
+
 private:
     QStandardItemModel *model;
     QSortFilterProxyModel *proxyModel;
