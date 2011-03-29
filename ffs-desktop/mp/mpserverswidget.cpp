@@ -58,6 +58,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     treeWidget->setAlternatingRowColors(true);
     treeWidget->setRootIsDecorated(false);
 
+
     QTreeWidgetItem * headerItem = treeWidget->headerItem();
     headerItem->setText(C_SERVER_NO, tr("No"));
     headerItem->setText(C_SERVER_NAME, tr("Name"));
@@ -74,6 +75,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 
 	treeWidget->setColumnHidden(C_DOMAIN, true);
 
+	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_tree_selection_changed()));
 
 
 	// Load
@@ -82,7 +84,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 /* end constructor */
 
 
-
+//=============================================================
 //** Dns Lookup All
 void MpServersWidget::dns_lookup_all(){
     //TODO make the max a setting
@@ -90,8 +92,6 @@ void MpServersWidget::dns_lookup_all(){
         dns_lookup(i);
     }
 }
-
-
 
 //** Dns Lookup (server_no)
 void MpServersWidget::dns_lookup(int server_int){
@@ -101,32 +101,6 @@ void MpServersWidget::dns_lookup(int server_int){
     QString server_name = QString("mpserver%1").arg(server_int, 2, 10, QChar('0'));
     QString server_no = QString("%1").arg(server_int, 2, 10, QChar('0'));
 
-    //* Make the column Header
-	/* if(m_Ip2col.contains(server_no) == false){
-        QTreeWidgetItem *headerItem = treeWidget->headerItem();
-        int newIdx = headerItem->columnCount();
-        headerItem->setText(newIdx, server_no);
-        m_Ip2col.insert(server_name, newIdx);
-    }
-	*/
-    //** Check the header column and insert if absent
-    //QTreeWidgetItem *headerItem = treeWidget->headerItem();
-    //qDebug("colsssssss--------------");
-    ///int found_idx = -1;
-    //for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
-
-        //if(headerItem->text(colidx) == server_no){
-           // found_idx = colidx;
-            //break;
-        //}
-        //qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
-    //}
-   // if(found_idx == -1){
-        //headerItem->setText(headerItem->columnCount(), server_no);
-        //qDebug() << " >> added";
-    //}//else{
-      // qDebug() << " >> skipped";
-    //}
 
     //* find domain_name in tree and add if not there
     QList<QTreeWidgetItem*> items = treeWidget->findItems(domain_name, Qt::MatchExactly, C_DOMAIN);
@@ -150,12 +124,12 @@ void MpServersWidget::dns_lookup(int server_int){
 
 }
 
+// DNS Callback
 void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
 
     //* Find row matching by domain
     QList<QTreeWidgetItem*> items = treeWidget->findItems(hostInfo.hostName(), Qt::MatchExactly, C_DOMAIN);
 
-    //m_Domain2Ip.contains()
     //** Make the colors change if address found
     QString lbl;
     QColor color;
@@ -163,7 +137,6 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
     if( has_address ){
          lbl = hostInfo.addresses().first().toString();
          color = QColor(0, 150, 0);
-         //m_Ip2Domain.insert()
      }else{
         lbl = tr("Not Found");
         color = QColor(150, 0, 0);
@@ -174,11 +147,7 @@ void MpServersWidget::on_dns_lookup_host(const QHostInfo &hostInfo){
      items[0]->setText(C_IP_ADDRESS, lbl);
 
      if(has_address){
-        //#if(m_Ip2Row.contains())
-        //QProgressBar *progress = new QProgressBar();
-        //progress->setRange(0,0);
-        //progress->setValue(0);
-        //treeWidget->setItemWidget(items[0], C_PILOTS_COUNT, progress);
+		items[0]->setText(C_FLAG, "1");
         items[0]->setText(C_PILOTS_COUNT, tr("Wait"));
         MpTelnet *telnet = new MpTelnet(this );
         telnet->get_info(hostInfo.addresses().first().toString());
@@ -208,7 +177,6 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     int pilots_count = 0;
     QMap<QString, int> mServerCount;
 
-    //int pilots_local = 0;
     for(int i = 0; i < lines.size(); ++i){
 
         line = lines.at(i).trimmed();
@@ -307,14 +275,13 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
 
 //=====================================
 // Mp Server Selected
-void MpServersWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
-	Q_UNUSED(deselected);
-	QString arg_name("--mpserver=");
-	if(selected.count() == 0){
-		emit set_arg("remove", arg_name, "");
+void MpServersWidget::on_tree_selection_changed(){
+	QTreeWidgetItem *item = treeWidget->currentItem();
+	if(!item){
+		//#emit set_arg("set", arg_name, item->text());
+
 	}else{
-		QModelIndex proxyIndex =  selected.indexes().first();
-		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-		emit set_arg("set", arg_name, item->text());
+
+		emit set_arg("set", "--mpserver", item->text(C_DOMAIN));
 	}
 }

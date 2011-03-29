@@ -110,6 +110,7 @@ void LauncherWindow::closeEvent(QCloseEvent *event){
 
 
 void LauncherWindow::on_tab_changed(int tab_index){
+	Q_UNUSED(tab_index);
 	//TODO maybe we dont need this..
 	// pusedo code
 	// if isistance(widget, FooClass) : load()

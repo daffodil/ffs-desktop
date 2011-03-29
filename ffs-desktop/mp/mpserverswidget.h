@@ -31,12 +31,15 @@ public:
     void dns_lookup(int server_no);
 
 
+
 signals:
+	void set_arg(QString action, QString arg, QString value);
 
 public slots:
      void dns_lookup_all();
      void on_dns_lookup_host(const QHostInfo &hostInfo);
      void on_telnet_data(QString, QString);
+	 void on_tree_selection_changed();
 };
 
 #endif // MPSERVERS_H
