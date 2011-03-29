@@ -4,7 +4,6 @@
     does a background call to a process that executes FG
   */
 
-#include "aircraft/aircraftwidget.h"
 
 #include <QtCore/QProcess>
 #include <QtCore/QByteArray>
@@ -34,14 +33,11 @@
 #include <QtGui/QAbstractItemView>
 #include <QtGui/QPixmap>
 
-//* tree
-//#include <QtGui/QHeaderView>
-//#include <QtGui/QTreeWidgetItem>
-//#include <QtGui/QAction>
-/*
 
 
-*/
+
+
+#include "aircraft/aircraftwidget.h"
 
 AircraftWidget::AircraftWidget(QWidget *parent) :
     QWidget(parent)
@@ -202,11 +198,11 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
 
     lblAircraftModel = new QLabel("B747-400ER");
     aeroPanelLayout->addWidget(lblAircraftModel);
-    lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;   color: #eeeeee; font-fmaily: monospace; font-size: 20pt;");
+	lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;   color: #eeeeee; font-family: monospace; font-size: 20pt;");
 
     lblAircraftDescription = new QLabel("Boeing 757 ER");
     aeroPanelLayout->addWidget(lblAircraftDescription);
-    lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  color: #eeeeee; font-fmaily: monospace; font-size: 10pt;");
+	lblAircraftDescription->setStyleSheet("padding: 0px 5px 5px 15px;  color: #eeeeee; font-family: monospace; font-size: 10pt;");
 
     QLabel *aeroImageLabel =  new QLabel(this);
     aeroPanelLayout->addWidget(aeroImageLabel);

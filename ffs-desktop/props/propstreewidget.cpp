@@ -1,4 +1,4 @@
-#include "propstreewidget.h"
+
 
 #include <QtCore/QList>
 
@@ -11,6 +11,9 @@
 #include <QtGui/QIcon>
 #include <QtGui/QFont>
 
+
+#include "propstreewidget.h"
+#include "propeditwidget.h"
 
 /*
 
@@ -93,6 +96,15 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
             this, SLOT(on_set_timer_rate())
     );
 
+	treeToolbar->addSeparator();
+
+	//** Edit Property Action
+	actionEditProperty = new QAction(this);
+	actionEditProperty->setText("Edit");
+	actionEditProperty->setDisabled(true);
+	actionEditProperty->setIcon(QIcon(":/icons/node_val"));
+	treeToolbar->addAction(actionEditProperty);
+	connect(actionEditProperty, SIGNAL(triggered()), this, SLOT(on_edit_property()) );
 
     //******************************************************
     //** Tree Widgets
@@ -108,18 +120,24 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
     treeWidget->sortByColumn(0, Qt::AscendingOrder);
 
     QTreeWidgetItem *headerItem = treeWidget->headerItem();
-    headerItem->setText(0, tr("Property"));
-    headerItem->setText(1, tr("Value"));
-    headerItem->setText(2, tr("Type"));
-    headerItem->setText(3, tr("Full Path"));
+	headerItem->setText(C_NODE, tr("Property"));
+	headerItem->setText(C_VALUE, tr("Value"));
+	headerItem->setText(C_TYPE, tr("Type"));
+	headerItem->setText(C_PATH, tr("Full Path"));
     treeWidget->setColumnWidth(0, 200);
 
     connect(treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem*)),
              this, SLOT(on_item_expanded(QTreeWidgetItem*))
     );
-    connect(treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)),
+	connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
             this, SLOT(on_item_clicked(QTreeWidgetItem*,int))
     );
+	connect(treeWidget, SIGNAL(itemSelectionChanged()),
+			this, SLOT(on_item_selection_changed())
+	);
+
+
+
     //propsRootItem = new QTreeWidgetItem();
     ///propsRootItem->setText(0, "/");
     //treeWidget->addTopLevelItem(it);
@@ -158,15 +176,15 @@ void PropsTreeWidget::on_props_node(QString parent_path, QString node_name,
        return; //* node exists so no need to add
     }
    //QTreeWidgetItem *parent_item;
+
+	//*** TODO refactor this lot to avoif duplicate code, need sfferent parent for node
     //** Otherwise find the parent and add child
     if(parent_path == "/"){
         QTreeWidgetItem *newTopItem = new QTreeWidgetItem();
-        newTopItem->setText(3, end_path );
-        newTopItem->setText(0, node_name);
-        newTopItem->setText(1, node_value);
-        newTopItem->setText(2, node_type);
-       // newTopItem->setFirstColumnSpanned(true);
-        //newTopItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+		newTopItem->setText(C_NODE, node_name);
+		newTopItem->setText(C_VALUE, node_value);
+		newTopItem->setText(C_TYPE, node_type);
+		newTopItem->setText(C_PATH, end_path );
         newTopItem->setIcon(0, QIcon(":/icons/node_val"));
        treeWidget->addTopLevelItem(newTopItem);
     }else{
@@ -174,22 +192,18 @@ void PropsTreeWidget::on_props_node(QString parent_path, QString node_name,
                                                            Qt::MatchExactly | Qt::MatchRecursive,
                                                             3);
         QTreeWidgetItem *newNodeItem = new QTreeWidgetItem(items[0]);
-        newNodeItem->setText(3, end_path );
-        newNodeItem->setText(0, node_name);
-        newNodeItem->setText(1, node_value);
-        newNodeItem->setText(2, node_type);
-       // newNodeItem->setFirstColumnSpanned(true);
-        //newNodeItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
+
+		newNodeItem->setText(C_NODE, node_name);
+		newNodeItem->setText(C_VALUE, node_value);
+		newNodeItem->setText(C_TYPE, node_type);
+		newNodeItem->setText(C_PATH, end_path );
         newNodeItem->setIcon(0, QIcon(":/icons/node_val"));
-        //treeWidget->addTopLevelItem(newTopItem);
-       // qDebug( ) << "parent_path=" << "found" << "=" << items.size();
     }
 }
 //*************************************************************************
 //** On props Path
 //*************************************************************************
 void PropsTreeWidget::on_props_path(QString parent_path, QString path){
-    //sqDebug() << "on_props_path >=" << parent_path << "=" << path;
 
     //** Find if actual path end node is already there
     QString end_path = QString(parent_path).append(path);
@@ -199,36 +213,26 @@ void PropsTreeWidget::on_props_path(QString parent_path, QString path){
     if( end_items.size() > 0){
        return; //* node exists so no need to add
     }
-   //QTreeWidgetItem *parent_item;
+
+
     //** Otherwise find the parent and add child
     if(parent_path == "/"){
         QTreeWidgetItem *newTopItem = new QTreeWidgetItem();
-        newTopItem->setText(3, end_path );
-        newTopItem->setText(0, path.left(path.length() - 1));
-        //newTopItem->setText(1, tr("Refresh"));
-       // QFont font = newTopItem->font(1);
-        //font.setPointSize(7);
-        //newTopItem->setFont(1,font);
-        //newTopItem->setFirstColumnSpanned(true);
+		newTopItem->setText(C_NODE, path.left(path.length() - 1));
         newTopItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-        newTopItem->setIcon(0, QIcon(":/icons/folder_closed"));
+		newTopItem->setIcon(C_NODE, QIcon(":/icons/folder_closed"));
+		newTopItem->setText(C_PATH, end_path );
         treeWidget->addTopLevelItem(newTopItem);
     }else{
         QList<QTreeWidgetItem *> items = treeWidget->findItems(parent_path,
                                                            Qt::MatchExactly | Qt::MatchRecursive,
                                                             3);
         QTreeWidgetItem *newNodeItem = new QTreeWidgetItem(items[0]);
-        newNodeItem->setText(3, end_path );
-        newNodeItem->setText(0, path.left(path.length() - 1));
-        //newNodeItem->setFirstColumnSpanned(true);
+		newNodeItem->setText(C_NODE, path.left(path.length() - 1));
         newNodeItem->setChildIndicatorPolicy(QTreeWidgetItem::ShowIndicator);
-        newNodeItem->setIcon(0, QIcon(":/icons/folder_closed"));
-        //treeWidget->addTopLevelItem(newTopItem);
-       // qDebug( ) << "parent_path=" << "found" << "=" << items.size();
+		newNodeItem->setIcon(C_NODE, QIcon(":/icons/folder_closed"));
+		newNodeItem->setText(C_PATH, end_path );
     }
-    //qDebug( ) << "parent_path=" << parent_path; // << "=" << items.size();
-    // qDebug() << "on_props_path <=" << parent_path << "=" << path;
-     //qDebug("---");
 }
 
 void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
@@ -246,8 +250,10 @@ void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
     mainObject->telnet->get_node(item->text(3));
 }
 
-void PropsTreeWidget::on_item_clicked(QTreeWidgetItem *item, int col){
+//*** TODO ???
+void PropsTreeWidget::on_item_double_clicked(QTreeWidgetItem *item, int col){
      qDebug("ON on_item_clicked");
+	 Q_UNUSED(col);
     // qDebug() << item->text(3);
      //item->setIcon(0, QIcon(":/icons/folder_expanded"));
     // item->setText(1, tr("Refresh"));
@@ -257,6 +263,19 @@ void PropsTreeWidget::on_item_clicked(QTreeWidgetItem *item, int col){
         mainObject->telnet->get_node(item->text(3));
     }
 }
+
+
+void PropsTreeWidget::on_item_selection_changed(){
+	QTreeWidgetItem *item = treeWidget->currentItem();
+	if(!item){
+		return;
+	}
+	//** Using the Type column to determine if its a value as there is always a type
+	actionEditProperty->setDisabled(item->text(C_TYPE).length() == 0);
+}
+
+
+
 
 //*************************************************************
 //* checkbox to start/stop timer in toolbar check button
@@ -271,4 +290,18 @@ void PropsTreeWidget::on_auto_refresh_enabled(){
 void PropsTreeWidget::on_set_timer_rate(){
     int rate = comboAutoRefreshRate->itemText( comboAutoRefreshRate->currentIndex() ).toInt();
     timer->setInterval(rate * 1000);
+}
+
+
+
+
+
+
+void PropsTreeWidget::on_edit_property(){
+	qDebug() << "YES";
+	PropEditWidget *propEditWidget = new PropEditWidget(mainObject, this);
+	propEditWidget->set_from_item(treeWidget->currentItem());
+	propEditWidget->show();
+
+
 }

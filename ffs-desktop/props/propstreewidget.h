@@ -1,7 +1,7 @@
 #ifndef PROPSTREEWIDGET_H
 #define PROPSTREEWIDGET_H
 
-#include "mainobject.h"
+
 
 #include <QtCore/QTimer>
 #include <QtCore/QStringList>
@@ -13,11 +13,24 @@
 
 #include <QtGui/QCheckBox>
 #include <QtGui/QComboBox>
+#include <QAction>
+
+#include "mainobject.h"
+
 
 class PropsTreeWidget : public QWidget
 {
 Q_OBJECT
 public:
+
+	enum COLS{
+		C_NODE = 0,
+		C_VALUE = 1,
+		C_TYPE = 2,
+		C_PATH = 3
+	};
+
+
     explicit PropsTreeWidget(MainObject *mOb, QWidget *parent = 0);
 
     MainObject *mainObject;
@@ -31,17 +44,23 @@ public:
     QComboBox *comboAutoRefreshRate;
 
     QStatusBar *statusBarTree;
+
+	QAction *actionEditProperty;
 signals:
 
 public slots:
     void load_nodes();
+
     void on_props_path(QString, QString);
     void on_props_node(QString, QString, QString, QString);
     void on_item_expanded(QTreeWidgetItem *);
-    void on_item_clicked(QTreeWidgetItem *, int );
+	void on_item_double_clicked(QTreeWidgetItem *, int );
+	void on_item_selection_changed();
 
     void on_auto_refresh_enabled();
     void on_set_timer_rate();
+
+	void on_edit_property();
 };
 
 #endif // PROPSTREEWIDGET_H

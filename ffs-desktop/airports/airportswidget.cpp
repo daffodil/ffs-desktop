@@ -1,12 +1,4 @@
 
-#include "xobjects/latlng.h"
-#include "xobjects/xcalc.h"
-
-#include "airportswidget.h"
-
-#include "airports/importairportswidget.h"
-#include "airports/aptdatparser.h"
-
 
 #include <QtCore/QDebug>
 #include <QtCore/QString>
@@ -37,6 +29,17 @@
 
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+
+
+#include "xobjects/latlng.h"
+#include "xobjects/xcalc.h"
+
+#include "airportswidget.h"
+
+#include "airports/importairportswidget.h"
+#include "airports/aptdatparser.h"
+
+
 
 AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
@@ -300,46 +303,6 @@ void AirportsWidget::load_airports(){
     statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
-//*****************************************
-//*** DEADLoad Airports
-/* Earlier idea that was an Emit signal, now in load-aiports()
-void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
-    //qDebug() <<  airport << name << tower <<  elevation;
-
-    //* insert new row into the model
-    int new_row_index = model->rowCount();
-    model->insertRow(new_row_index);
-
-    //* create and set items
-    QStandardItem *itemFav = new QStandardItem();
-    itemFav->setCheckable(true);
-    model->setItem(new_row_index, C_FAV, itemFav);
-
-    QStandardItem *itemAirportCode = new QStandardItem();
-    itemAirportCode->setText(airport);
-    QFont font = itemAirportCode->font();
-    font.setFamily("monospace");
-    itemAirportCode->setFont(font);
-    model->setItem(new_row_index, C_CODE, itemAirportCode);
-
-    QStandardItem *itemAirportName = new QStandardItem();
-    itemAirportName->setText(name);
-    model->setItem(new_row_index, C_NAME, itemAirportName);
-
-    QStandardItem *itemAirportTower = new QStandardItem();
-    itemAirportTower->setText(tower);
-    model->setItem(new_row_index, C_TOWER, itemAirportTower);
-
-    QStandardItem *itemAirportElevation = new QStandardItem();
-    itemAirportElevation->setText(elevation);
-    model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
-
-}
-*/
-//void AirportsWidget::update_airports_count(){
-   // QString status_lbl = QString("%1 aiports").arg( model->rowCount() );
-    //statusBarTree->showMessage(status_lbl);
-//}
 
 //**********************************************
 //*** Update Filter
