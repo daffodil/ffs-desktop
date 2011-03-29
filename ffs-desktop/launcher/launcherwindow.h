@@ -53,6 +53,7 @@ public:
 public slots:
 	void on_tab_changed(int);
 	void set_arg(QString action, QString arg, QString val);
+	void set_paths();
 };
 
 #endif // LAUNCHERWINDOW_H

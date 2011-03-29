@@ -58,7 +58,7 @@ public slots:
 
 	 void on_mp_server_checked(bool);
 	 void on_callsign_changed(QString);
-	 void on_tree_selection_changed();
+	 void set_mp_server();
 
 	 void set_fgcom();
 

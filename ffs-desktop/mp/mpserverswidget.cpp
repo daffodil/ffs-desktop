@@ -85,16 +85,18 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 
 	comboIpAddress = new QComboBox();
 	gridMP->addWidget(comboIpAddress, row, 1, 1, 2);
+	connect(comboIpAddress, SIGNAL(currentIndexChanged(int)), this, SLOT(set_mp_server()));
 
 	//** Remote Address Combo
 	row++;
 	gridMP->addWidget(new QLabel("Remote Address:"), row, 0, 1, 1, Qt::AlignRight);
 
 	comboRemoteAddress = new QComboBox();
-	gridMP->addWidget(comboRemoteAddress, row, 1, 1, 2);
 	comboRemoteAddress->addItem(tr("Use domain name"), "domain");
 	comboRemoteAddress->addItem(tr("Use IP address"), "ip");
 	comboRemoteAddress->setCurrentIndex(0);
+	gridMP->addWidget(comboRemoteAddress, row, 1, 1, 2);
+	connect(comboRemoteAddress, SIGNAL(currentIndexChanged(int)), this, SLOT(set_mp_server()));
 
 	//** Hz Out
 	row++;
@@ -103,6 +105,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	comboHzOut = new QComboBox();
 	gridMP->addWidget(comboHzOut, row, 1, 1, 1);
 	populate_combo_hz(comboHzOut);
+	connect(comboHzOut, SIGNAL(currentIndexChanged(int)), this, SLOT(set_mp_server()));
 
 
 	//** Hz IN
@@ -112,6 +115,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	comboHzIn = new QComboBox();
 	gridMP->addWidget(comboHzIn, row, 1, 1, 1);
 	populate_combo_hz(comboHzIn);
+	connect(comboHzIn, SIGNAL(currentIndexChanged(int)), this, SLOT(set_mp_server()));
 
 
 	gridMP->setColumnStretch(0,1);
@@ -141,8 +145,9 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	treeWidget->setColumnWidth(C_FLAG, 10);
 
 	treeWidget->setColumnHidden(C_DOMAIN, true);
+	treeWidget->setColumnHidden(C_SERVER_NO, true);
 
-	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_tree_selection_changed()));
+	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(set_mp_server()));
 
 	//************* Bottom Layout
 	QHBoxLayout *layoutBottomTreeBar = new QHBoxLayout();
@@ -431,13 +436,45 @@ void MpServersWidget::on_callsign_changed(QString txt){
 
 //=====================================
 // Mp Server Selected
-void MpServersWidget::on_tree_selection_changed(){
+void MpServersWidget::set_mp_server(){
+
+	//** Out
 	QTreeWidgetItem *item = treeWidget->currentItem();
+
+
+	if(!item or item->text(C_FLAG).length() == 0){
+		//* No Muliplayer server selected to no multiplay
+		emit set_arg("remove", "--multiplay=out", "");
+		emit set_arg("remove", "--multiplay=in", "");
+		return;
+	}
+
+	QString out(",");
+	out.append(comboHzOut->currentText());
+	out.append(",");
+	out.append( comboRemoteAddress->itemData(comboRemoteAddress->currentIndex()) == "domain"
+				? item->text(C_DOMAIN)
+				: item->text(C_IP_ADDRESS));
+	out.append(",").append("5000");
+	emit set_arg("set", "--multiplay=out", out);
+
+	QString in(",");
+	in.append(comboHzIn->currentText());
+	in.append(",");
+	in.append(comboIpAddress->currentText());
+	in.append(",").append("5000");
+	emit set_arg("set", "--multiplay=in", in);
+
+
+
+
+	/*
 	if(!item){
 		//#emit set_arg("set", arg_name, item->text());
 	}else{
 		emit set_arg("set", "--mpserver", item->text(C_DOMAIN));
 	}
+	*/
 }
 
 

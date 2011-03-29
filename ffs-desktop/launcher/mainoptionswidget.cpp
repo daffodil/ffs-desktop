@@ -178,9 +178,8 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
 
     QToolButton *butHttp = new QToolButton();
     layoutNetHttp->addWidget(butHttp);
-    butHttp->setText(tr("Open"));
     butHttp->setIcon(QIcon(":/icons/dns_lookup"));
-    butHttp->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	butHttp->setToolButtonStyle(Qt::ToolButtonIconOnly);
     butHttp->setPopupMode(QToolButton::InstantPopup);
 
     QMenu *menuNetHttp = new QMenu();
@@ -191,10 +190,6 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     actHttpBrowse->setText(tr("Open in external browser"));
     //connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
 
-    QAction *actHttpBrowseTab = new QAction(menuNetHttp);
-    menuNetHttp->addAction(actHttpBrowseTab);
-    actHttpBrowseTab->setText(tr("Open in new Tab"));
-    //connect(actExeAutodetect, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
 
 	//===========================================================
     //** Telnet
@@ -221,42 +216,29 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
     layoutNetTelnet->addWidget(txtTelnet);
 	connect(txtTelnet, SIGNAL(textChanged(QString)), this, SLOT(set_telnet()));
 
-    QToolButton *buttTelnet = new QToolButton();
-    layoutNetTelnet->addWidget(buttTelnet);
-    buttTelnet->setText(tr("Open"));
-    buttTelnet->setIcon(QIcon(":/icons/dns_lookup"));
-    buttTelnet->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    buttTelnet->setPopupMode(QToolButton::InstantPopup);
-
-    QMenu *menuNetTelnet = new QMenu();
-    buttTelnet->setMenu(menuNetTelnet);
-
-    QAction *actTelnetBrowse = new QAction(menuNetTelnet);
-    menuNetTelnet->addAction(actTelnetBrowse);
-    actTelnetBrowse->setText(tr("Open in eerminal"));
-
 
 
 	//===========================================================
-	//** Weather Fetch
-	grpWeatherFetch = new QGroupBox();
+	//** Weather
+	QGroupBox *grpWeatherFetch = new QGroupBox();
 	grpWeatherFetch->setTitle(tr("Telnet Properties Server"));
 	grpWeatherFetch->setCheckable(true);
 	grpWeatherFetch->setChecked(false);
 	grpWeatherFetch->setStyleSheet(styleX);
 	layoutNetContainer->addWidget(grpWeatherFetch);
-#connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
+	//#connect(grpTelnet, SIGNAL(clicked()), this, SLOT(set_telnet()));
 
-	QHBoxLayout *layoutNetTelnet = new QHBoxLayout();
-	grpTelnet->setLayout(layoutNetTelnet);
-	layoutNetTelnet->setSpacing(10);
+	QHBoxLayout *layoutEnviroment = new QHBoxLayout();
+	grpTelnet->setLayout(layoutEnviroment);
+	layoutEnviroment->setSpacing(10);
 	//int m = 5;
-	layoutNetTelnet->setContentsMargins(m,m,m,m);
+	layoutEnviroment->setContentsMargins(m,m,m,m);
 
+	/*
 	QLabel *lblTelnet = new QLabel();
 	lblTelnet->setText(tr("Set Port No:"));
-	layoutNetTelnet->addWidget( lblTelnet);
-
+	layoutEnviroment->addWidget( lblTelnet);
+	*/
 
 }
 

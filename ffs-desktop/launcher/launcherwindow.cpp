@@ -95,11 +95,15 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     mainVBox->addWidget(controlBarWidget, 1);
     //controlBarWidget->hide();
 
+	set_paths();
+
 }
 
 LauncherWindow::~LauncherWindow()
 {
 }
+
+
 
 //void LauncherWindow::closeEvent( event ){
 //   //     self.main.settings.save_window( "account_dialog", self )
@@ -164,4 +168,9 @@ void LauncherWindow::set_arg(QString action, QString arg, QString val){
 	}
 	qDebug() << "UNHANDLED";
 
+}
+
+void LauncherWindow::set_paths(){
+	set_arg("set", "fgfs", mainObject->settings->fgfs_path());
+	set_arg("set", "--fg-root=", mainObject->settings->fg_root());
 }
