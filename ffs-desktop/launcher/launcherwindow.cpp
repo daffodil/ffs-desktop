@@ -38,6 +38,10 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
 
 	//*** WIDGETS ==================================================
+	//* Aircraft Widget
+	aircraftWidget = new AircraftWidget();
+	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+
 
 	//* MpServers
 	mpServersWidget = new MpServersWidget();
@@ -48,9 +52,6 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	tabWidget->addTab(mainOptionsWidget, tr("Main Options"));
 
 
-	//* Aircraft Widget
-	aircraftWidget = new AircraftWidget();
-	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
 
 	//* Airports Widget
     airportsWidget = new AirportsWidget(mainObject);

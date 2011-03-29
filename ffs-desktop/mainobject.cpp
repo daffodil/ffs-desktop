@@ -125,6 +125,11 @@ MainObject::MainObject(QObject *parent) :
 
     popupMenu->addAction(actionCallsign); //QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
 
+
+	actionLauncher = popupMenu->addAction(QIcon(":/icons/launcher"), tr("Launcher"));
+	actionLauncher->setIconVisibleInMenu(true);
+	connect(actionLauncher, SIGNAL(triggered()), this, SLOT(on_launcher()) );
+
     actionMpMap = popupMenu->addAction(QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
 	actionMpMap->setIconVisibleInMenu(true);
     connect(actionMpMap, SIGNAL(triggered()), this, SLOT(on_mpmap()));

@@ -49,7 +49,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 
 
     //*******************************************************************************
-    //*** Executable Group
+	//*** FGFS Group
 	grpFgfs = new QGroupBox(tr("Path to FlightGear executable"));
 	mainLayout->addWidget(grpFgfs);
 	//grpFgfs->setFlat(false);
@@ -110,7 +110,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QAction *actFgRootCheck = new QAction(menuFgRoot);
     menuFgRoot->addAction(actFgRootCheck);
     actFgRootCheck->setText(tr("Check path"));
-    //connect(actFgRootCheck, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
+	//connect(actFgRootCheck, SIGNAL(triggered()), this, SLOT(on_exe_autodetect())); ???
 
 
 
@@ -194,7 +194,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 	load_settings();
 }
 
-//===========================================
+//=================================================================================
 //** Settings
 void SettingsWidget::load_settings(){
 	txtFgfs->setText(mainObject->settings->fgfs_path());
@@ -206,10 +206,12 @@ void SettingsWidget::save_settings(){
 	mainObject->settings->setValue("FG_ROOT", txtFgRoot->text());
 	mainObject->settings->sync();
 	// TODO maybe a transmiit ()??
+
 }
 
-//******************
-//* Disable Scenery Buttons
+
+//=================================================================================
+//* TODO Disable Scenery Buttons
 void SettingsWidget::disable_scenery_actions(bool state){
     buttSceneryDown->setDisabled(state);
     buttSceneryUp->setDisabled(state);
@@ -223,7 +225,7 @@ QString SettingsWidget::set_frame_style(QString color){
 
 }
 
-//******************
+//=================================================================================
 //* Autodetect fgfs - this wont work on windows proabably
 void SettingsWidget::on_fgfs_autodetect(){
 
@@ -255,8 +257,8 @@ void SettingsWidget::on_fgfs_autodetect(){
 
 
 
-//******************
-//* Selct FGFS bin Dialog
+//=================================================================================
+//* Selct FGFS  Dialog
 void SettingsWidget::on_select_fgfs_path(){
 	QString filePath = QFileDialog::getOpenFileName(this, tr("Select FGFS  binary"),
 														 txtFgfs->text());
@@ -266,8 +268,8 @@ void SettingsWidget::on_select_fgfs_path(){
 }
 
 
-//*******************************************************
-// Select FG ROot
+//=================================================================================
+// Select FG Root Dialog
 void SettingsWidget::on_select_fg_root_path(){
 	QString dirPath = QFileDialog::getExistingDirectory(this, tr("Select FG_ROOT directory"),
 														 txtFgRoot->text(), QFileDialog::ShowDirsOnly);
@@ -277,7 +279,8 @@ void SettingsWidget::on_select_fg_root_path(){
 }
 
 
-
+//=================================================================================
+// closeEvent
 void SettingsWidget::closeEvent(QCloseEvent *event){
 	Q_UNUSED(event);
 	mainObject->settings->saveWindow(this);

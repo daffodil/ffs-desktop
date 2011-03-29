@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     //app.setQuitOnLastWindowClosed(false);
-    app.setApplicationName("FFS-Desktop");
+	app.setApplicationName("FFS-Desktops");
 
 
 
