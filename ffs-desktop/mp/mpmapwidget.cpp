@@ -11,9 +11,13 @@
 #include <QtGui/QLabel>
 #include <QtGui/QComboBox>
 
-MpMapWidget::MpMapWidget(QWidget *parent) :
+MpMapWidget::MpMapWidget(MainObject *mOb, QWidget *parent) :
         QWidget(parent)
 {
+
+	mainObject = mOb;
+	setProperty("settings_namespace", QVariant("mp_map_window"));
+	mainObject->settings->restoreWindow(this);
 
     setWindowTitle(tr("Multi Player Map"));
     setWindowIcon(QIcon(":/icons/mpmap"));
@@ -45,7 +49,6 @@ MpMapWidget::MpMapWidget(QWidget *parent) :
     connect(browser, SIGNAL(loadStarted()), this, SLOT(start_progress()));
     connect(browser, SIGNAL(loadProgress(int)), this, SLOT(update_progress(int)));
     connect(browser, SIGNAL(loadFinished(bool)), this, SLOT(end_progress(bool)));
-    //#browser->setUrl(QUrl("http://mpmap01.flightgear.org"));
 
     //*** Status Bar
     statusBar = new QStatusBar(this);
@@ -58,7 +61,7 @@ MpMapWidget::MpMapWidget(QWidget *parent) :
     statusBar->addPermanentWidget(progressBar);
 
     //*** Initialise
-    //on_combo_server(0);
+    on_combo_server(0);
 }
 
 //** Progress Slots
@@ -86,8 +89,6 @@ void MpMapWidget::on_combo_server(int index){
 //** Overide the closeEvent
 void MpMapWidget::closeEvent(QCloseEvent *event)
  {
-     event->ignore();
-     //destroy(false, false);
-     //** I want to close the QWidget without destorying the application
+	mainObject->settings->saveWindow(this);
  }
 

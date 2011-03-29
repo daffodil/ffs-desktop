@@ -13,12 +13,15 @@
 
 #include <QWebView>
 
+#include "mainobject.h"
+
 class MpMapWidget : public QWidget
 {
 Q_OBJECT
 public:
-    explicit MpMapWidget(QWidget *parent = 0);
+	explicit MpMapWidget(MainObject *mOb, QWidget *parent = 0);
 
+	MainObject *mainObject;
 private:
     QWebView *browser;
     QProgressBar *progressBar;

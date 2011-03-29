@@ -126,6 +126,7 @@ MainObject::MainObject(QObject *parent) :
     popupMenu->addAction(actionCallsign); //QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
 
     actionMpMap = popupMenu->addAction(QIcon(":/icons/mpmap"), tr("Multiplayer Map"));
+	actionMpMap->setIconVisibleInMenu(true);
     connect(actionMpMap, SIGNAL(triggered()), this, SLOT(on_mpmap()));
 
     //**** Telnet Menu
@@ -137,6 +138,7 @@ MainObject::MainObject(QObject *parent) :
     actionTelnetMenu->addAction(actionTelnetConnect);
     actionTelnetConnect->setText(tr("Connect"));
     actionTelnetConnect->setIcon(QIcon(":/icons/connect"));
+	actionTelnetConnect->setIconVisibleInMenu(true);
     connect(actionTelnetConnect, SIGNAL(triggered()),
             this, SLOT(on_telnet_connect_action())
     );
@@ -145,6 +147,7 @@ MainObject::MainObject(QObject *parent) :
     actionTelnetMenu->addAction(actionTelnetDisconnect);
     actionTelnetDisconnect->setText(tr("Disconnect"));
     actionTelnetDisconnect->setIcon(QIcon(":/icons/disconnect"));
+	actionTelnetDisconnect->setIconVisibleInMenu(true);
     actionTelnetDisconnect->setDisabled(true);
     connect(actionTelnetDisconnect, SIGNAL(triggered()),
             this, SLOT(on_telnet_disconnect_action())
@@ -155,6 +158,7 @@ MainObject::MainObject(QObject *parent) :
     QAction *actionSettings= new QAction(this);
     actionSettings->setIcon(QIcon(":/icons/settings"));
     actionSettings->setText(tr("Settings"));
+	actionSettings->setIconVisibleInMenu(true);
     popupMenu->addAction(actionSettings);
     connect(actionSettings, SIGNAL(triggered()),
             this, SLOT(on_settings())
@@ -166,6 +170,7 @@ MainObject::MainObject(QObject *parent) :
 
     //*** Quit
     actionQuit = popupMenu->addAction(QIcon(":/icons/quit"), tr("Quit"));
+	actionQuit->setIconVisibleInMenu(true);
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(on_quit()));
 
     //** Setup
@@ -208,7 +213,7 @@ void MainObject::on_map(){
 //****************************************************************************
 //** MpMap
 void MainObject::on_mpmap(){
-    MpMapWidget *mpMapWidget = new MpMapWidget();
+	MpMapWidget *mpMapWidget = new MpMapWidget(this);
     mpMapWidget->show();
 }
 

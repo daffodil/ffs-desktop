@@ -32,6 +32,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 	mainObject->settings->restoreWindow(this);
 
 	setWindowTitle(tr("Settings"));
+	setWindowIcon(QIcon(":/icons/settings"));
 
     //* Main Layout
     QVBoxLayout *mainContainer = new QVBoxLayout();

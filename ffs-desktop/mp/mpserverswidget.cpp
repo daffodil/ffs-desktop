@@ -2,7 +2,6 @@
 
 #include <QtCore/QString>
 #include <QtCore/QChar>
-//#include <QtCore/QList>
 #include <QtCore/QMap>
 #include <QtCore/QMapIterator>
 
@@ -22,15 +21,13 @@
 
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QHeaderView>
-//#include <QtGui/>
-//#include <QtGui/>
-//#include <QtGui/>
-//#include <QtGui/>
 
 #include "mp/mpserverswidget.h"
 #include "mp/mptelnet.h"
 
-/* list the Mp Servers in a tree */
+/* list the Mp Servers which are gotten from a DNS lookup
+
+*/
 
 
 MpServersWidget::MpServersWidget(QWidget *parent) :
@@ -50,7 +47,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 
     QAction *refreshButton = new QAction(this);
     toolbar->addAction(refreshButton);
-    refreshButton->setText("DNS Lookup");
+	refreshButton->setText("Find Servers");
     refreshButton->setIcon(QIcon(":/icons/dns_lookup"));
     connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
 
@@ -71,6 +68,8 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     treeWidget->setColumnWidth(C_SERVER_NO, 40);
     treeWidget->setColumnWidth(C_SERVER_NAME, 110);
     treeWidget->setColumnWidth(C_DOMAIN, 100);
+
+	treeWidget->setColumnHidden(C_DOMAIN, true);
 
     //##
     //dns_lookup_all();
@@ -98,12 +97,13 @@ void MpServersWidget::dns_lookup(int server_int){
     QString server_no = QString("%1").arg(server_int, 2, 10, QChar('0'));
 
     //* Make the column Header
-    if(m_Ip2col.contains(server_no) == false){
+	/* if(m_Ip2col.contains(server_no) == false){
         QTreeWidgetItem *headerItem = treeWidget->headerItem();
         int newIdx = headerItem->columnCount();
         headerItem->setText(newIdx, server_no);
         m_Ip2col.insert(server_name, newIdx);
     }
+	*/
     //** Check the header column and insert if absent
     //QTreeWidgetItem *headerItem = treeWidget->headerItem();
     //qDebug("colsssssss--------------");

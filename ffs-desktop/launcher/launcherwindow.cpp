@@ -35,22 +35,9 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	//** Main Tab =========================
     tabWidget = new QTabWidget(this);
     mainVBox->addWidget(tabWidget,100);
+	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
 
-
-	//* Props Tree - experimental
-	propsTreeWidget = new PropsTreeWidget(mainObject);
-	tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
-
-
-
-
-	//* Map
-	mpMapWidget = new MpMapWidget(this);
-	tabWidget->addTab(mpMapWidget,QString("MP Map"));
-
-	//* Settings - dead for now TODO
-	//settingsWidget = new SettingsWidget(mainObject);
-	//tabWidget->addTab(settingsWidget, tr("Settings"));
+	//*** WIDGETS ==================================================
 
 	//* MpServers
 	mpServersWidget = new MpServersWidget();
@@ -92,4 +79,12 @@ LauncherWindow::~LauncherWindow()
 void LauncherWindow::closeEvent(QCloseEvent *event){
 	Q_UNUSED(event);
     mainObject->settings->saveWindow(this);
+}
+
+
+
+void LauncherWindow::on_tab_changed(int tab_index){
+	//TODO maybe we dont need this..
+	// pusedo code
+	// if isistance(widget, FooClass) : load()
 }
