@@ -202,11 +202,13 @@ void SettingsWidget::load_settings(){
 }
 
 void SettingsWidget::save_settings(){
+	// ## TODO ## validate paths
+
 	mainObject->settings->setValue("FGFS", txtFgfs->text());
 	mainObject->settings->setValue("FG_ROOT", txtFgRoot->text());
 	mainObject->settings->sync();
 	// TODO maybe a transmiit ()??
-
+	close();
 }
 
 

@@ -34,14 +34,14 @@
 #include <QtGui/QPixmap>
 
 
-
-
-
 #include "aircraft/aircraftwidget.h"
 
-AircraftWidget::AircraftWidget(QWidget *parent) :
+
+AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
+
+	mainObject = mOb;
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -110,7 +110,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     buttAll->setChecked(true);
 
 
-    //******************************************************
+	//===============================================================
     //** Models
     model = new QStandardItemModel(this);
     model->setColumnCount(2);
@@ -121,6 +121,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
 
+	//===============================================================
     //** Aircraft Tree
     treeView = new QTreeView(this);
     treeLayout->addWidget(treeView);
@@ -130,17 +131,18 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     treeView->setSortingEnabled(true);
     treeView->setSelectionMode(QAbstractItemView::SingleSelection);
     treeView->setSelectionBehavior(QAbstractItemView::SelectRows);
-    /*
+
     connect( treeView->selectionModel(),
              SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
-             SLOT( set_aircraft(const QItemSelection&, const QItemSelection&) )
+			 SLOT( on_tree_selection_changed(const QItemSelection&, const QItemSelection&) )
     );
-    */
+
+	/*
     connect(treeView,
             SIGNAL(clicked(QModelIndex)),
             this, SLOT(on_tree_clicked(QModelIndex))
     );
-
+	*/
 
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
@@ -194,8 +196,6 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QVBoxLayout *aeroPanelLayout = new QVBoxLayout();
     grpAeroPanel->setLayout(aeroPanelLayout);
 
-
-
     lblAircraftModel = new QLabel("B747-400ER");
     aeroPanelLayout->addWidget(lblAircraftModel);
 	lblAircraftModel->setStyleSheet("padding: 5px 5px 5px 5px;   color: #eeeeee; font-family: monospace; font-size: 20pt;");
@@ -215,7 +215,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     aeroImageLabel->setPixmap(aeroImage);
 
     //******************************************************8
-        //** Tab Widgets
+   //** Tab Widgets
     QTabWidget *aeroTabs = new QTabWidget();
     aeroLayout->addWidget(aeroTabs, 20);
 
@@ -227,6 +227,7 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     QCheckBox *chkEnableAutoCoordination = new QCheckBox();
     aeroControlLayout->addWidget(chkEnableAutoCoordination);
     chkEnableAutoCoordination->setText(tr("Enable Auto-Cordination"));
+	connect(chkEnableAutoCoordination, SIGNAL(clicked(bool)), this, SLOT(on_auto_coordination(bool)));
     //aeroLayout->addStretch(10);
 
     QToolBar *aeroToolbar = new QToolBar();
@@ -244,17 +245,19 @@ AircraftWidget::AircraftWidget(QWidget *parent) :
     load_aircraft();
 }
 
-//** Load
+//========================================================
+//** Load Aircraft
 void AircraftWidget::load_aircraft(){
 
     qDebug("AircraftWidget > on_load() --------------------------------");
 
-    QString program = "fgfs";
-    QStringList arguments;
-    arguments << "--show-aircraft";
+	QString command = mainObject->settings->fgfs_path();
+	command.append(" --fg-root=").append(mainObject->settings->fg_root());
+	command.append(" --show-aircraft");
+	qDebug() << command;
 
     QProcess *process = new QProcess(this);
-    process->start(program, arguments);
+	process->start(command);
 
     QStringList::Iterator it;
     QString line;
@@ -264,10 +267,12 @@ void AircraftWidget::load_aircraft(){
             process->waitForFinished();
             QByteArray result =  process->readAllStandardOutput();
             QByteArray errorResult = process->readAllStandardError();
-            //** The fgfs --show_mistake returns the "man" and not an error ;-(
+
+			//** The fgfs --show_mistake returns the "--help" and not an error ;-(
             //* so only way to detect is to get "-available aircraft" as text
 
-           // qDebug("OK");
+			qDebug() << result;
+
             QStringList lines = QString(result).split("\n");
 
             for ( it = lines.begin() ; it != lines.end() ; it++ ){
@@ -293,28 +298,16 @@ void AircraftWidget::load_aircraft(){
                     QStandardItem *descriptionItem = new QStandardItem();
                     descriptionItem->setText( line.section( ' ', 1 )); //* after first space
                     model->setItem(row_count, 1, descriptionItem);
-
-                   // qDebug( "line");
                     row_count++;
                 }
             }
-            //#print type(error), error
-            //qDebug(errorResult);
-            //if(errorResult){
-             //   qDebug("Error");
 
-            //}
-            //if error:
-              //      self.emit(QtCore.SIGNAL("compile_log"), "error", QtCore.QString(error))
-            //else:
-               //     self.emit(QtCore.SIGNAL("compile_log"), "result", QtCore.QString(result))
-            //    }
     }
 }
 
 
 //****************************
-
+/*
 void AircraftWidget::on_tree_clicked(QModelIndex mIdx){
     qDebug("on_tree_clicked");
     //QString
@@ -322,12 +315,14 @@ void AircraftWidget::on_tree_clicked(QModelIndex mIdx){
 
     //qDebug()  << item->text();
 }
-
-
+*/
+/*
 void AircraftWidget::show_aircraft_details(const QModelIndex &current, const QModelIndex &previous){
     qDebug("set_aircraft()");
     //QString
 }
+*/
+
 void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
     qDebug("on_view_button_clicked()");
     //qDebug() << button->text();
@@ -336,3 +331,19 @@ void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
     //QString
 }
 
+
+void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
+	QString arg_name("--aircraft=");
+	if(selected.count() == 0){
+		emit set_arg("remove", arg_name, "");
+	}else{
+		QModelIndex proxyIndex =  selected.indexes().first();
+		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
+		qDebug() << item->text();
+		emit set_arg("set", arg_name, item->text());
+	}
+}
+
+void AircraftWidget::on_auto_coordination(bool state){
+	emit set_arg(state ? "set" : "remove", "--enable-auto-coordination", "");
+}

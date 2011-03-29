@@ -252,10 +252,10 @@ void AptDatParser::import_aptdat(QString tarball_fullpath, QWidget *parentWidget
                         success = queryRunwayInsert.exec();
                         if(!success){
                             qDebug() << queryRunwayInsert.lastError();
-                            qDebug() << "DIE queryRwyIns";
+						   // qDebug() << "DIE queryRwyIns";
                             return;
                         }else{
-                            qDebug() << "runway ok";
+						   //qDebug() << "runway ok";
                         }
                       }
                 }else{

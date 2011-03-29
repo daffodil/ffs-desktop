@@ -48,6 +48,7 @@ public:
     void show_progress(bool state);
 
 signals:
+	void set_arg(QString action, QString arg, QString value);
 
 public slots:
     void load_airports();

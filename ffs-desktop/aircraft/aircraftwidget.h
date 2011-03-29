@@ -11,11 +11,15 @@
 
 #include <QtGui/QStatusBar>
 
+#include "mainobject.h"
+
 class AircraftWidget : public QWidget
 {
 Q_OBJECT
 public:
-    explicit AircraftWidget(QWidget *parent = 0);
+	explicit AircraftWidget(MainObject *mOb, QWidget *parent = 0);
+
+	MainObject *mainObject;
 
 private:
     QStandardItemModel *model;
@@ -29,11 +33,14 @@ private:
     QStatusBar *statusBarAero;
 
 signals:
+	void set_arg(QString action, QString arg, QString value);
 
 public slots:
     void load_aircraft();
-    void show_aircraft_details(const QModelIndex &current, const QModelIndex &previous);
-    void on_tree_clicked(QModelIndex);
+
+	void on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected);
+	void on_auto_coordination(bool state);
+
     void on_view_button_clicked(QAbstractButton *button);
 };
 

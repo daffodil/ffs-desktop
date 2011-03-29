@@ -1,4 +1,6 @@
+
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QHeaderView>
 
 #include "launcher/launcherwindow.h"
 
@@ -11,7 +13,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	mainObject->settings->restoreWindow(this);
 
 	setWindowTitle("fgX Launcher");
-    setWindowIcon(QIcon(":/icons/favicon"));
+	setWindowIcon(QIcon(":/icons/launcher"));
     //setWindowFlags(  Qt::WindowStaysOnTopHint);
 
 
@@ -32,20 +34,26 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	headerLabel->setStyleSheet(header_style);
     mainVBox->addWidget(headerLabel, 1);
 
+	splitter = new QSplitter();
+	mainVBox->addWidget(splitter);
+
 	//** Main Tab =========================
     tabWidget = new QTabWidget(this);
-    mainVBox->addWidget(tabWidget,100);
+	splitter->addWidget(tabWidget);
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
 
 	//*** WIDGETS ==================================================
 	//* Aircraft Widget
-	aircraftWidget = new AircraftWidget();
+	aircraftWidget = new AircraftWidget(mainObject);
 	tabWidget->addTab(aircraftWidget, tr("Aircraft"));
+	connect(aircraftWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
+
 
 
 	//* MpServers
 	mpServersWidget = new MpServersWidget();
 	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
+	connect(mpServersWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 
 	//* Options
 	mainOptionsWidget = new MainOptionsWidget(mainObject);
@@ -56,7 +64,22 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	//* Airports Widget
     airportsWidget = new AirportsWidget(mainObject);
     tabWidget->addTab(airportsWidget, tr("Airports"));
+	connect(airportsWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 
+	//=============================================================
+	// ## Tree
+	tree = new QTreeWidget();
+	tree->setRootIsDecorated(false);
+	tree->setMinimumWidth(300);
+	tree->headerItem()->setText(0, "Option");
+	tree->headerItem()->setText(1, "Value");
+	tree->header()->setStretchLastSection(true);
+	tree->setColumnWidth(C_ARG, 200);
+	splitter->addWidget(tree);
+	setup_tree();
+
+	splitter->setStretchFactor(0,3);
+	splitter->setStretchFactor(1,1);
 
 
     //*********************************************************
@@ -88,4 +111,50 @@ void LauncherWindow::on_tab_changed(int tab_index){
 	//TODO maybe we dont need this..
 	// pusedo code
 	// if isistance(widget, FooClass) : load()
+}
+
+
+void LauncherWindow::setup_tree(){
+	return;
+	QStringList args;
+	args << "fgfs" << "--fg-root" << "--aircraft" << "--airport" << "--runway" << "--callsign";
+
+	for (int i = 0; i < args.size(); ++i){
+		QTreeWidgetItem *item = new QTreeWidgetItem();
+		item->setText(0, args.at(i));
+		tree->addTopLevelItem(item);
+	}
+}
+
+
+void LauncherWindow::set_arg(QString action, QString arg, QString val){
+	qDebug() << "set_arg" << action << " " << arg << " " << val;
+	QList<QTreeWidgetItem *> items = tree->findItems(arg, Qt::MatchExactly, 0);
+
+	if(action == "remove"){
+		if(items.count() == 0){ //* item not there
+			return;
+		}
+		QTreeWidgetItem *removeItem = items.first();
+		tree->invisibleRootItem()->removeChild(removeItem);
+		return;
+	}
+
+	if(action == "set"){
+		if(items.count() == 0){
+			QTreeWidgetItem *newItem = new QTreeWidgetItem(); //* add Item if not exist
+			newItem->setText(C_ARG, arg);
+			newItem->setTextAlignment(C_ARG, Qt::AlignRight);
+			newItem->setText(C_VAL, val);
+			tree->addTopLevelItem(newItem);
+			return;
+		}else{
+			QTreeWidgetItem *item =  items.first();  //* update existing
+			item->setText(C_VAL, val);
+			return;
+		}
+
+	}
+	qDebug() << "UNHANDLED";
+
 }

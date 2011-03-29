@@ -223,10 +223,15 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
     headerItem->setText(3, tr("Lat"));
     headerItem->setText(4, tr("Lng"));
     headerItem->setText(5, tr("Alignment"));
-    //** Map
-    map = new GoogleMapWidget(this);
-    airportLayout->addWidget(map, 10);
-
+    connect( treeView->selectionModel(),
+             SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
+			 SLOT( on_aiport_selection_changed(const QItemSelection&, const QItemSelection&) )
+    );
+	
+	//** Map TODO  - map of airport
+	/* map = new GoogleMapWidget(this);
+	airportLayout->addWidget(map, 10);
+	*/
     splitter->setStretchFactor(0, 3);
     splitter->setStretchFactor(1, 1);
     load_airports();
@@ -348,11 +353,13 @@ void AirportsWidget::on_aiport_selection_changed(const QItemSelection&, const QI
 
     QModelIndex proxyIndex =  treeView->selectionModel()->selectedRows(C_CODE).first();
     if(!proxyIndex.isValid()){
-        return;
+		emit set_arg("remove", "--airport=", "");
+		return;
     }
    // qDebug() << "proxy=" << proxyIndex;
     QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
+	emit set_arg("set", "--airport=", airport_code);
 
 
     QSqlQuery query;
