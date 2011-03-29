@@ -17,9 +17,9 @@ Q_OBJECT
 public:
 	enum COLS{
 		C_PATH = 0,
-		C_AERO = 1,
+		C_MODEL = 1,
 		C_DESCRIPTION = 2,
-		C_MODEL = 3
+		C_XML = 3
 	};
 
 	explicit AircraftWidget(MainObject *mOb, QWidget *parent = 0);

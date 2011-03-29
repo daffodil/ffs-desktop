@@ -131,8 +131,8 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 	treeWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
 	treeWidget->headerItem()->setText(C_PATH, "Dir");
-	treeWidget->headerItem()->setText(C_MODEL, "xml");
-	treeWidget->headerItem()->setText(C_AERO, "Model");
+	treeWidget->headerItem()->setText(C_XML, "xml");
+	treeWidget->headerItem()->setText(C_MODEL, "Model");
 	treeWidget->headerItem()->setText(C_DESCRIPTION, "Description");
 
 	connect( treeWidget,
@@ -267,7 +267,7 @@ void AircraftWidget::on_tree_selection_changed(){
 	aeroImageLabel->setPixmap(aeroImage);
 
 	/*
-	QFile set_xml_file( mainObject->settings->aircraft_path(item->text(C_PATH)).append(item->text)
+	QFile xmlFile(  mainObject->settings->aircraft_path(item->text(C_PATH)).append(item->text(C_XML));
 
 	if (rwyfile.open(QIODevice::ReadOnly)) {
 
@@ -412,13 +412,13 @@ void AircraftWidget::load_aircraft_xml_set(){
 				//** Add Models
 				for (int i = 0; i < list_xml.size(); ++i){
 					QTreeWidgetItem *item = new QTreeWidgetItem(nodeItem);
-					item->setText( C_PATH, *entry);
+					//item->setText( C_PATH, *entry);
 					QString xmlfile( list_xml.at(i) );
 					//QString aero(modelxml.chop(8));
 
-					item->setText(C_MODEL, xmlfile);
+					item->setText(C_XML, xmlfile);
 					xmlfile.chop(8);
-					item->setText(C_AERO, xmlfile );
+					item->setText(C_MODEL, xmlfile );
 
 				}
 
