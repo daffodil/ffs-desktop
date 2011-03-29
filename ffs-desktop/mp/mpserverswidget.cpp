@@ -1,5 +1,4 @@
-#include "mp/mpserverswidget.h"
-#include "mp/mptelnet.h"
+
 
 #include <QtCore/QString>
 #include <QtCore/QChar>
@@ -27,6 +26,11 @@
 //#include <QtGui/>
 //#include <QtGui/>
 //#include <QtGui/>
+
+#include "mp/mpserverswidget.h"
+#include "mp/mptelnet.h"
+
+/* list the Mp Servers in a tree */
 
 
 MpServersWidget::MpServersWidget(QWidget *parent) :
@@ -78,7 +82,7 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 //** Dns Lookup All
 void MpServersWidget::dns_lookup_all(){
     //TODO make the max a setting
-    for(int i=1; i < 5; i++){
+	for(int i=1; i < 25; i++){ //*TODO - make this a setting for MAX top servers maybe remote ?
         dns_lookup(i);
     }
 }

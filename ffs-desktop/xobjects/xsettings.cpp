@@ -11,15 +11,25 @@
 
 /* Extends the QSettings with fg_root(), savewindow and other util functions
    callable as mainObject->settings->foo()
-   */
+*/
 
 XSettings::XSettings(QObject *parent) :
     QSettings(parent)
 {
 }
 
-//*********************************************
+//===========================================================================
 //** fg_root()
+//===========================================================================
+QString XSettings::fgfs_path(){
+	// TODO = return the default windows path
+	return this->value("FGFS", "fgfs").toString();
+}
+
+
+//===========================================================================
+//** fg_root()
+//===========================================================================
 QString XSettings::fg_root(){
     return this->value("FG_ROOT", "/usr/share/games/FlightGear/").toString();
 }
@@ -29,8 +39,9 @@ QString XSettings::fg_root(QString append_path){
 }
 
 
-//*********************************************
+//===========================================================================
 //** temp
+//===========================================================================
 QString XSettings::temp(){
     //** Check the temp dubdirctory exists or create it
     if( _temp.length() == 0 ){
@@ -48,8 +59,9 @@ QString XSettings::temp(QString append_path){
 }
 
 
-//*********************************************
-//** Save/Resotre Window
+//===========================================================================
+//** Save/Restore Window
+//===========================================================================
 void XSettings::saveWindow(QWidget *widget){
 	setValue( _windowName(widget), QVariant(widget->saveGeometry()) );
 }
@@ -60,7 +72,6 @@ QString XSettings::_windowName(QWidget *widget){
 	QString ki = "window/";
 	ki.append(widget->property("settings_namespace").toString());
 	ki.append("/geometry");
-	qDebug() << ki;
 	return ki;
 }
 

@@ -5,6 +5,7 @@ XStatusBar::XStatusBar(QWidget *parent) :
 {
 }
 
+//** Show Error **
 void XStatusBar::showError(QString mesage, int timeout){
     setStyleSheet("color: red;");
     showMessage(mesage, timeout);
@@ -15,7 +16,7 @@ void XStatusBar::showError(QString mesage){
 }
 
 
-
+//** Show Message **
 void XStatusBar::showMessage(QString mesage, int timeout){
     setStyleSheet("color: black;");
     QStatusBar::showMessage(mesage, timeout);

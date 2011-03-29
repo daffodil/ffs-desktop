@@ -1,10 +1,6 @@
 #ifndef MAINOBJECT_H
 #define MAINOBJECT_H
 
-#include "props/telnetslave.h"
-
-#include "xobjects/xsettings.h"
-
 #include <QtCore/QObject>
 
 #include <QtSql/QSqlDatabase>
@@ -14,6 +10,9 @@
 #include <QtGui/QMenu>
 #include <QtGui/QLabel>
 #include <QtGui/QWidgetAction>
+
+#include "props/telnetslave.h"
+#include "xobjects/xsettings.h"
 
 class MainObject : public QObject
 {
@@ -42,6 +41,8 @@ public:
     QAction *actionQuit;
 
     bool db_sanity_check();
+
+	QString runningOS();
 
 signals:
 

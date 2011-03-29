@@ -21,11 +21,11 @@ public:
 
 private:
     MainObject *mainObject;
-    QGroupBox *grpExecutable;
+	QGroupBox *grpFgfs;
     QGroupBox *grpFgRoot;
     QGroupBox *grpFgScenery;
 
-    QLineEdit *txtExecutable;
+	QLineEdit *txtFgfs;
     QLineEdit *txtFgRoot;
     QTreeWidget *treeFgScenery;
     QStatusBar *statusBar;
@@ -37,11 +37,16 @@ private:
 
     QString set_frame_style(QString color);
     void disable_scenery_actions(bool);
+
 signals:
 
 public slots:
-    void on_exe_path();
-    void on_exe_autodetect();
+	void on_select_fgfs_path();
+	void on_fgfs_autodetect();
+	void on_select_fg_root_path();
+
+	void load_settings();
+	void save_settings();
 };
 
 #endif // SETTINGSWIDGET_H

@@ -19,6 +19,8 @@
 
 /* Presents the settings "dialog" for the fgfs paths
 
+   TODO - scenery Paths and check paths, change color if path not found
+
 */
 
 SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
@@ -27,11 +29,12 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 
     mainObject = mOb;
 
+	setWindowTitle(tr("Settings"));
+
     //* Main Layout
     QVBoxLayout *mainContainer = new QVBoxLayout();
     setLayout(mainContainer);
     mainContainer->setSpacing(0);
-    //int m = 0;
     mainContainer->setContentsMargins(0,0,0,0);
 
     //* Main Layout
@@ -44,16 +47,16 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 
     //*******************************************************************************
     //*** Executable Group
-    grpExecutable = new QGroupBox(tr("Path to FlightGear executable"));
-    mainLayout->addWidget(grpExecutable);
-    //grpExecutable->setFlat(false);
-    grpExecutable->setStyleSheet(set_frame_style(""));
+	grpFgfs = new QGroupBox(tr("Path to FlightGear executable"));
+	mainLayout->addWidget(grpFgfs);
+	//grpFgfs->setFlat(false);
+	grpFgfs->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutExe = new QHBoxLayout();
-    grpExecutable->setLayout(layoutExe);
+	grpFgfs->setLayout(layoutExe);
 
-    txtExecutable = new QLineEdit("");
-    layoutExe->addWidget(txtExecutable);
+	txtFgfs = new QLineEdit("");
+	layoutExe->addWidget(txtFgfs);
 
     QToolButton *buttExecutable = new QToolButton();
     layoutExe->addWidget(buttExecutable);
@@ -63,21 +66,23 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QMenu *menuExecutable = new QMenu();
     buttExecutable->setMenu(menuExecutable);
 
-    QAction *actExePath = new QAction(menuExecutable);
-    menuExecutable->addAction(actExePath);
-    actExePath->setText(tr("Select path.."));
-    connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
+	QAction *actionFgfsSelectPath = new QAction(menuExecutable);
+	menuExecutable->addAction(actionFgfsSelectPath);
+	actionFgfsSelectPath->setText(tr("Select path.."));
+	connect(actionFgfsSelectPath, SIGNAL(triggered()), this, SLOT(on_select_fgfs_path()));
 
-    QAction *actExeAutodetect = new QAction(menuExecutable);
-    menuExecutable->addAction(actExeAutodetect);
-    actExeAutodetect->setText(tr("Autodetect"));
-    connect(actExeAutodetect, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
+	QAction *actionFgfsAutoSelect = new QAction(menuExecutable);
+	menuExecutable->addAction(actionFgfsAutoSelect);
+	actionFgfsAutoSelect->setText(tr("Autodetect"));
+	connect(actionFgfsAutoSelect, SIGNAL(triggered()), this, SLOT(on_fgfs_autodetect()));
+
+
+
 
     //*******************************************************************************
     //*** FG_ROOT Group
     grpFgRoot = new QGroupBox(tr("FG_ROOT - Path to the data directory;"));
     mainLayout->addWidget(grpFgRoot);
-    //grpExecutable->setFlat(false);
     grpFgRoot->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutFgRoot = new QHBoxLayout();
@@ -97,7 +102,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QAction *actFgRootPath = new QAction(menuFgRoot);
     menuFgRoot->addAction(actFgRootPath);
     actFgRootPath->setText(tr("Select path.."));
-    //connect(actExePath, SIGNAL(triggered()), this, SLOT(on_exe_path()));
+	connect(actionFgfsSelectPath, SIGNAL(triggered()), this, SLOT(on_select_fg_root_path()));
 
     QAction *actFgRootCheck = new QAction(menuFgRoot);
     menuFgRoot->addAction(actFgRootCheck);
@@ -105,11 +110,14 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     //connect(actFgRootCheck, SIGNAL(triggered()), this, SLOT(on_exe_autodetect()));
 
 
+
+
+
     //*******************************************************************************
     //*** FG_Scenery
     grpFgScenery = new QGroupBox(tr("FG_Scenery - Paths to the scenery directories."));
     mainLayout->addWidget(grpFgScenery);
-    //grpExecutable->setFlat(false);
+	//grpFgfs->setFlat(false);
     grpFgScenery->setStyleSheet(set_frame_style(""));
 
     QHBoxLayout *layoutFgScenery = new QHBoxLayout();
@@ -170,7 +178,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     buttonBox->addWidget(buttSave);
     buttSave->setText("Save");
     buttSave->setIcon(QIcon(":/icons/save"));
-
+	connect(buttSave, SIGNAL(clicked()), this, SLOT(save_settings()));
 
 
     mainContainer->addStretch(20);
@@ -179,9 +187,23 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     statusBar = new QStatusBar();
     mainContainer->addWidget(statusBar);
     statusBar->showMessage("Idle");
+
+	load_settings();
 }
 
+//===========================================
+//** Settings
+void SettingsWidget::load_settings(){
+	txtFgfs->setText(mainObject->settings->fgfs_path());
+	txtFgRoot->setText(mainObject->settings->fg_root());
+}
 
+void SettingsWidget::save_settings(){
+	mainObject->settings->setValue("FGFS", txtFgfs->text());
+	mainObject->settings->setValue("FG_ROOT", txtFgRoot->text());
+	mainObject->settings->sync();
+	qDebug() << "SAVE";
+}
 
 //******************
 //* Disable Scenery Buttons
@@ -200,51 +222,50 @@ QString SettingsWidget::set_frame_style(QString color){
 
 
 //******************
-//* EXE Dialog
-void SettingsWidget::on_exe_path(){
-    qDebug("on_exe_path");
+//* Selct FGFS bin Dialog
+void SettingsWidget::on_select_fgfs_path(){
 
      QFileDialog dialog(this);
      dialog.setFileMode(QFileDialog::ExistingFile);
-     //dialog.setLabelText(tr("Select path to fgfs"));
      if(dialog.exec()){
          qDebug("YES");
      }
      // TODO
 }
 
-
-
 //******************
-//* Autodetect EXE
-void SettingsWidget::on_exe_autodetect(){
-    qDebug("on_exe_autodetect");
+//* Autodetect fgfs - this wont work on windows proabably
+void SettingsWidget::on_fgfs_autodetect(){
 
     QString program = "which fgfs";
 
     QProcess *process = new QProcess(this);
     process->start(program);
 
-    QStringList::Iterator it;
-    QString line;
-    int row_count=0;
-
     if(process->waitForStarted()){
             process->waitForFinished();
             QByteArray result =  process->readAllStandardOutput();
-            QByteArray errorResult = process->readAllStandardError();
+			//QByteArray errorResult = process->readAllStandardError();
             QString exe = QString(result).trimmed();
 
             if(exe.length() == 0){
                 statusBar->showMessage( tr("fgfs not found").append(" :-(") , 5000);
-                grpExecutable->setStyleSheet(set_frame_style("pink"));
+				grpFgfs->setStyleSheet(set_frame_style("pink"));
             }else{
                 statusBar->showMessage( tr("OK fgfs found ").append(" :-)") , 5000);
-                txtExecutable->setText(exe);
-                grpExecutable->setStyleSheet(set_frame_style("#77FF77"));
+				txtFgfs->setText(exe);
+				grpFgfs->setStyleSheet(set_frame_style("#77FF77"));
             }
             QStringList lines = QString(result).split("\n");
-        }else{
-            qDebug("OOPS");
-        }
+		}
+}
+
+//*******************************************************
+// Select FG ROot
+void SettingsWidget::on_select_fg_root_path(){
+	QFileDialog dialog(this);
+	dialog.setFileMode(QFileDialog::ExistingFile);
+	if(dialog.exec()){
+		qDebug("YES");
+	}
 }

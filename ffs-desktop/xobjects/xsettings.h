@@ -13,6 +13,7 @@ public:
     QString temp();
     QString temp(QString append_path);
 
+	QString fgfs_path();
     QString fg_root();
     QString fg_root(QString append_path);
 

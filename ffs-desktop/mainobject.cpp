@@ -170,8 +170,15 @@ MainObject::MainObject(QObject *parent) :
 
     //** Setup
     trayIcon->show();
-    //on_mpmap();
-    on_launcher();
+
+	//==========================================
+	//***** Initial check if FG_ROOT is set
+	qDebug() << settings->fg_root() << settings->fg_root().length();
+	if(settings->fg_root().length() == 0){
+
+	}
+	//on_mpmap();
+	on_launcher();
     //on_map();
 
 } /* constructor */
@@ -277,3 +284,19 @@ void MainObject::on_telnet_connected(bool state){
     actionTelnetDisconnect->setDisabled(!state);
 }
 
+//=====================================
+QString MainObject::runningOS() {
+	#ifdef Q_WS_X11
+	return QString("linux");
+	#endif
+
+	#ifdef Q_WS_MAC
+	return QString("mac");
+	#endif
+
+	#ifdef Q_WS_WIN
+	return QString("windows");
+	#endif
+
+	return QString("unknown");
+}
