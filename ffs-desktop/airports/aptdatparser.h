@@ -10,12 +10,12 @@ class AptDatParser : public QObject
 Q_OBJECT
 public:
 
-    explicit AptDatParser(QObject *parent = 0);
+	explicit AptDatParser(QObject *parent = 0);
 
     int estimated_lines;
     int line_counter;
     //void set_tarball(QString file_path);
-    void import_aptdat(QString tarball_fullpath);
+	void import_aptdat(QString tarball_fullpath, QWidget *parentWidget);
 
 signals:
 

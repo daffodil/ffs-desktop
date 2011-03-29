@@ -28,6 +28,8 @@ public:
     QProgressDialog *progress;
 
     XStatusBar *statusBar;
+
+	void closeEvent(QCloseEvent *event);
 signals:
 
 public slots:

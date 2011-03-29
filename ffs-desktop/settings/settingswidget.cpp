@@ -28,6 +28,8 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
 {
 
     mainObject = mOb;
+	setProperty("settings_namespace", QVariant("settings_window"));
+	mainObject->settings->restoreWindow(this);
 
 	setWindowTitle(tr("Settings"));
 
@@ -271,4 +273,11 @@ void SettingsWidget::on_select_fg_root_path(){
 	if(dirPath.length() > 0){
 		txtFgRoot->setText(dirPath);
 	}
+}
+
+
+
+void SettingsWidget::closeEvent(QCloseEvent *event){
+	Q_UNUSED(event);
+	mainObject->settings->saveWindow(this);
 }

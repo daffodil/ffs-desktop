@@ -87,6 +87,5 @@ LauncherWindow::~LauncherWindow()
 
 void LauncherWindow::closeEvent(QCloseEvent *event){
 	Q_UNUSED(event);
-    qDebug() << "close event";
     mainObject->settings->saveWindow(this);
 }

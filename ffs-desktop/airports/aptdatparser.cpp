@@ -16,8 +16,9 @@
 
   */
 
+#include <QtGui/QProgressDialog>
+#include <QtGui/QIcon>
 
-#include "aptdatparser.h"
 
 #include <QtCore/QDebug>
 
@@ -35,10 +36,10 @@
 #include <QtSql/QSqlError>
 
 
+#include "aptdatparser.h"
+
 //#include <zip.h>
 
-#include <QtGui/QProgressDialog>
-#include <QtGui/QIcon>
 
 
 /* From the guide >>
@@ -72,15 +73,10 @@ AptDatParser::AptDatParser(QObject *parent) :
 
 
 
-void AptDatParser::import_aptdat(QString tarball_fullpath){
+void AptDatParser::import_aptdat(QString tarball_fullpath, QWidget *parentWidget){
 
-    //QString filePath =
 
-   // return;
-
-    qDebug("AptDatParser::process_file()");
     QFile file(tarball_fullpath);
-    //QFile file("/home/ffs/ffs-desktop/apt.dat");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         qDebug("OOPS: file problem");
         return;
@@ -124,14 +120,14 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
     QString airport;
     bool is_icao;
 
-    QProgressDialog progress("Importing Airports", "Cancel", 0, estimated_lines);
+	QProgressDialog progress("Importing Airports", "Cancel", 0, estimated_lines, parentWidget);
     progress.setWindowTitle("Importing Airports");
     progress.setWindowModality(Qt::WindowModal);
     progress.setFixedWidth(400);
     progress.setWindowIcon(QIcon(":/icons/import"));
     progress.setMinimumDuration(0);
-    progress.show();
-    progress.repaint();
+	//progress.show();
+	//progress.repaint();
 
     //* ignore first line
     file.readLine();
@@ -241,7 +237,7 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
                               runway = runway.left(runway.length() - 1);
                           }
                         //qDebug() << line;
-                        qDebug() << "Runway= " << airport_code << runway << lat << lng << "\n\n";
+						//qDebug() << "Runway= " << airport_code << runway << lat << lng << "\n\n";
                         QSqlQuery queryRunwayInsert;
                         queryRunwayInsert.prepare("insert into runways(  airport, runway, width, length, lat, lng, heading)values(?, ?, ?, ?, ?, ?, ?)");
                        // qDebug() << airport << " - " << runways << " - " <<  parts[1] << " - " << parts[9] << " - " << parts[10] << " - " << parts[18] << " - " << parts[19];
@@ -287,17 +283,19 @@ void AptDatParser::import_aptdat(QString tarball_fullpath){
             return;
         }
         line_counter++;
-        if(line_counter % 10000 == 0){
+		if(line_counter % 100 == 0){
             qDebug() <<  line_counter;
             progress.setValue(line_counter);
-            QString prog_text = QString("%1 of %2").arg(line_counter).arg(estimated_lines);
+			QString prog_text = QString("%1 of approx %2").arg(line_counter).arg(estimated_lines);
             progress.setLabelText(prog_text);
             progress.repaint();
         }
+		/*
         if(line_counter == 20000){
-            qDebug() << "had enouth";
+			qDebug() << "had enough";
             return;
         }
+		*/
 
         } /* end while readline */
 

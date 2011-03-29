@@ -38,6 +38,8 @@ private:
     QString set_frame_style(QString color);
     void disable_scenery_actions(bool);
 
+	void closeEvent(QCloseEvent *event);
+
 signals:
 
 public slots:

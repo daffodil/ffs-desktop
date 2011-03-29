@@ -25,6 +25,8 @@ ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) 
 {
 
     mainObject = mainOb;
+	setProperty("settings_namespace", QVariant("import_airports_window"));
+	mainObject->settings->restoreWindow(this);
 
     setWindowTitle("Import Airports");
     setWindowIcon(QIcon(":/icons/import"));
@@ -112,7 +114,7 @@ void ImportAirportsWidget::update_progress(int value){
 //** Import Clicked
 void ImportAirportsWidget::on_import_button_clicked(){
 
-    QString tarball_path = mainObject->settings->fg_root("Airports/apt.dat.gz");
+	QString tarball_path = mainObject->settings->fg_root("/Airports/apt.dat.gz");
     qDebug() << tarball_path;
     QFileInfo fileInfo = QFileInfo(tarball_path);
     if(!fileInfo.exists()){
@@ -141,8 +143,15 @@ void ImportAirportsWidget::on_import_button_clicked(){
     statusBar->showMessage( QString("Importing '%1'").arg(temp_file) );
 
     AptDatParser *aptDatParser = new AptDatParser(this);
-    aptDatParser->import_aptdat(temp_file);
+	aptDatParser->import_aptdat(temp_file, this);
 
     //this->accept();
 }
 
+
+
+
+void ImportAirportsWidget::closeEvent(QCloseEvent *event){
+	Q_UNUSED(event);
+	mainObject->settings->saveWindow(this);
+}
