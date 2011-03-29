@@ -1,10 +1,19 @@
-#include "controlbarwidget.h"
+
 
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QGroupBox>
 #include <QtGui/QLabel>
+
+#include "controlbarwidget.h"
+
+/* the control bar widget is the stop across the bottom with
+   * telent connection
+   * launch controls
+   ** the idea is to be able to start, pause and abort the sim
+   ** maybe also replay
+*/
 
 
 ControlBarWidget::ControlBarWidget(MainObject *mOb, QWidget *parent) :

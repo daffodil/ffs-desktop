@@ -1,5 +1,3 @@
-#include "importairportswidget.h"
-#include "aptdatparser.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QProcess>
@@ -14,6 +12,13 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QProgressDialog>
 
+
+#include "importairportswidget.h"
+#include "aptdatparser.h"
+
+/* Shows the import airports widget
+
+   */
 
 ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) :
     QDialog(parent)
@@ -118,7 +123,7 @@ void ImportAirportsWidget::on_import_button_clicked(){
 
     statusBar->showMessage(QString("Unpacking tarball"));
     //** Unzip to temp file
-    //TODO but does it work on WindoZE ??
+	//TODO but does it work on WindoZE ?? need embedded zlib or is it in Qt ??
     QString command = QString("zcat %1")
                       .arg(tarball_path);
 

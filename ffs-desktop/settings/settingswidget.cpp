@@ -1,4 +1,3 @@
-#include "settingswidget.h"
 
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -16,6 +15,11 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QTreeWidget>
 
+#include "settingswidget.h"
+
+/* Presents the settings "dialog" for the fgfs paths
+
+*/
 
 SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)

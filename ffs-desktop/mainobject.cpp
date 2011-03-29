@@ -1,18 +1,4 @@
 
-#include "mainobject.h"
-#include "launcher/launcherwindow.h"
-
-#include "mp/mpmapwidget.h"
-#include "map/googlemapwidget.h"
-
-#include "settings/settingswidget.h"
-
-//?? HELP
-// need if test eg in pythonI got
-// if fileExists LOCAL.txt then DEV=true
-//if LOCAL
-//#include <QtGui/
-
 #include <QCoreApplication>
 #include <QtGui/QDesktopServices>
 
@@ -23,6 +9,15 @@
 
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+
+#include "mainobject.h"
+#include "launcher/launcherwindow.h"
+
+#include "mp/mpmapwidget.h"
+#include "map/googlemapwidget.h"
+
+#include "settings/settingswidget.h"
+
 
 /*
   The Idea - me not a c++ coder but here are some thoughts.. and my problems
@@ -60,12 +55,12 @@
 
 
 /***
-  The idea of the main object is that this is the main "Object passed around"
+  The idea of the "mainObject" is that this is the main "Object passed around almost everwhere and called from everywhere"
   ** telnet connection
   ** signaller between widgets
   ** settings
   ** database connection
-  ** Exists in takbar
+  ** Exists in taskbar
   */
 
 MainObject::MainObject(QObject *parent) :
@@ -80,7 +75,7 @@ MainObject::MainObject(QObject *parent) :
     //** Telnet connection
     //TODO ? problem
     // I dont want to "create this object yet, as a socket might not be required
-    // Hoewever I need a trick to create this object as required
+	// Hoewever I need a trick to create this object as required?? dont know how to do that yet..
     //telnet = NULL;
     telnet = new TelnetSlave(this);
     // Somehow move this somewhere else and the first call is gonna be available based on a flag
@@ -90,7 +85,7 @@ MainObject::MainObject(QObject *parent) :
 
     //********************************************************************
     //** SQL database problem
-    // I dont want to connect et until required
+	// I dont want to connect until required
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //db = QSqlDatabase::addDatabase("QMYSQL");
     //db.setHostName("localhost");
@@ -183,7 +178,7 @@ MainObject::MainObject(QObject *parent) :
 
 
 //*****************************************************************************
-//** Launcher
+//** Shows the Launcher window
 void MainObject::on_launcher(){
     LauncherWindow *launcherWindow = new LauncherWindow(this);
     launcherWindow->show();
@@ -212,7 +207,7 @@ void MainObject::on_mpmap(){
 
 
 //****************************************************************************
-//** Database Sanity Check
+//** Database Sanity Check - created database and tables if not exist
 bool MainObject::db_sanity_check(){
     QSqlQuery query;
     query.prepare("select version from db_version;");
@@ -281,7 +276,4 @@ void MainObject::on_telnet_connected(bool state){
     actionTelnetConnect->setDisabled(state);
     actionTelnetDisconnect->setDisabled(!state);
 }
-
-//****************************************************************************
-//** Alerts
 

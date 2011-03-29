@@ -10,7 +10,10 @@ int main(int argc, char *argv[])
 
 
 
-
+	/* The application starts as a QObject in the status bar. Ie NOT a widget.
+	   The reasoning for this is that all the windows could be destoyed ie little memory..
+	   and then pulled up/dismissed as required
+	 */
     MainObject m;
 
     return app.exec();

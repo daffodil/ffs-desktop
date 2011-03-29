@@ -1,10 +1,17 @@
-#include "xsettings.h"
+
 
 #include <QtCore/QDebug>
 #include <QtCore/QDir>
+#include <QtCore/QVariant>
 
 #include <QtGui/QDesktopServices>
 #include <QtGui/QWidget>
+
+#include "xsettings.h"
+
+/* Extends the QSettings with fg_root(), savewindow and other util functions
+   callable as mainObject->settings->foo()
+   */
 
 XSettings::XSettings(QObject *parent) :
     QSettings(parent)
@@ -42,9 +49,19 @@ QString XSettings::temp(QString append_path){
 
 
 //*********************************************
-//** Save Window
+//** Save/Resotre Window
 void XSettings::saveWindow(QWidget *widget){
-   // QString prop = widget->peoperty("launcha")
-    QString ki = widget->property("settings_namespace").toString();
-    qDebug() << "saveWindow" << ki;
+	setValue( _windowName(widget), QVariant(widget->saveGeometry()) );
 }
+void XSettings::restoreWindow(QWidget *widget){
+	widget->restoreGeometry( value(_windowName(widget)).toByteArray() );
+}
+QString XSettings::_windowName(QWidget *widget){
+	QString ki = "window/";
+	ki.append(widget->property("settings_namespace").toString());
+	ki.append("/geometry");
+	qDebug() << ki;
+	return ki;
+}
+
+

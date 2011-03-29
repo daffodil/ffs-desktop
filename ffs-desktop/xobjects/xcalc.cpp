@@ -1,11 +1,21 @@
-#include "xcalc.h"
-#include "math.h"
+
 #include <QtDebug>
 
 //** Calculate position from
 //*** Current position
 //*** Distance metres
 //*** Heading
+
+
+#include "xcalc.h"
+#include "math.h"
+
+/* Where is James Turner when u need him for a few minutes
+Some dodgy utility functions
+TODO document and check and why?
+
+*/
+
 
 LatLng XCalc::latlng_dist_heading(LatLng latlng, int distance, float heading) {
 
