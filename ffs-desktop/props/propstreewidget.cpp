@@ -106,6 +106,11 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 	treeToolbar->addAction(actionEditProperty);
 	connect(actionEditProperty, SIGNAL(triggered()), this, SLOT(on_edit_property()) );
 
+	QAction *actionTest = new QAction(this);
+	actionTest->setText("Test");
+	treeToolbar->addAction(actionTest);
+	connect(actionTest, SIGNAL(triggered()), this, SLOT(on_test_()) );
+
     //******************************************************
     //** Tree Widgets
     treeWidget = new QTreeWidget(this);
@@ -136,16 +141,6 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
 			this, SLOT(on_on_aiport_selection_changedselection_changed())
 	);
 
-
-
-    //propsRootItem = new QTreeWidgetItem();
-    ///propsRootItem->setText(0, "/");
-    //treeWidget->addTopLevelItem(it);
-    //treeWidget->setItemExpanded(propsRootItem, true);
-    //QTreeWidgetItem *it2 = new QTreeWidgetItem(it);
-   //it2->setText(0, "foo");
-   // it2->setText(0, "bar");
-    //treeWidget->addTopLevelItem(it);
 
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
@@ -296,6 +291,8 @@ void PropsTreeWidget::on_edit_property(){
 	PropEditWidget *propEditWidget = new PropEditWidget(mainObject);
 	propEditWidget->set_from_item(treeWidget->currentItem());
 	propEditWidget->exec();
+}
 
-
+void PropsTreeWidget::on_test_(){
+	mainObject->telnet->set_property("/autopilot/settings/target-speed-kt", "250");
 }

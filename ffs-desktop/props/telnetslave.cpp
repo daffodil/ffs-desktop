@@ -53,7 +53,14 @@ void TelnetSlave::fg_disconnect(){
 
 void TelnetSlave::set_property(QString path, QString value){
     //TODO
- }
+	qDebug() << path << "=" << value;
+	QByteArray command("set ");
+	command.append(path).append(" ").append(value).append("\r\n");
+	//QByteArray cmd(command);
+	qDebug() << command;
+	//*** TODO #### ARGH.. this crashes with ASSERT failure in QList<T>::operator[]: "index out of range", file /usr/include/qt4/QtCore/qlist.h, line 463
+	socket->write( command );
+}
 
 
 //*********************************************************************************************
@@ -65,7 +72,7 @@ void TelnetSlave::get_node(QString node_path){
         return;
     }
     current_node_path = node_path; // << store the "node_path" in the current_node_path vars
-    QByteArray command = QByteArray("ls ").append(node_path).append("\r\n");
+	QByteArray command = QByteArray("ls ").append(node_path).append("\r\n");
     //** Send request to telnet socket
     if(in_request){
         qDebug() << "IN_REQUEST";
@@ -85,7 +92,7 @@ void TelnetSlave::on_ready_read(){
     QString reply(socket->readAll());
     QStringList lines = reply.split("\r\n");
 
-   // qDebug() << reply;
+	//qDebug() << reply;
     for(int i = 0; i < lines.size(); ++i){
         QString line = lines.at(i).trimmed();
        // qDebug() << "line=" << line;

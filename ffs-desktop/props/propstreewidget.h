@@ -61,6 +61,7 @@ public slots:
     void on_set_timer_rate();
 
 	void on_edit_property();
+	void on_test_();
 };
 
 #endif // PROPSTREEWIDGET_H

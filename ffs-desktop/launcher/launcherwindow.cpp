@@ -36,6 +36,14 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     tabWidget = new QTabWidget(this);
     mainVBox->addWidget(tabWidget,100);
 
+
+	//* Props Tree - experimental
+	propsTreeWidget = new PropsTreeWidget(mainObject);
+	tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
+
+
+
+
 	//* Map
 	mpMapWidget = new MpMapWidget(this);
 	tabWidget->addTab(mpMapWidget,QString("MP Map"));
@@ -60,10 +68,6 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	//* Airports Widget
     airportsWidget = new AirportsWidget(mainObject);
     tabWidget->addTab(airportsWidget, tr("Airports"));
-
-	//* Props Tree - experimental
-	propsTreeWidget = new PropsTreeWidget(mainObject);
-	tabWidget->addTab(propsTreeWidget, tr("Property Tree"));
 
 
 
