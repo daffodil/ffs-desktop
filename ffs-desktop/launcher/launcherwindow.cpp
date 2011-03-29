@@ -43,7 +43,7 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
 
 	//* MpServers
-	mpServersWidget = new MpServersWidget();
+	mpServersWidget = new MpServersWidget(mainObject);
 	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
 	connect(mpServersWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 

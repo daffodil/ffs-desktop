@@ -30,9 +30,10 @@
 */
 
 
-MpServersWidget::MpServersWidget(QWidget *parent) :
+MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
     QWidget(parent)
 {
+	mainObject = mOb;
 
     //* Main Layout
     QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -41,10 +42,18 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 	int m = 10;
 	mainLayout->setContentsMargins(m,m,m,m);
 
+
+	//** MiddleLayout
+	QHBoxLayout *middleLayout = new QHBoxLayout();
+	mainLayout->addLayout(middleLayout);
+	middleLayout->setSpacing(10);
+	int mm = 10;
+	middleLayout->setContentsMargins(mm,mm,mm,mm);
+
 	//========================================================================
 	// Mp Servers Box
 	grpMpServer  = new QGroupBox("Enable Multiplayer");
-	mainLayout->addWidget(grpMpServer);
+	middleLayout->addWidget(grpMpServer);
 	grpMpServer->setCheckable(true);
 
 	QVBoxLayout *layoutMpServer = new QVBoxLayout();
@@ -59,7 +68,9 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 	txtCallSign = new QLineEdit();
 	txtCallSign->setText("");
 	txtCallSign->setMaximumWidth(100);
+	txtCallSign->setMaxLength(7);
 	layoutTreeBar->addWidget(txtCallSign);
+	connect(txtCallSign, SIGNAL(textChanged(QString)), this, SLOT(on_callsign_changed(QString)) );
 
 	layoutTreeBar->addStretch(20);
 
@@ -99,29 +110,36 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
 	//========================================================================
 	// FgCom Box
 	grpFgCom = new QGroupBox(tr("fgCom - Voice Communications"));
-	mainLayout->addWidget(grpFgCom);
+	middleLayout->addWidget(grpFgCom);
 	grpFgCom->setCheckable(true);
 
 	QVBoxLayout *layoutFgCom = new QVBoxLayout();
 	grpFgCom->setLayout(layoutFgCom);
 
+	QString style("font-size: 8pt; color: #666666;");
+
 	// fgCom NO
-	txtFgComNo = new QLineEdit();
+	txtFgComNo = new QLineEdit("fgcom -Sfgcom.flightgear.org.uk");
 	layoutFgCom->addWidget(txtFgComNo);
 
-	QLabel *lblHelp1 = new QLabel("   Call FlightGear default fgCom server");
-	lblHelp1->setStyleSheet("font-size: 10pt; color: #000099;");
+	QLabel *lblHelp1 = new QLabel("Call default FlightGear fgCom server");
+	lblHelp1->setStyleSheet(style);
 	layoutFgCom->addWidget(lblHelp1);
+
 
 	layoutFgCom->addSpacing(10);
 
+
 	// fgCom Port
-	txtFgComPort = new QLineEdit();
+	txtFgComPort = new QLineEdit("16661");
+	txtFgComPort->setMaximumWidth(100);
 	layoutFgCom->addWidget(txtFgComPort);
 
-	QLabel *lblHelp2 = new QLabel("   Default fgCom UDP port");
-	lblHelp2->setStyleSheet("font-size: 10pt; color: #000099;");
+	QLabel *lblHelp2 = new QLabel("Default fgCom UDP port");
+	lblHelp2->setStyleSheet(style);
 	layoutFgCom->addWidget(lblHelp2);
+
+	layoutFgCom->addStretch(30);
 
 	// Load
 	dns_lookup_all();
@@ -322,6 +340,19 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     //qDebug() >> "update=" << items.count();
 }
 
+//=====================================
+// Callsign Changed
+void MpServersWidget::on_callsign_changed(QString txt){
+	QString callsign = txt.trimmed();
+	if(callsign.length() == 0){
+		emit set_arg("remove", "--callsign=","");
+
+
+	}else{
+		mainObject->lblCallsign->setText(callsign);
+		emit set_arg("set", "--callsign=",callsign);
+	}
+}
 
 //=====================================
 // Mp Server Selected
@@ -329,9 +360,7 @@ void MpServersWidget::on_tree_selection_changed(){
 	QTreeWidgetItem *item = treeWidget->currentItem();
 	if(!item){
 		//#emit set_arg("set", arg_name, item->text());
-
 	}else{
-
 		emit set_arg("set", "--mpserver", item->text(C_DOMAIN));
 	}
 }

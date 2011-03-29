@@ -9,6 +9,7 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QLineEdit>
 
+#include "mainobject.h"
 
 class MpServersWidget : public QWidget
 {
@@ -24,12 +25,14 @@ public:
 		C_FLAG
     };
 
-    explicit MpServersWidget(QWidget *parent = 0);
+	explicit MpServersWidget(MainObject *mOb, QWidget *parent = 0);
 
-    QTreeWidget *treeWidget;
+	MainObject *mainObject;
+
 
 	QGroupBox *grpMpServer;
 	QLineEdit *txtCallSign;
+	QTreeWidget *treeWidget;
 
 
 	QGroupBox *grpFgCom;
@@ -47,7 +50,11 @@ public slots:
      void dns_lookup_all();
      void on_dns_lookup_host(const QHostInfo &hostInfo);
      void on_telnet_data(QString, QString);
+
+	 void on_callsign_changed(QString);
 	 void on_tree_selection_changed();
+
+
 };
 
 #endif // MPSERVERS_H
