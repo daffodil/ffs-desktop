@@ -130,10 +130,10 @@ PropsTreeWidget::PropsTreeWidget(MainObject *mOb, QWidget *parent) :
              this, SLOT(on_item_expanded(QTreeWidgetItem*))
     );
 	connect(treeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-            this, SLOT(on_item_clicked(QTreeWidgetItem*,int))
+			this, SLOT(on_item_double_clicked(QTreeWidgetItem*,int))
     );
 	connect(treeWidget, SIGNAL(itemSelectionChanged()),
-			this, SLOT(on_item_selection_changed())
+			this, SLOT(on_on_aiport_selection_changedselection_changed())
 	);
 
 
@@ -252,16 +252,11 @@ void PropsTreeWidget::on_item_expanded(QTreeWidgetItem *item){
 
 //*** TODO ???
 void PropsTreeWidget::on_item_double_clicked(QTreeWidgetItem *item, int col){
-     qDebug("ON on_item_clicked");
-	 Q_UNUSED(col);
-    // qDebug() << item->text(3);
-     //item->setIcon(0, QIcon(":/icons/folder_expanded"));
-    // item->setText(1, tr("Refresh"));
-     //mainObject->telnet->get_node(item->text(3));)
-    if(item->text(1) == "Refresh"){
-        qDebug("REFRESH");
-        mainObject->telnet->get_node(item->text(3));
-    }
+	Q_UNUSED(col);
+	if(item->text(C_TYPE).length() == 0){
+		return;
+	}
+	actionEditProperty->trigger();
 }
 
 
@@ -298,10 +293,9 @@ void PropsTreeWidget::on_set_timer_rate(){
 
 
 void PropsTreeWidget::on_edit_property(){
-	qDebug() << "YES";
-	PropEditWidget *propEditWidget = new PropEditWidget(mainObject, this);
+	PropEditWidget *propEditWidget = new PropEditWidget(mainObject);
 	propEditWidget->set_from_item(treeWidget->currentItem());
-	propEditWidget->show();
+	propEditWidget->exec();
 
 
 }

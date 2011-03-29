@@ -51,7 +51,7 @@ void TelnetSlave::fg_disconnect(){
     socket->close();
 }
 
-void TelnetSlave::set_node(QString path, QString value){
+void TelnetSlave::set_property(QString path, QString value){
     //TODO
  }
 
@@ -61,7 +61,7 @@ void TelnetSlave::set_node(QString path, QString value){
 //********************************************************************************************
 void TelnetSlave::get_node(QString node_path){
     if( !socket->isOpen() ){
-        qDebug() << "not open";
+		// TODO emit error maybe ?
         return;
     }
     current_node_path = node_path; // << store the "node_path" in the current_node_path vars

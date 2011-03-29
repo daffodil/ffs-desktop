@@ -30,8 +30,8 @@ public:
 
     void fg_connect();
     void fg_disconnect();
-    void get_node(QString path);
-    void set_node(QString path, QString value);
+	void get_node(QString path);
+	void set_property(QString path, QString value);
 
 private:
     QTcpSocket *socket;
