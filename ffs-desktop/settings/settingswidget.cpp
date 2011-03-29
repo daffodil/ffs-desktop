@@ -63,16 +63,16 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     buttExecutable->setIcon(QIcon(":/icons/refresh"));
     buttExecutable->setPopupMode(QToolButton::InstantPopup);
 
-    QMenu *menuExecutable = new QMenu();
-    buttExecutable->setMenu(menuExecutable);
+	QMenu *menuFgfs = new QMenu();
+	buttExecutable->setMenu(menuFgfs);
 
-	QAction *actionFgfsSelectPath = new QAction(menuExecutable);
-	menuExecutable->addAction(actionFgfsSelectPath);
+	QAction *actionFgfsSelectPath = new QAction(menuFgfs);
+	menuFgfs->addAction(actionFgfsSelectPath);
 	actionFgfsSelectPath->setText(tr("Select path.."));
 	connect(actionFgfsSelectPath, SIGNAL(triggered()), this, SLOT(on_select_fgfs_path()));
 
-	QAction *actionFgfsAutoSelect = new QAction(menuExecutable);
-	menuExecutable->addAction(actionFgfsAutoSelect);
+	QAction *actionFgfsAutoSelect = new QAction(menuFgfs);
+	menuFgfs->addAction(actionFgfsAutoSelect);
 	actionFgfsAutoSelect->setText(tr("Autodetect"));
 	connect(actionFgfsAutoSelect, SIGNAL(triggered()), this, SLOT(on_fgfs_autodetect()));
 
@@ -102,7 +102,7 @@ SettingsWidget::SettingsWidget(MainObject *mOb, QWidget *parent) :
     QAction *actFgRootPath = new QAction(menuFgRoot);
     menuFgRoot->addAction(actFgRootPath);
     actFgRootPath->setText(tr("Select path.."));
-	connect(actionFgfsSelectPath, SIGNAL(triggered()), this, SLOT(on_select_fg_root_path()));
+	connect(actFgRootPath, SIGNAL(triggered()), this, SLOT(on_select_fg_root_path()));
 
     QAction *actFgRootCheck = new QAction(menuFgRoot);
     menuFgRoot->addAction(actFgRootCheck);
@@ -202,7 +202,7 @@ void SettingsWidget::save_settings(){
 	mainObject->settings->setValue("FGFS", txtFgfs->text());
 	mainObject->settings->setValue("FG_ROOT", txtFgRoot->text());
 	mainObject->settings->sync();
-	qDebug() << "SAVE";
+	// TODO maybe a transmiit ()??
 }
 
 //******************
@@ -220,52 +220,55 @@ QString SettingsWidget::set_frame_style(QString color){
 
 }
 
-
-//******************
-//* Selct FGFS bin Dialog
-void SettingsWidget::on_select_fgfs_path(){
-
-     QFileDialog dialog(this);
-     dialog.setFileMode(QFileDialog::ExistingFile);
-     if(dialog.exec()){
-         qDebug("YES");
-     }
-     // TODO
-}
-
 //******************
 //* Autodetect fgfs - this wont work on windows proabably
 void SettingsWidget::on_fgfs_autodetect(){
 
-    QString program = "which fgfs";
+	QString program = "which fgfs";
 
-    QProcess *process = new QProcess(this);
-    process->start(program);
+	QProcess *process = new QProcess(this);
+	process->start(program);
 
-    if(process->waitForStarted()){
-            process->waitForFinished();
-            QByteArray result =  process->readAllStandardOutput();
+	if(process->waitForStarted()){
+			process->waitForFinished();
+			QByteArray result =  process->readAllStandardOutput();
 			//QByteArray errorResult = process->readAllStandardError();
-            QString exe = QString(result).trimmed();
+			QString exe = QString(result).trimmed();
 
-            if(exe.length() == 0){
-                statusBar->showMessage( tr("fgfs not found").append(" :-(") , 5000);
+			if(exe.length() == 0){
+				statusBar->showMessage( tr("fgfs not found").append(" :-(") , 5000);
 				grpFgfs->setStyleSheet(set_frame_style("pink"));
-            }else{
-                statusBar->showMessage( tr("OK fgfs found ").append(" :-)") , 5000);
+			}else{
+				statusBar->showMessage( tr("OK fgfs found ").append(" :-)") , 5000);
 				txtFgfs->setText(exe);
 				grpFgfs->setStyleSheet(set_frame_style("#77FF77"));
-            }
-            QStringList lines = QString(result).split("\n");
+			}
+			QStringList lines = QString(result).split("\n");
 		}
 }
+
+
+
+
+
+
+//******************
+//* Selct FGFS bin Dialog
+void SettingsWidget::on_select_fgfs_path(){
+	QString filePath = QFileDialog::getOpenFileName(this, tr("Select FGFS  binary"),
+														 txtFgfs->text());
+	if(filePath.length() > 0){
+		txtFgfs->setText(filePath);
+	}
+}
+
 
 //*******************************************************
 // Select FG ROot
 void SettingsWidget::on_select_fg_root_path(){
-	QFileDialog dialog(this);
-	dialog.setFileMode(QFileDialog::ExistingFile);
-	if(dialog.exec()){
-		qDebug("YES");
+	QString dirPath = QFileDialog::getExistingDirectory(this, tr("Select FG_ROOT directory"),
+														 txtFgRoot->text(), QFileDialog::ShowDirsOnly);
+	if(dirPath.length() > 0){
+		txtFgRoot->setText(dirPath);
 	}
 }
