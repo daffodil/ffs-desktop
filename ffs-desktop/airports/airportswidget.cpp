@@ -228,10 +228,10 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 			 SLOT( on_aiport_selection_changed(const QItemSelection&, const QItemSelection&) )
     );
 	
-	//** Map TODO  - map of airport
-	/* map = new GoogleMapWidget(this);
-	airportLayout->addWidget(map, 10);
-	*/
+    //** Map
+    //map = new GoogleMapWidget(this);
+    //airportLayout->addWidget(map, 10);
+
     splitter->setStretchFactor(0, 3);
     splitter->setStretchFactor(1, 1);
     load_airports();
@@ -329,10 +329,6 @@ void AirportsWidget::on_update_filter(){
 //**********************************************
 //*** Import Airports Dialog
 void AirportsWidget::import_airports_dialog(){
-    //* TODO message you are about to do this and take a few moment etc (or background)
-     qDebug("AirportsWidget::load_airports_DB()");
-    //QProgressDialog progress("Importing airports", "Abort Copy", 0, 2000, this);
-    //progress.show();
      ImportAirportsWidget *imp = new ImportAirportsWidget(mainObject);
      if(imp->exec()){
         load_airports();

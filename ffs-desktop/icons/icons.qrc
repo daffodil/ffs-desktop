@@ -36,6 +36,6 @@
         <file alias="import">database_go.png</file>
         <file alias="settings">cog.png</file>
         <file alias="launcher">page_white_office.png</file>
-        <file alias="props_tree">sitemap_color.png</file>
+        <file alias="properties_browser">sitemap_color.png</file>
     </qresource>
 </RCC>

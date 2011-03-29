@@ -197,6 +197,7 @@ MainOptionsWidget::MainOptionsWidget(MainObject *mOb, QWidget *parent) :
 }
 
 QRadioButton MainOptionsWidget::make_radio(QString label){
+	 Q_UNUSED(label);
     //return new QRadioButton(label);
    // return button;
 }

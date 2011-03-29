@@ -116,8 +116,9 @@ void ImportAirportsWidget::update_progress(int value){
 //** Import Clicked
 void ImportAirportsWidget::on_import_button_clicked(){
 
+	//* TODO message you are about to do this and take a few moment etc (or background)
+
 	QString tarball_path = mainObject->settings->fg_root("/Airports/apt.dat.gz");
-    qDebug() << tarball_path;
     QFileInfo fileInfo = QFileInfo(tarball_path);
     if(!fileInfo.exists()){
         statusBar->showError(QString("Cannot open '%1'").arg(tarball_path));
@@ -140,14 +141,11 @@ void ImportAirportsWidget::on_import_button_clicked(){
         return; // false;
     QByteArray result = unzipProcess.readAll();
 
-    //qDebug() <<  result;
-    //return;
     statusBar->showMessage( QString("Importing '%1'").arg(temp_file) );
 
     AptDatParser *aptDatParser = new AptDatParser(this);
 	aptDatParser->import_aptdat(temp_file, this);
 
-    //this->accept();
 }
 
 

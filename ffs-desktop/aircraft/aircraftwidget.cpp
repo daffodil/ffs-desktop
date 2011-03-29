@@ -10,8 +10,6 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-
-// layouts
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGroupBox>
@@ -52,7 +50,7 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
     QSplitter *splitter = new QSplitter(this);
     mainLayout->addWidget(splitter);
 
-    //***************************************************
+	//===============================================================================
     //** Left
     QWidget *leftWidget = new QWidget();
     splitter->addWidget(leftWidget);
@@ -137,35 +135,15 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 			 SLOT( on_tree_selection_changed(const QItemSelection&, const QItemSelection&) )
     );
 
-	/*
-    connect(treeView,
-            SIGNAL(clicked(QModelIndex)),
-            this, SLOT(on_tree_clicked(QModelIndex))
-    );
-	*/
-
     statusBarTree = new QStatusBar();
     treeLayout->addWidget(statusBarTree);
     statusBarTree->showMessage("Idle");
 
-    /*
 
-
-    QItemSelectionModel *selModel = treeView->selectionModel();
-    connect( selModel,
-             SIGNAL(currentRowChanged ( QModelIndex current, QModelIndex previous )),
-             SLOT(show_aircraft_details ( const QModelIndex &current, const QModelIndex &previous ))
-    );
-    */
-    //** RightPanel
-    //QPixMap()
-    //* /usr/share/games/FlightGear/
 
     //*************************************************************************************************
     //** Right
     //*************************************************************************************************
-//    QWidget *rightWidget = new QWidget();
-//    splitter->addWidget(rightWidget);
 
 
     QGroupBox *grpAero = new QGroupBox();
@@ -183,7 +161,7 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
     aeroLayout->setSpacing(0);
 
     //**********************************************8
-    //** Toolbar
+	//** Aero Panel
     QGroupBox *grpAeroPanel = new QGroupBox();
     aeroLayout->addWidget(grpAeroPanel);
 
@@ -249,12 +227,9 @@ AircraftWidget::AircraftWidget(MainObject *mOb, QWidget *parent) :
 //** Load Aircraft
 void AircraftWidget::load_aircraft(){
 
-    qDebug("AircraftWidget > on_load() --------------------------------");
-
 	QString command = mainObject->settings->fgfs_path();
 	command.append(" --fg-root=").append(mainObject->settings->fg_root());
 	command.append(" --show-aircraft");
-	qDebug() << command;
 
     QProcess *process = new QProcess(this);
 	process->start(command);
@@ -268,11 +243,8 @@ void AircraftWidget::load_aircraft(){
             QByteArray result =  process->readAllStandardOutput();
             QByteArray errorResult = process->readAllStandardError();
 
-			//** The fgfs --show_mistake returns the "--help" and not an error ;-(
+			//** The fgfs --show_a_mistake returns the "--help" and not an error output ;-(
             //* so only way to detect is to get "-available aircraft" as text
-
-			qDebug() << result;
-
             QStringList lines = QString(result).split("\n");
 
             for ( it = lines.begin() ; it != lines.end() ; it++ ){
@@ -282,15 +254,13 @@ void AircraftWidget::load_aircraft(){
                 //* Unless first item == Available aircraft: then its an error (messy)
                 if(it == lines.begin()){
                     if(line  != "Available aircraft:"){
-                       // qDebug("ERROR");
-                        //TODO emit("error")
+						  //TODO emit("error")
                         return;
                     }else{
-                        // qDebug("FIRSTLINE");
+						//  first_line
 
                     }
                 }else{
-                    //qDebug( s );
 
                     QStandardItem *modelItem = new QStandardItem();
                     modelItem->setText( line.section( ' ', 0, 0 )); //* first chars to space
@@ -306,22 +276,6 @@ void AircraftWidget::load_aircraft(){
 }
 
 
-//****************************
-/*
-void AircraftWidget::on_tree_clicked(QModelIndex mIdx){
-    qDebug("on_tree_clicked");
-    //QString
-    QStandardItem *item = model->itemFromIndex ( mIdx );
-
-    //qDebug()  << item->text();
-}
-*/
-/*
-void AircraftWidget::show_aircraft_details(const QModelIndex &current, const QModelIndex &previous){
-    qDebug("set_aircraft()");
-    //QString
-}
-*/
 
 void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
     qDebug("on_view_button_clicked()");
@@ -331,19 +285,22 @@ void AircraftWidget::on_view_button_clicked(QAbstractButton *button){
     //QString
 }
 
-
+//=====================================
+// Aircraft Selected
 void AircraftWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
+	Q_UNUSED(deselected);
 	QString arg_name("--aircraft=");
 	if(selected.count() == 0){
 		emit set_arg("remove", arg_name, "");
 	}else{
 		QModelIndex proxyIndex =  selected.indexes().first();
 		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
-		qDebug() << item->text();
 		emit set_arg("set", arg_name, item->text());
 	}
 }
 
+//=====================================
+// Auto Coordination
 void AircraftWidget::on_auto_coordination(bool state){
 	emit set_arg(state ? "set" : "remove", "--enable-auto-coordination", "");
 }

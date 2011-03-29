@@ -64,15 +64,20 @@ MpServersWidget::MpServersWidget(QWidget *parent) :
     headerItem->setText(C_DOMAIN, tr("Domain"));
     headerItem->setText(C_IP_ADDRESS, tr("IP Address"));
     headerItem->setText(C_PILOTS_COUNT, tr("Pilots"));
+	headerItem->setText(C_FLAG, "-");
     treeWidget->header()->setStretchLastSection(true);
     treeWidget->setColumnWidth(C_SERVER_NO, 40);
     treeWidget->setColumnWidth(C_SERVER_NAME, 110);
     treeWidget->setColumnWidth(C_DOMAIN, 100);
+	treeWidget->setColumnWidth(C_PILOTS_COUNT, 50);
+	treeWidget->setColumnWidth(C_FLAG, 10);
 
 	treeWidget->setColumnHidden(C_DOMAIN, true);
 
-    //##
-    //dns_lookup_all();
+
+
+	// Load
+	dns_lookup_all();
 }
 /* end constructor */
 
@@ -298,23 +303,18 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     items[0]->setText(C_PILOTS_COUNT, QString::number(pilots_count));
     //qDebug() >> "update=" << items.count();
 }
-/*
-void MpServersWidget::find_server_col(QString ip_address,
-QTreeWidgetItem *headerItem = treeWidget->headerItem();
-qDebug("colsssssss--------------");
-int found_idx = -1;
-for(int colidx = 0; colidx < headerItem->columnCount(); ++colidx){
 
-    if(headerItem->text(colidx) == server_no){
-        found_idx = colidx;
-        //break;
-    }
-    qDebug() << "HEADER" << colidx << headerItem->text(colidx) << colidx << found_idx;
+
+//=====================================
+// Mp Server Selected
+void MpServersWidget::on_tree_selection_changed(const QItemSelection& selected, const QItemSelection& deselected){
+	Q_UNUSED(deselected);
+	QString arg_name("--mpserver=");
+	if(selected.count() == 0){
+		emit set_arg("remove", arg_name, "");
+	}else{
+		QModelIndex proxyIndex =  selected.indexes().first();
+		QStandardItem *item =  model->itemFromIndex(  proxyModel->mapToSource(proxyIndex) );
+		emit set_arg("set", arg_name, item->text());
+	}
 }
-if(found_idx == -1){
-    headerItem->setText(headerItem->columnCount(), server_no);
-    qDebug() << " >> added";
-}else{
-   qDebug() << " >> skipped";
-}
-*/

@@ -72,6 +72,7 @@ void MpMapWidget::update_progress(int v){
     progressBar->setValue(v);
 }
 void MpMapWidget::end_progress(bool Ok){
+	Q_UNUSED(Ok);
     progressBar->setVisible(false);
     statusBar->showMessage( comboServer->itemData(comboServer->currentIndex()).toString() );
 }

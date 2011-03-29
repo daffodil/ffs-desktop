@@ -158,6 +158,16 @@ MainObject::MainObject(QObject *parent) :
             this, SLOT(on_telnet_disconnect_action())
     );
 
+	//*** Properties
+	QAction *actionPropsBrowser= new QAction(this);
+	actionPropsBrowser->setIcon(QIcon(":/icons/properties_browser"));
+	actionPropsBrowser->setText(tr("Properties Browser"));
+	actionPropsBrowser->setIconVisibleInMenu(true);
+	popupMenu->addAction(actionPropsBrowser);
+	connect(actionPropsBrowser, SIGNAL(triggered()),
+			this, SLOT(on_properties_browser())
+	);
+
 
     //*** Settings
     QAction *actionSettings= new QAction(this);

@@ -32,15 +32,21 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
     headerLabel = new QLabel(this);
 	headerLabel->setText("fgX Launcher");
 	headerLabel->setStyleSheet(header_style);
-    mainVBox->addWidget(headerLabel, 1);
+	mainVBox->addWidget(headerLabel, 0);
 
 	splitter = new QSplitter();
-	mainVBox->addWidget(splitter);
+	mainVBox->addWidget(splitter, 20);
 
 	//** Main Tab =========================
     tabWidget = new QTabWidget(this);
 	splitter->addWidget(tabWidget);
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed(int)));
+
+	//* MpServers
+	mpServersWidget = new MpServersWidget();
+	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
+	connect(mpServersWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
+
 
 	//*** WIDGETS ==================================================
 	//* Aircraft Widget
@@ -50,10 +56,6 @@ LauncherWindow::LauncherWindow(MainObject *mainOb, QWidget *parent)
 
 
 
-	//* MpServers
-	mpServersWidget = new MpServersWidget();
-	tabWidget->addTab(mpServersWidget, tr("Multi Player Server"));
-	connect(mpServersWidget, SIGNAL(set_arg(QString,QString,QString)), this, SLOT(set_arg(QString,QString,QString)));
 
 	//* Options
 	mainOptionsWidget = new MainOptionsWidget(mainObject);
