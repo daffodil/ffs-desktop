@@ -10,6 +10,7 @@
 
 #include <QtNetwork/QHostInfo>
 #include <QtNetwork/QHostAddress>
+#include <QtNetwork/QNetworkInterface>
 
 #include <QtGui/QBrush>
 #include <QtGui/QColor>
@@ -72,14 +73,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	layoutTreeBar->addWidget(txtCallSign);
 	connect(txtCallSign, SIGNAL(textChanged(QString)), this, SLOT(on_callsign_changed(QString)) );
 
-	layoutTreeBar->addStretch(20);
-
-	//* refresh MP servers
-	QToolButton *refreshButton = new QToolButton(this);
-	layoutTreeBar->addWidget(refreshButton);
-	refreshButton->setIcon(QIcon(":/icons/refresh"));
-	refreshButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
+	//layoutTreeBar->addStretch(20);
 
     treeWidget = new QTreeWidget();
 	layoutMpServer->addWidget(treeWidget, 100);
@@ -105,6 +99,17 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 
 	connect(treeWidget, SIGNAL(itemSelectionChanged()), this, SLOT(on_tree_selection_changed()));
 
+	//************* Bottom Layout
+	QHBoxLayout *layoutBottomTreeBar = new QHBoxLayout();
+	layoutMpServer->addLayout(layoutBottomTreeBar);
+	layoutBottomTreeBar->addStretch(30);
+
+	//* refresh MP servers
+	QToolButton *refreshButton = new QToolButton(this);
+	layoutBottomTreeBar->addWidget(refreshButton);
+	refreshButton->setIcon(QIcon(":/icons/refresh"));
+	refreshButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	connect(refreshButton, SIGNAL(triggered()), this, SLOT(dns_lookup_all()) );
 
 
 	//========================================================================
@@ -112,6 +117,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	grpFgCom = new QGroupBox(tr("fgCom - Voice Communications"));
 	middleLayout->addWidget(grpFgCom);
 	grpFgCom->setCheckable(true);
+	connect(grpFgCom, SIGNAL(clicked(bool)), this, SLOT(set_fgcom()));
 
 	QVBoxLayout *layoutFgCom = new QVBoxLayout();
 	grpFgCom->setLayout(layoutFgCom);
@@ -121,6 +127,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	// fgCom NO
 	txtFgComNo = new QLineEdit("fgcom -Sfgcom.flightgear.org.uk");
 	layoutFgCom->addWidget(txtFgComNo);
+	connect(txtFgComNo, SIGNAL(textChanged(QString)), this, SLOT(set_fgcom()));
 
 	QLabel *lblHelp1 = new QLabel("Call default FlightGear fgCom server");
 	lblHelp1->setStyleSheet(style);
@@ -134,6 +141,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	txtFgComPort = new QLineEdit("16661");
 	txtFgComPort->setMaximumWidth(100);
 	layoutFgCom->addWidget(txtFgComPort);
+	connect(txtFgComPort, SIGNAL(textChanged(QString)), this, SLOT(set_fgcom()));
 
 	QLabel *lblHelp2 = new QLabel("Default fgCom UDP port");
 	lblHelp2->setStyleSheet(style);
@@ -143,6 +151,10 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 
 	// Load
 	dns_lookup_all();
+
+
+	QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
+	qDebug() << addresses;
 }
 /* end constructor */
 
@@ -364,3 +376,15 @@ void MpServersWidget::on_tree_selection_changed(){
 		emit set_arg("set", "--mpserver", item->text(C_DOMAIN));
 	}
 }
+
+
+//=====================================
+// Setup fgCom
+void MpServersWidget::set_fgcom(){
+	if(grpFgCom->isChecked()){
+		emit set_arg("set", "--fgcom=", txtFgComNo->text().append(":").append( txtFgComPort->text() ) );
+	}else{
+		emit set_arg("remove", "--fgcom=","");
+	}
+}
+

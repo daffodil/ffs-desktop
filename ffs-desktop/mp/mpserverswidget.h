@@ -54,6 +54,7 @@ public slots:
 	 void on_callsign_changed(QString);
 	 void on_tree_selection_changed();
 
+	 void set_fgcom();
 
 };
 
