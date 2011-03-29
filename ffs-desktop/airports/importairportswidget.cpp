@@ -18,6 +18,8 @@
 
 /* Shows the import airports widget
 
+   TODO: MessageOBx to confirm import and this will take a while
+		 Close after import finished
    */
 
 ImportAirportsWidget::ImportAirportsWidget(MainObject *mainOb, QDialog *parent) :

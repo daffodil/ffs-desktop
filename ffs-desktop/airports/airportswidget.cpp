@@ -182,7 +182,7 @@ AirportsWidget::AirportsWidget(MainObject *mOb, QWidget *parent) :
 
     connect( treeView->selectionModel(),
              SIGNAL( selectionChanged (const QItemSelection&, const QItemSelection&) ),
-             SLOT( on_aiport_clicked(const QItemSelection&, const QItemSelection&) )
+			 SLOT( on_aiport_selection_changed(const QItemSelection&, const QItemSelection&) )
     );
 
     //connect(treeView,
@@ -253,7 +253,7 @@ void AirportsWidget::load_airports(){
     bool success;
     success = query.exec("SELECT airport, name, tower, elevation from airports order by airport");
     if(!success){
-        qDebug() << "SELECT airports" << query.lastError();
+		//qDebug() << "SELECT airports" << query.lastError();
         statusBarTree->showError( QString("Error: %1").arg(query.lastError().text() ), 5000);
         show_progress(false);
         return;
@@ -295,13 +295,14 @@ void AirportsWidget::load_airports(){
         itemAirportElevation->setText(query.value(3).toString());
         model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
     }
-    qDebug() << "set row count";
+	//qDebug() << "set row count";
     show_progress(false);
     statusBarTree->showMessage( QString("%1 airports in total").arg(model->rowCount()) );
 }
 
 //*****************************************
 //*** DEADLoad Airports
+/* Earlier idea that was an Emit signal, now in load-aiports()
 void AirportsWidget::on_airport(QString airport,QString name,QString tower,QString elevation){
     //qDebug() <<  airport << name << tower <<  elevation;
 
@@ -334,6 +335,7 @@ void AirportsWidget::on_airport(QString airport,QString name,QString tower,QStri
     model->setItem(new_row_index, C_ELEVATION, itemAirportElevation);
 
 }
+*/
 //void AirportsWidget::update_airports_count(){
    // QString status_lbl = QString("%1 aiports").arg( model->rowCount() );
     //statusBarTree->showMessage(status_lbl);
@@ -373,8 +375,8 @@ void AirportsWidget::import_airports_dialog(){
 
 //**********************************************
 //*** Airport Row Clicked = Show Runways
-void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelection&){
-    qDebug() << "CLICK";
+void AirportsWidget::on_aiport_selection_changed(const QItemSelection&, const QItemSelection&){
+	//qDebug() << "CLICK";
     //return;
     //model->removeRows(0, model->rowCount());
     treeWidgetRunways->model()->removeRows(0,
@@ -389,7 +391,7 @@ void AirportsWidget::on_aiport_clicked(const QItemSelection&, const QItemSelecti
     QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
     QString airport_code = model->item(srcIndex.row(), C_CODE)->text();
 
-    return;
+
     QSqlQuery query;
     query.prepare("SELECT runway, width, length, lat, lng, heading from runways where airport=? order by runway");
     query.addBindValue( airport_code );

@@ -12,6 +12,9 @@
 #include <QtNetwork/QTcpSocket>
 #include <QtNetwork/QHostAddress>
 
+
+
+
 TelnetSlave::TelnetSlave(QObject *parent) :
     QObject(parent)
 {
@@ -19,11 +22,12 @@ TelnetSlave::TelnetSlave(QObject *parent) :
     current_node_path = "";
     in_request = false;
 
-    //hostAddress = QString("127.0.0.1");
-    hostAddress = QString("192.168.5.16");
-    port = 5555;
+	hostAddress = QString("127.0.0.1");
+	//hostAddress = QString("192.168.5.23");
+	port = 5500;
 
     socket = new QTcpSocket(this);
+
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(on_error( QAbstractSocket::SocketError))
     );
@@ -40,7 +44,7 @@ TelnetSlave::TelnetSlave(QObject *parent) :
  //** Connect / Disconnect
 //********************************************************************************************
 void TelnetSlave::fg_connect(){
-    socket->connectToHost(hostAddress, port);
+	socket->connectToHost(hostAddress, port);
 }
 
 void TelnetSlave::fg_disconnect(){

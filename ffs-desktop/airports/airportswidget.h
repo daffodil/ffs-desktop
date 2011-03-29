@@ -53,10 +53,10 @@ public slots:
     void load_airports();
     void import_airports_dialog();
 
-    void on_airport(QString, QString, QString, QString);
+	//void on_airport(QString, QString, QString, QString);
     //void update_airports_count();
     void on_update_filter();
-    void on_aiport_clicked(const QItemSelection&, const QItemSelection&);
+	void on_aiport_selection_changed(const QItemSelection&, const QItemSelection&);
 };
 
 #endif // AIRPORTSWIDGET_H

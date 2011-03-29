@@ -5,6 +5,7 @@
 #include <QtGui/QButtonGroup>
 #include <QtGui/QGroupBox>
 #include <QtGui/QLabel>
+#include <QtGui/QMessageBox>
 
 #include "controlbarwidget.h"
 
@@ -94,6 +95,7 @@ ControlBarWidget::ControlBarWidget(MainObject *mOb, QWidget *parent) :
     mainLayout->addWidget(buttStart);
     buttStart->setText(tr("Start"));
     buttStart->setIcon(QIcon(":/icons/start_ena"));
+	connect(buttStart, SIGNAL(clicked()), this, SLOT(on_start()) );
 
     buttPause = new QPushButton();
     mainLayout->addWidget(buttPause);
@@ -106,6 +108,7 @@ ControlBarWidget::ControlBarWidget(MainObject *mOb, QWidget *parent) :
     buttStop->setText(tr("Stop"));
     buttStop->setIcon(QIcon(":/icons/stop_dis"));
     buttStop->setDisabled(true);
+	connect(buttStop, SIGNAL(clicked()), this, SLOT( on_stop()) );
 
 }
 void ControlBarWidget::on_telnet_error(QAbstractSocket::SocketError sockError, QString errorStr){
@@ -117,9 +120,8 @@ void ControlBarWidget::on_telnet_error(QAbstractSocket::SocketError sockError, Q
 //** Connect Clicked
 void ControlBarWidget::do_telnet_connect(){
     mainObject->telnet->fg_connect();
-    qDebug("do_telnet_connect");
-    //emit telnet_cmd(QString("connect"));
 }
+
 //** DisConnect Clicked
 void ControlBarWidget::do_telnet_disconnect(){
     qDebug("do_telnet_disconnect");
@@ -135,3 +137,40 @@ void ControlBarWidget::on_telnet_connected(bool state){
     buttTelnetConnect->setDisabled(state);
     buttTelnetDisconnect->setDisabled(!state);
 }
+
+
+
+
+void ControlBarWidget::on_start(){
+
+	QString command("");
+	command.append(mainObject->settings->fgfs_path());
+	command.append(" --fg-root=").append(mainObject->settings->fg_root());
+
+
+	qDebug() << "on_start" << command;
+	processFgfs.start(command);
+	if(processFgfs.waitForStarted()){
+
+		processFgfs.waitForFinished();
+		QString ok_result = processFgfs.readAllStandardOutput();
+		QString error_result = processFgfs.readAllStandardError();
+		if(error_result.length() > 0){
+			QMessageBox::critical(this, "Error", error_result);
+			return;
+		}
+		buttStart->setDisabled(true);
+		buttStop->setDisabled(false);
+		qDebug() << "OK=" << ok_result;
+		qDebug() << "ERROR=" << error_result;
+	}
+}
+
+
+
+void ControlBarWidget::on_stop(){
+	qDebug() << "on_stop";
+	buttStart->setDisabled(false);
+	buttStop->setDisabled(true);
+}
+
