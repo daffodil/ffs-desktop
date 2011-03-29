@@ -6,7 +6,7 @@
 #include <QtCore/QMapIterator>
 
 
-#include <QVBoxLayout>
+
 
 #include <QtNetwork/QHostInfo>
 #include <QtNetwork/QHostAddress>
@@ -16,12 +16,15 @@
 #include <QtGui/QColor>
 
 #include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+#include <QtGui/QGridLayout>
+
 #include <QtGui/QAction>
-#include <QtGui/QProgressBar>
+//#include <QtGui/QProgressBar>
 #include <QtGui/QLabel>
 #include <QtGui/QTreeWidgetItem>
 #include <QtGui/QHeaderView>
-#include <QToolButton>
+#include <QtGui/QToolButton>
 
 #include "mp/mpserverswidget.h"
 #include "mp/mptelnet.h"
@@ -56,25 +59,47 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	grpMpServer  = new QGroupBox("Enable Multiplayer");
 	middleLayout->addWidget(grpMpServer);
 	grpMpServer->setCheckable(true);
+	connect(grpMpServer, SIGNAL(clicked(bool)), this, SLOT(on_mp_server_checked()));
 
 	QVBoxLayout *layoutMpServer = new QVBoxLayout();
 	grpMpServer->setLayout(layoutMpServer);
 
-	//** Top Hoizontal
-	QHBoxLayout *layoutTreeBar = new QHBoxLayout();
-	layoutMpServer->addLayout(layoutTreeBar);
 
+	//** Top Grid =========================================
+	QGridLayout *gridMP = new QGridLayout();
+	layoutMpServer->addLayout(gridMP);
+
+	int row = 0;
 	//** Callsign
-	layoutTreeBar->addWidget(new QLabel("Callsign:"));
+	gridMP->addWidget(new QLabel("Callsign:"), row, 0, 1, 1, Qt::AlignRight);
 	txtCallSign = new QLineEdit();
 	txtCallSign->setText("");
 	txtCallSign->setMaximumWidth(100);
 	txtCallSign->setMaxLength(7);
-	layoutTreeBar->addWidget(txtCallSign);
+	gridMP->addWidget(txtCallSign, row, 1, 1, 1);
 	connect(txtCallSign, SIGNAL(textChanged(QString)), this, SLOT(on_callsign_changed(QString)) );
 
-	//layoutTreeBar->addStretch(20);
+	//** Local Address Combo
+	row++;
+	gridMP->addWidget(new QLabel("Local Address:"), row, 0, 1, 1, Qt::AlignRight);
 
+	comboIpAddress = new QComboBox();
+	gridMP->addWidget(comboIpAddress, row, 1, 1, 1);
+
+	//** Remote Address Combo
+	row++;
+	gridMP->addWidget(new QLabel("Remote Address:"), row, 0, 1, 1, Qt::AlignRight);
+
+	comboRemoteAddress = new QComboBox();
+	gridMP->addWidget(comboRemoteAddress, row, 1, 1, 1);
+	comboRemoteAddress->addItem(tr("Use domain name"), "domain");
+	comboRemoteAddress->addItem(tr("Use IP address"), "ip");
+	comboRemoteAddress->setCurrentIndex(0);
+
+
+
+	//=======================================
+	//* TreeWidget
     treeWidget = new QTreeWidget();
 	layoutMpServer->addWidget(treeWidget, 100);
     treeWidget->setAlternatingRowColors(true);
@@ -137,7 +162,7 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 	layoutFgCom->addSpacing(10);
 
 
-	// fgCom Port
+	//* fgCom Port
 	txtFgComPort = new QLineEdit("16661");
 	txtFgComPort->setMaximumWidth(100);
 	layoutFgCom->addWidget(txtFgComPort);
@@ -149,18 +174,28 @@ MpServersWidget::MpServersWidget(MainObject *mOb, QWidget *parent) :
 
 	layoutFgCom->addStretch(30);
 
-	// Load
+	//** Setup network stuff
 	dns_lookup_all();
+	load_addresses();
 
 
-	QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
-	qDebug() << addresses;
 }
 /* end constructor */
 
 
+//=============================================================
+//** Network Addresses
+void MpServersWidget::load_addresses(){
 
+	QList<QHostAddress> addresses = QNetworkInterface::allAddresses();
+	for (int i = 0; i < addresses.size(); ++i) {
+		if(addresses.at(i).protocol() == QAbstractSocket::IPv4Protocol){
+			comboIpAddress->addItem( addresses.at(i).toString() );
+		}
 
+	}
+	qDebug() << addresses;
+}
 
 
 
@@ -249,7 +284,6 @@ airdomi@LOCAL: 4107968.717705 3824275.355909 3041539.588760 28.615373 42.951713 
 minaya@mpserver10: 4008833.892465 -10727.752073 4944410.518456 51.153549 -0.153324 562.061917 -2.642317 2.096125 1.046300 Aircraft/777-200/Models/777-200ER.xml
 */
 void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
-    qDebug() <<  "\n------------------------------\nReplyFrom=" << ip_address;
 
     //** Split the reply into lines and parse each line
     QStringList lines = telnet_reply.split("\n");
@@ -351,6 +385,18 @@ void MpServersWidget::on_telnet_data(QString ip_address, QString telnet_reply){
     items[0]->setText(C_PILOTS_COUNT, QString::number(pilots_count));
     //qDebug() >> "update=" << items.count();
 }
+
+
+
+
+//=====================================
+// Mp Server Enabled
+void MpServersWidget::on_mp_server_checked(bool state){
+	if (state){
+		txtCallSign->setFocus();
+	}
+}
+
 
 //=====================================
 // Callsign Changed

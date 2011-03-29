@@ -8,6 +8,7 @@
 #include <QtGui/QGroupBox>
 #include <QtGui/QCheckBox>
 #include <QtGui/QLineEdit>
+#include <QtGui/QComboBox>
 
 #include "mainobject.h"
 
@@ -32,6 +33,8 @@ public:
 
 	QGroupBox *grpMpServer;
 	QLineEdit *txtCallSign;
+	QComboBox *comboIpAddress;
+	QComboBox *comboRemoteAddress;
 	QTreeWidget *treeWidget;
 
 
@@ -40,7 +43,7 @@ public:
 	QLineEdit *txtFgComPort;
 
     void dns_lookup(int server_no);
-
+	void load_addresses();
 
 
 signals:
@@ -51,6 +54,7 @@ public slots:
      void on_dns_lookup_host(const QHostInfo &hostInfo);
      void on_telnet_data(QString, QString);
 
+	 void on_mp_server_checked(bool);
 	 void on_callsign_changed(QString);
 	 void on_tree_selection_changed();
 
